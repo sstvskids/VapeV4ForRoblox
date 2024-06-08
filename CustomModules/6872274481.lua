@@ -8847,7 +8847,7 @@ run(function()
                                 store.scythe = tick() + 1.25
                             end
                         end
-                    until not FirewallBypass.Enabled
+                    until not Disabler.Enabled
                 end)
             else
                 pcall(function()
