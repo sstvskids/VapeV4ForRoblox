@@ -8832,8 +8832,7 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-		    warningNotification("Vape", "Scythe initiated/module updated", 3)
-                    ScytheConnection = RunService.Heartbeat:Connect(function()
+                    repeat
                         if BypassMethod.Value == "LookVector" then
                             task.wait()
                             local item = getItemNear("scythe")
@@ -8853,7 +8852,7 @@ run(function()
                                 end
                             end
                         end
-                    end)
+		     until not Disabler.Enbaled
                 end)
             else
                 pcall(function()
