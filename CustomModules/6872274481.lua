@@ -8880,8 +8880,8 @@ run(function()
                     })
                 end
             else
-                if DivideVal.Slider then
-                    DivideVal.Slider.Visible = value
+                if DivideVal.Object then
+                    DivideVal.Object.Visible = value
                 end
             end
         end
