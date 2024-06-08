@@ -397,7 +397,7 @@ local function getSpeed()
 			speed = speed + 90
 		end
 		if store.scythe > tick() then
-			speed = speed + 33
+			speed = speed + 22
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
 			speed = speed + 20
