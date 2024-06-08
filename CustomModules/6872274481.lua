@@ -8823,42 +8823,48 @@ run(function()
 end)
 
 run(function()
-	local ScytheConnection
-	local BypassMethod = {Value = "LookVector"}
-	local Disabler = {Enabled = false}
-	Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-		Name = "FirewallBypass",
-		Function = function(callback)
-			if callback then
-				task.spawn(function()
-					ScytheConnection = RunService.Heartbeat:Connect(function()
-						task.wait()
-						local item = getItemNear("scythe")
-						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-							if BypassMethod.Value == "LookVector" then
-								bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.HumanoidRootPart.CFrame.lookVector})
-							elseif BypassMethod.Value == "MoveDirection" then
-								bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.Humanoid.MoveDirection})
-							end
-							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-								store.scythe = tick() + 1.25
-							end
-						end
-					end)
-				end)
-			end
-		else
-			pcall(function()
-				ScytheConnection:Disconnect()
-			end)
-		end,
-		HoverText = "Improved scythe bypass"
-	})
-	BypassMethod = Disabler.CreateDropdown({
-		Name = "Mode",
-		List = {"LookVector", "MoveDirection"},
-		Function = function() end
-	})
+    local ScytheConnection
+    local BypassMethod = {Value = "LookVector"}
+    local Disabler = {Enabled = false}
+    
+    Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+        Name = "FirewallBypass",
+        Function = function(callback)
+            if callback then
+                task.spawn(function()
+                    ScytheConnection = RunService.Heartbeat:Connect(function()
+                        task.wait()
+                        local item = getItemNear("scythe")
+                        if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
+                            if BypassMethod.Value == "LookVector" then
+                                bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector})
+                            elseif BypassMethod.Value == "MoveDirection" then
+                                bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.Humanoid.MoveDirection})
+                            end
+                            if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+                                store.scythe = tick() + 1.25
+                            end
+                        end
+                    end)
+                end)
+            else
+                pcall(function()
+                    if ScytheConnection then
+                        ScytheConnection:Disconnect()
+                    end
+                end)
+            end
+        end,
+        HoverText = "Improved scythe bypass"
+    })
+    
+    BypassMethod = Disabler.CreateDropdown({
+        Name = "Mode",
+        List = {"LookVector", "MoveDirection"},
+        Function = function(value)
+            BypassMethod.Value = value
+        end
+    })
 end)
 
 run(function()
