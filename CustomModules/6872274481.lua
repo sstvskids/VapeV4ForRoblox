@@ -8833,29 +8833,29 @@ run(function()
             if callback then
                 task.spawn(function()
                     repeat
+                        task.wait()
                         local item = getItemNear("scythe")
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
+                            local direction
                             if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * 0.25
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * 0.125
                             elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection * 0.25
+                                direction = entityLibrary.character.Humanoid.MoveDirection * 0.125
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 1.5
+                                store.scythe = tick() + 1.25
                             end
                         end
-                    until not Disabler.Enabled
+                    until not FirewallBypass.Enabled
                 end)
             else
                 pcall(function()
-                    if ScytheConnection then
-                        ScytheConnection:Disconnect()
-                    end
+                    ScytheConnection:Disconnect()
                 end)
             end
         end,
-        HoverText = "Improved scythe bypass"
+        HoverText = "Better scythe bypass method"
     }) 
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
