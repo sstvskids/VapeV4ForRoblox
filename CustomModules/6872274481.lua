@@ -8860,7 +8860,7 @@ run(function()
     }) 
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
-        List = {"LookVector", "MoveDirection", "Experimental1", "Experimental2"},
+        List = {"LookVector", "MoveDirection"},
         Function = function(value)
             BypassMethod.Value = value
         end
