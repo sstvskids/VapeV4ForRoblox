@@ -8859,13 +8859,6 @@ run(function()
 		List = {"LookVector", "MoveDirection"},
 		Function = function() end
 	})
-	SchematicaTransparency = Schematica.CreateSlider({
-		Name = "Transparency",
-		Min = 0,
-		Max = 10,
-		Default = 7,
-		Function = function() end
-	})
 end)
 
 run(function()
