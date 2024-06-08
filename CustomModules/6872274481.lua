@@ -8836,7 +8836,7 @@ run(function()
 						local item = getItemNear("scythe")
 						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
 							if BypassMethod.Value == "LookVector" then
-								bedwars.Client:Get("ScytheDash"):SendToServer({direction = lplr.Character.HumanoidRootPart.CFrame.LookVector})
+								bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.HumanoidRootPart.CFrame.lookVector})
 							elseif BypassMethod.Value == "MoveDirection" then
 								bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.Humanoid.MoveDirection})
 							end
