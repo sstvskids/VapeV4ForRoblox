@@ -8825,9 +8825,19 @@ end)
 run(function()
     local ScytheConnection
     local BypassMethod = {Value = "LookVector"}
-    local DivideVal = {Value = 4}
+    local DivideVal = {Value = 4, Slider = nil}
     local Disabler = {Enabled = false}
     
+    DivideVal.Slider = Disabler.CreateSlider({
+        Name = "DivideVector",
+        Min = 1,
+        Max = 4,
+        Default = 2,
+        Function = function(val) 
+            DivideVal.Value = val
+        end
+    })
+
     Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
         Name = "FirewallBypass",
         Function = function(callback)
@@ -8842,9 +8852,9 @@ run(function()
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection
-			                elseif BypassMethod.Value == "OldExperimental" then
+                            elseif BypassMethod.Value == "OldExperimental" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * (entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value)
-			                elseif BypassMethod.Value == "NewExperimental" then
+                            elseif BypassMethod.Value == "NewExperimental" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
@@ -8868,7 +8878,7 @@ run(function()
         Function = function(value)
             BypassMethod.Value = value
             if value == "OldExperimental" then
-                if DivideVal.Slider then 
+                if DivideVal.Slider then
                     DivideVal.Slider.Visible = value
                 end
             elseif value == "NewExperimental" then
@@ -8876,15 +8886,6 @@ run(function()
                     DivideVal.Slider.Visible = value
                 end
             end
-        end
-    })
-    DivideVal.Slider = Disabler.CreateSlider({
-        Name = "DivideVector - [Experimental]",
-        Min = 1,
-        Max = 4,
-        Default = 2,
-        Function = function(val)
-            DivideVal.Value = val
         end
     })
 end)
