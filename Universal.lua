@@ -132,7 +132,7 @@ local function getPlayerColor(plr)
 	return tostring(plr.TeamColor) ~= "White" and plr.TeamColor.Color
 end
 
---local whitelist = {data = {WhitelistedUsers = {}}, hashes = {}, said = {}, alreadychecked = {}, customtags = {}, loaded = false, localprio = 0, hooked = false, get = function() return 0, true end}
+local whitelist = {data = {WhitelistedUsers = {}}, hashes = {}, said = {}, alreadychecked = {}, customtags = {}, loaded = false, localprio = 0, hooked = false, get = function() return 0, true end}
 local entityLibrary = loadstring(vapeGithubRequest("Libraries/entityHandler.lua"))()
 shared.vapeentity = entityLibrary
 do
@@ -155,7 +155,7 @@ do
 	end
 	entityLibrary.isPlayerTargetable = function(plr)
 		if isFriend(plr) then return false end
-		--if not ({whitelist:get(plr)})[2] then return false end
+		if not ({whitelist:get(plr)})[2] then return false end
 		if (not GuiLibrary.ObjectsThatCanBeSaved["Teams by colorToggle"].Api.Enabled) then return true end
 		if (not lplr.Team) then return true end
 		if (not plr.Team) then return true end
@@ -312,7 +312,7 @@ local function AllNearPosition(distance, amount, checktab)
 end
 
 local sha = loadstring(vapeGithubRequest("Libraries/sha.lua"))()
---[[run(function()
+run(function()
 	local olduninject
 	function whitelist:get(plr)
 		local plrstr = self:hash(plr.Name..plr.UserId)
@@ -704,7 +704,7 @@ local sha = loadstring(vapeGithubRequest("Libraries/sha.lua"))()
 		table.clear(whitelist)
 	end})
 end)
-shared.vapewhitelist = whitelist--]]
+shared.vapewhitelist = whitelist
 
 local RunLoops = {RenderStepTable = {}, StepTable = {}, HeartTable = {}}
 do
