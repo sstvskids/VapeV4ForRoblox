@@ -8824,6 +8824,7 @@ end)
 
 run(function()
 	local ScytheConnection
+	local BypassMethod = {Value = "LookVector"}
 	local Disabler = {Enabled = false}
 	Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "FirewallBypass",
@@ -8834,9 +8835,13 @@ run(function()
 						task.wait()
 						local item = getItemNear("scythe")
 						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-							bedwars.Client:Get("ScytheDash"):SendToServer({direction = lookVector})
+							if BypassMethod.Value == "LookVector" then
+								bedwars.Client:Get("ScytheDash"):SendToServer({direction = lplr.Character.HumanoidRootPart.CFrame.LookVector})
+							elseif BypassMethod.Value == "MoveDirection" then
+								bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.Humanoid.MoveDirection})
+							end
 							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-								store.scythe = tick() + 1.55
+								store.scythe = tick() + 1.25
 							end
 						end
 					end)
@@ -8848,6 +8853,18 @@ run(function()
 			end)
 		end,
 		HoverText = "Improved scythe bypass"
+	})
+	BypassMethod = Disabler.CreateDropdown({
+		Name = "Mode",
+		List = {"LookVector", "MoveDirection"},
+		Function = function() end
+	})
+	SchematicaTransparency = Schematica.CreateSlider({
+		Name = "Transparency",
+		Min = 0,
+		Max = 10,
+		Default = 7,
+		Function = function() end
 	})
 end)
 
