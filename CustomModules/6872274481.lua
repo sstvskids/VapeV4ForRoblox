@@ -8837,9 +8837,13 @@ run(function()
                         local item = getItemNear("scythe")
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
                             if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * 1.35
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector / 0.15
                             elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection * 1.35
+                                direction = entityLibrary.character.Humanoid.MoveDirection / 0.15
+                            elseif BypassMethod.Value == "Experimental1" then
+                                direction = entityLibrary.character.Humanoid.MoveDirection * 2
+			    elseif BypassMethod.Value == "Experimental2" then
+                                direction = entityLibrary.character.Humanoid.MoveDirection * 2
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
@@ -8860,7 +8864,7 @@ run(function()
     }) 
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
-        List = {"LookVector", "MoveDirection"},
+        List = {"LookVector", "MoveDirection", "Experimental1", "Experimental2"},
         Function = function(value)
             BypassMethod.Value = value
         end
