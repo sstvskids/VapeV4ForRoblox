@@ -8844,11 +8844,11 @@ run(function()
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
                             local direction
                             if BypassMethod.Value == "LookVector" then
-                                direction = lookVector
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
                             elseif BypassMethod.Value == "MoveDirection" then
-                                direction = MoveDirection
+                                direction = entityLibrary.character.Humanoid.MoveDirection
 			    elseif BypassMethod.Value == "Experimental" then
-                                direction = scaledVector
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / 2
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
