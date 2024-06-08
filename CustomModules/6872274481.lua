@@ -397,7 +397,7 @@ local function getSpeed()
 			speed = speed + 90
 		end
 		if store.scythe > tick() then
-			speed = speed + 5
+			speed = speed + 17
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
 			speed = speed + 20
@@ -8823,26 +8823,31 @@ run(function()
 end)
 
 run(function()
+	local ScytheConnection
 	local Disabler = {Enabled = false}
 	Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
 		Name = "FirewallBypass",
 		Function = function(callback)
 			if callback then
 				task.spawn(function()
-					repeat
+					ScytheConnection = RunService.Heartbeat:Connect(function()
 						task.wait()
 						local item = getItemNear("scythe")
 						if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-							bedwars.Client:Get("ScytheDash"):SendToServer({direction = Vector3.new(9e9, 9e9, 9e9)})
+							bedwars.Client:Get("ScytheDash"):SendToServer({direction = lookVector})
 							if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-								store.scythe = tick() + 1
+								store.scythe = tick() + 1.55
 							end
 						end
-					until (not Disabler.Enabled)
+					end)
 				end)
 			end
+		else
+			pcall(function()
+				ScytheConnection:Disconnect()
+			end)
 		end,
-		HoverText = "Float disabler with scythe"
+		HoverText = "Improved scythe bypass"
 	})
 end)
 
