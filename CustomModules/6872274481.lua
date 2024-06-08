@@ -8825,7 +8825,7 @@ end)
 run(function()
     local ScytheConnection
     local BypassMethod = {Value = "LookVector"}
-    local DivideVal = {Value = 4}
+    local DivideVal = {Value = 4, Slider = nil}
     local Disabler = {Enabled = false}
 
     Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -8875,7 +8875,7 @@ run(function()
         Function = function(val) 
             DivideVal.Value = val
             if BypassMethod.Value == "LookVector" or BypassMethod.Value == "MoveDirection" then
-                warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. "Please switch to LookVector + MoveDirection", 4)
+                warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ". Please switch to LookVector + MoveDirection", 4)
             end
         end
     })
