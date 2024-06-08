@@ -8833,26 +8833,20 @@ run(function()
             if callback then
                 task.spawn(function()
                     repeat
-                        if BypassMethod.Value == "LookVector" then
-                            task.wait()
-                            local item = getItemNear("scythe")
-                            if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-                                bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector})
-                                if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                    store.scythe = tick() + 1.25
-                                end
+                        task.wait()
+                        local item = getItemNear("scythe")
+                        if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
+                            if BypassMethod.Value == "LookVector" then
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
+                            elseif BypassMethod.Value == "MoveDirection" then
+                                direction = entityLibrary.character.Humanoid.MoveDirection
                             end
-                        elseif BypassMethod.Value == "MoveDirection" then
-                            task.wait()
-                            local item = getItemNear("scythe")
-                            if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-                                bedwars.Client:Get("ScytheDash"):SendToServer({direction = entityLibrary.character.Humanoid.MoveDirection})
-                                if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                    store.scythe = tick() + 1.25
-                                end
+                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction})
+                            if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+                                store.scythe = tick() + 1.25
                             end
                         end
-		     until not Disabler.Enbaled
+                    until not Disabler.Enabled
                 end)
             else
                 pcall(function()
@@ -8864,6 +8858,7 @@ run(function()
         end,
         HoverText = "Improved scythe bypass"
     })
+    
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
         List = {"LookVector", "MoveDirection"},
