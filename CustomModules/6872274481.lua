@@ -8832,7 +8832,8 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-                    ScytheConnection = RunService.RenderStepped:Connect(function()
+		    warningNotification("Vape", "Scythe initiated/module updated", 3)
+                    ScytheConnection = RunService.Heartbeat:Connect(function()
                         if BypassMethod.Value == "LookVector" then
                             task.wait()
                             local item = getItemNear("scythe")
