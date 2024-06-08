@@ -8835,7 +8835,7 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-		    if BypassMethod.Value == "Experimental" then
+		    if BypassMethod.Value == "OldExperimental", "NewExperimental" then
 			 warningNotification("Vape", "This is experimental, lagbacks are bound to happen if not worse.", 6)
 		    end
                     repeat
@@ -8847,8 +8847,10 @@ run(function()
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection
-			    elseif BypassMethod.Value == "Experimental" then
+			    elseif BypassMethod.Value == "OldExperimental" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / 2
+			    elseif BypassMethod.Value == "NewExperimental" then
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection + Vector3.new(9e9, 9e9, 9e9) / 3
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
@@ -8867,7 +8869,7 @@ run(function()
     }) 
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
-        List = {"LookVector", "MoveDirection", "Experimental"},
+        List = {"LookVector", "MoveDirection", "OldExperimental", "NewExperimental"},
         Function = function(value)
             BypassMethod.Value = value
         end
