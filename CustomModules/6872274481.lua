@@ -8847,7 +8847,7 @@ run(function()
 			    elseif BypassMethod.Value == "OldExperimental" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / 2
 			    elseif BypassMethod.Value == "NewExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection + Vector3.new(9e9, 9e9, 9e9) / 3
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection + Vector3.new(9e9, 9e9, 9e9) / 6
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
