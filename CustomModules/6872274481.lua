@@ -8867,29 +8867,24 @@ run(function()
         List = {"LookVector", "MoveDirection", "OldExperimental", "NewExperimental"},
         Function = function(value)
             BypassMethod.Value = value
+            if value == "NewExperimental" or value == "OldExperimental" then
+                if not DivideVal.Slider then
+                    DivideVal.Slider = Disabler.CreateSlider({
+                        Name = "Transparency",
+                        Min = 1,
+                        Max = 4,
+                        Default = 2,
+                        Function = function(val) 
+                            DivideVal.Value = val
+                        end
+                    })
+                end
+            elseif DivideVal.Slider then
+                DivideVal.Slider:Remove()
+                DivideVal.Slider = nil
+            end
         end
     })
-    if BypassMethod.Value == "NewExperimental" then
-	    DivideVal = Disabler.CreateSlider({
-		    Name = "Transparency",
-		    Min = 1,
-		    Max = 4,
-		    Default = 2,
-		    Function = function(value) 
-		        DivideVal.Value = value
-		    end
-	    })
-    elseif BypassMethod.Value == "OldExperimental" then
-        DivideVal = Disabler.CreateSlider({
-            Name = "Transparency",
-            Min = 1,
-            Max = 4,
-            Default = 2,
-            Function = function(value) 
-                DivideVal.Value = value
-            end
-        })
-    end
 end)
 
 run(function()
