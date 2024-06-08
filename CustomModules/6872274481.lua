@@ -8824,10 +8824,8 @@ end)
 
 run(function()
     local ScytheConnection
-    local moveDirection = entityLibrary.character.Humanoid.MoveDirection
-    local lookVector = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
-    local scaledVector = moveDirection * lookVector.Magnitude
     local BypassMethod = {Value = "LookVector"}
+    local DivideVal = {Value = 4}
     local Disabler = {Enabled = false}
     
     Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -8844,10 +8842,10 @@ run(function()
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection
-			    elseif BypassMethod.Value == "OldExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / 2
-			    elseif BypassMethod.Value == "NewExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection + Vector3.new(9e9, 9e9, 9e9) / 6
+			                elseif BypassMethod.Value == "OldExperimental" then
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * (entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value)
+			                elseif BypassMethod.Value == "NewExperimental" then
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
@@ -8871,6 +8869,27 @@ run(function()
             BypassMethod.Value = value
         end
     })
+    if BypassMethod.Value == "NewExperimental" then
+	    DivideVal = Disabler.CreateSlider({
+		    Name = "Transparency",
+		    Min = 1,
+		    Max = 4,
+		    Default = 2,
+		    Function = function(value) 
+		        DivideVal.Value = value
+		    end
+	    })
+    elseif BypassMethod.Value == "OldExperimental" then
+        DivideVal = Disabler.CreateSlider({
+            Name = "Transparency",
+            Min = 1,
+            Max = 4,
+            Default = 2,
+            Function = function(value) 
+                DivideVal.Value = value
+            end
+        })
+    end
 end)
 
 run(function()
