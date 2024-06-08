@@ -8833,7 +8833,6 @@ run(function()
             if callback then
                 task.spawn(function()
                     repeat
-                        task.wait()
                         local item = getItemNear("scythe")
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
                             if BypassMethod.Value == "LookVector" then
