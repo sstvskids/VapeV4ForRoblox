@@ -8842,6 +8842,7 @@ run(function()
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection
 			    elseif BypassMethod.Value == "Experimental" then
+				warningNotification("Vape", "This is experimental, lagbacks are bound to happen if not worse.", 6)
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector:Dot(entityLibrary.character.Humanoid.MoveDirection)
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
