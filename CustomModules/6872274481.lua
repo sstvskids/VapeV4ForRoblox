@@ -8841,7 +8841,7 @@ run(function()
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection / 0.15
                             elseif BypassMethod.Value == "Experimental1" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection * 2
+                                direction = entityLibrary.character.Humanoid.LookVector * 2
 			    elseif BypassMethod.Value == "Experimental2" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection * 2
                             end
