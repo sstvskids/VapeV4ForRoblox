@@ -8835,7 +8835,7 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-		    if BypassMethod.Value == "OldExperimental", "NewExperimental" then
+		    if BypassMethod.Value == "OldExperimental" or "NewExperimental" then
 			 warningNotification("Vape", "This is experimental, lagbacks are bound to happen if not worse.", 6)
 		    end
                     repeat
