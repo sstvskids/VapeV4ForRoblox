@@ -8862,86 +8862,6 @@ run(function()
         end,
         HoverText = "Better scythe bypass method"
     }) 
-run(function()
-    local ScytheConnection
-    local BypassMethod = {Value = "LookVector"}
-    local DivideVal = {Value = 4}
-    local Disabler = {Enabled = false}
-    
-    Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-        Name = "FirewallBypass",
-        Function = function(callback)
-            if callback then
-                task.spawn(function()
-                    repeat
-                        task.wait()
-                        local item = getItemNear("scythe")
-                        if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-                            local direction
-                            if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
-                            elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection
-			                elseif BypassMethod.Value == "OldExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * (entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value)
-			                elseif BypassMethod.Value == "NewExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
-                            end
-                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
-                            if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 1.25
-                            end
-                        end
-                    until not Disabler.Enabled
-                end)
-            else
-                pcall(function()
-                    ScytheConnection:Disconnect()
-                end)
-            end
-        end,
-        HoverText = "Better scythe bypass method"
-    }) 
-run(function()
-    local ScytheConnection
-    local BypassMethod = {Value = "LookVector"}
-    local DivideVal = {Value = 4}
-    local Disabler = {Enabled = false}
-    
-    Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
-        Name = "FirewallBypass",
-        Function = function(callback)
-            if callback then
-                task.spawn(function()
-                    repeat
-                        task.wait()
-                        local item = getItemNear("scythe")
-                        if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
-                            local direction
-                            if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
-                            elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection
-			                elseif BypassMethod.Value == "OldExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * (entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value)
-			                elseif BypassMethod.Value == "NewExperimental" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
-                            end
-                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
-                            if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 1.25
-                            end
-                        end
-                    until not Disabler.Enabled
-                end)
-            else
-                pcall(function()
-                    ScytheConnection:Disconnect()
-                end)
-            end
-        end,
-        HoverText = "Better scythe bypass method"
-    }) 
     BypassMethod = Disabler.CreateDropdown({
         Name = "Mode",
         List = {"LookVector", "MoveDirection", "OldExperimental", "NewExperimental"},
@@ -8961,8 +8881,7 @@ run(function()
                 end
             else
                 if DivideVal.Slider then
-                    DivideVal.Slider.Object.Visible = false
-                    DivideVal.Slider = nil
+                    DivideVal.Slider.Visible = value
                 end
             end
         end
