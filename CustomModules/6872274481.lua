@@ -8824,6 +8824,9 @@ end)
 
 run(function()
     local ScytheConnection
+    local moveDirection = entityLibrary.character.Humanoid.MoveDirection
+    local lookVector = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
+    local scaledVector = moveDirection * lookVector.Magnitude
     local BypassMethod = {Value = "LookVector"}
     local Disabler = {Enabled = false}
     
@@ -8841,11 +8844,11 @@ run(function()
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
                             local direction
                             if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector
+                                direction = lookVector
                             elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection
+                                direction = MoveDirection
 			    elseif BypassMethod.Value == "Experimental" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection.X * entityLibrary.character.HumanoidRootPart.CFrame.LookVector.X, entityLibrary.character.Humanoid.MoveDirection.Y * entityLibrary.character.HumanoidRootPart.CFrame.LookVector.Y, entityLibrary.character.Humanoid.MoveDirection.Z * entityLibrary.character.HumanoidRootPart.CFrame.LookVector.Z
+                                direction = scaledVector
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
