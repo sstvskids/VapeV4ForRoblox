@@ -397,7 +397,7 @@ local function getSpeed()
 			speed = speed + 90
 		end
 		if store.scythe > tick() then
-			speed = speed + 27
+			speed = speed + 33
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
 			speed = speed + 20
@@ -8836,13 +8836,13 @@ run(function()
                         local item = getItemNear("scythe")
                         if item and lplr.Character.HandInvItem.Value == item.tool and bedwars.CombatController then
                             if BypassMethod.Value == "LookVector" then
-                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * 0.025
+                                direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector * 0.25
                             elseif BypassMethod.Value == "MoveDirection" then
-                                direction = entityLibrary.character.Humanoid.MoveDirection * 0.025
+                                direction = entityLibrary.character.Humanoid.MoveDirection * 0.25
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 1.25
+                                store.scythe = tick() + 1.5
                             end
                         end
                     until not Disabler.Enabled
