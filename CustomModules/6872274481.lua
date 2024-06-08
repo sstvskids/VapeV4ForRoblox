@@ -397,7 +397,7 @@ local function getSpeed()
 			speed = speed + 90
 		end
 		if store.scythe > tick() then
-			speed = speed + 22
+			speed = speed + 37
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
 			speed = speed + 20
@@ -8842,7 +8842,7 @@ run(function()
                             elseif BypassMethod.Value == "MoveDirection" then
                                 direction = entityLibrary.character.Humanoid.MoveDirection
                             end
-                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.36})
+                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
                                 store.scythe = tick() + 1.25
                             end
