@@ -8835,9 +8835,9 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-                    warningNotification("Vape", "DirectionMutiply is for advanced users only. If you aren't a advanced user, do not modify anything as it can cause lagbacks and more.", 6.5)
+                    warningNotification("Vape", "DirectionMutiply is for advanced users only. If you aren't a advanced user, do not modify anything as it can cause lagbacks and more.", 4)
                     if BypassMethod.Value == "LookVector" or BypassMethod.Value == "MoveDirection" then
-                        warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ".", 2)
+                        warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ".", 4)
                     end
                     repeat
                         task.wait()
@@ -8854,11 +8854,11 @@ run(function()
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MultiplyDirection.Value})
                             if SpeedBypassMethod.Value == "CFrame" then
                                 if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                    store.scythe = tick() + 0.75 * 0.005
+                                    store.scythe = tick() + 0.75
                                 end
                             elseif SpeedBypassMethod.Value == "Heatseeker" then
                                 if entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
-                                    store.scythe = tick() + 0.75 * 0.005
+                                    store.scythe = tick() + 0.75
                                 end
                             end
                         end
@@ -8901,7 +8901,7 @@ run(function()
         Max = 0.36,
         Default = 0.18,
         Function = function(val) 
-            DivideVal.Value = val
+            MultiplyDirection.Value = val
         end
     })
 end)
