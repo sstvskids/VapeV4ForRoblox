@@ -401,7 +401,7 @@ local function getSpeed()
 		        if entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
 		            speed = speed + 37
 		        end
-		    elseif not SpeedBypassMethod.Value == "Heatseeker" then
+		    elseif not then
 		        speed = speed + 37
 		    end
 		end
