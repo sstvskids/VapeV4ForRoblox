@@ -399,10 +399,8 @@ local function getSpeed()
 		if store.scythe > tick() then
 		    if SpeedBypassMethod.Value == "CFrame" then
 		        speed = speed + 37
-		    else
-		        if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-		            speed = speed + 37
-		        end
+		    elseif entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
+		        speed = speed + 37
 		    end
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
