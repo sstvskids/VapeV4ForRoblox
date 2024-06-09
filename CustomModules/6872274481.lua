@@ -8825,7 +8825,8 @@ end)
 run(function()
     local ScytheConnection
     local BypassMethod = {Value = "LookVector"}
-    local DivideVal = {Value = 4, Slider = nil}
+    local DivideVal = {Value = 4}
+    local MultiplyDirection = {Value = 0.36}
     local Disabler = {Enabled = false}
 
     Disabler = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
@@ -8833,6 +8834,10 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
+                    warningNotification("Vape", "DirectionMultiply is mainly for advanced users only. If you aren't an advanced user who knows how to config, do not modify this setting. It will cause lagbacks.", 4)
+                    if BypassMethod.Value == "LookVector" or BypassMethod.Value == "MoveDirection" then
+                        warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ".", 4)
+                    end
                     repeat
                         task.wait()
                         local item = getItemNear("scythe")
@@ -8845,9 +8850,9 @@ run(function()
                             elseif BypassMethod.Value == "LookVector + MoveDirection" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
                             end
-                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * 0.18})
+                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MutiplyDirection.Value})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 1.25
+                                store.scythe = tick() + 0.75
                             end
                         end
                     until not Disabler.Enabled
@@ -8874,9 +8879,15 @@ run(function()
         Default = 2,
         Function = function(val) 
             DivideVal.Value = val
-            if BypassMethod.Value == "LookVector" or BypassMethod.Value == "MoveDirection" then
-                warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ". Please switch to LookVector + MoveDirection", 4)
-            end
+        end
+    })
+    MultiplyDirection = Disabler.CreateSlider({
+        Name = "DirectionMultiply",
+        Min = 0,
+        Max = 0.36,
+        Default = 0.18,
+        Function = function(val) 
+            MultiplyDirection.Value = val
         end
     })
 end)
