@@ -8850,7 +8850,7 @@ run(function()
                             elseif BypassMethod.Value == "LookVector + MoveDirection" then
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
                             end
-                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MutiplyDirection.Value})
+                            bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MultiplyDirection.Value})
                             if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
                                 store.scythe = tick() + 0.75
                             end
