@@ -8854,11 +8854,11 @@ run(function()
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MultiplyDirection.Value})
                             if SpeedBypassMethod.Value == "CFrame" then
                                 if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                    store.scythe = tick() + 0.75
+                                    store.scythe = tick() + 1
                                 end
                             elseif SpeedBypassMethod.Value == "Heatseeker" then
                                 if entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
-                                    store.scythe = tick() + 0.75
+                                    store.scythe = tick() + 1
                                 end
                             end
                         end
