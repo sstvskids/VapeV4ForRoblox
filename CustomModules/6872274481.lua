@@ -387,6 +387,7 @@ local function attackValue(vec)
 end
 
 local function getSpeed()
+	local SpeedBypassMethod = {Value = "CFrame"}
 	local speed = 0
 	if lplr.Character then
 		local SpeedDamageBoost = lplr.Character:GetAttribute("SpeedBoost")
@@ -397,7 +398,11 @@ local function getSpeed()
 			speed = speed + 90
 		end
 		if store.scythe > tick() then
-			speed = speed + 37
+		    if SpeedBypassMethod.Value == "Heatseeker" then
+		        if entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
+		            speed = speed + 37
+		        end
+		    end
 		end
 		if lplr.Character:GetAttribute("GrimReaperChannel") then
 			speed = speed + 20
