@@ -8829,9 +8829,8 @@ run(function()
 	})
 end)
 
+local SpeedBypassMethod = {Value = "CFrame"}
 run(function()
-    local ScytheConnection
-    local SpeedBypassMethod = {Value = "CFrame"}
     local BypassMethod = {Value = "LookVector"}
     local DivideVal = {Value = 4}
     local MultiplyDirection = {Value = 0.36}
@@ -8870,10 +8869,6 @@ run(function()
                             end
                         end
                     until not Disabler.Enabled
-                end)
-            else
-                pcall(function()
-                    ScytheConnection:Disconnect()
                 end)
             end
         end,
