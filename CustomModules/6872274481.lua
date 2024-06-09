@@ -8824,6 +8824,7 @@ end)
 
 run(function()
     local ScytheConnection
+    local SpeedBypassMethod = {Value = "CFrame"}
     local BypassMethod = {Value = "LookVector"}
     local DivideVal = {Value = 4}
     local MultiplyDirection = {Value = 0.36}
@@ -8834,9 +8835,9 @@ run(function()
         Function = function(callback)
             if callback then
                 task.spawn(function()
-                    warningNotification("Vape", "DirectionMultiply is mainly for advanced users only. If you aren't an advanced user who knows how to config, do not modify this setting. It will cause lagbacks.", 4)
+                    warningNotification("Vape", "DirectionMutiply is for advanced users only. If you aren't a advanced user, do not modify anything as it can cause lagbacks and more.", 6.5)
                     if BypassMethod.Value == "LookVector" or BypassMethod.Value == "MoveDirection" then
-                        warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ".", 4)
+                        warningNotification("Vape", "DivideVector is currently not supported on " ..BypassMethod.Value.. ".", 2)
                     end
                     repeat
                         task.wait()
@@ -8851,8 +8852,14 @@ run(function()
                                 direction = entityLibrary.character.HumanoidRootPart.CFrame.LookVector + entityLibrary.character.Humanoid.MoveDirection / DivideVal.Value
                             end
                             bedwars.Client:Get("ScytheDash"):SendToServer({direction = direction * MultiplyDirection.Value})
-                            if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
-                                store.scythe = tick() + 0.75
+                            if SpeedBypassMethod.Value == "CFrame" then
+                                if entityLibrary.isAlive and entityLibrary.character.Head.Transparency ~= 0 then
+                                    store.scythe = tick() + 0.75 * 0.005
+                                end
+                            elseif SpeedBypassMethod.Value == "Heatseeker" then
+                                if entityLibrary.isAlive and entityLibrary.character.Head.Transparency == 0 then
+                                    store.scythe = tick() + 0.75 * 0.005
+                                end
                             end
                         end
                     until not Disabler.Enabled
@@ -8864,9 +8871,16 @@ run(function()
             end
         end,
         HoverText = "Better scythe bypass method"
+    })
+    SpeedBypassMethod = Disabler.CreateDropdown({
+        Name = "SpeedMode",
+        List = {"CFrame", "Heatseeker"},
+        Function = function(value)
+            SpeedBypassMethod.Value = value
+        end
     }) 
     BypassMethod = Disabler.CreateDropdown({
-        Name = "Mode",
+        Name = "DirectionMode",
         List = {"LookVector", "MoveDirection", "LookVector + MoveDirection"},
         Function = function(value)
             BypassMethod.Value = value
@@ -8887,7 +8901,7 @@ run(function()
         Max = 0.36,
         Default = 0.18,
         Function = function(val) 
-            MultiplyDirection.Value = val
+            DivideVal.Value = val
         end
     })
 end)
