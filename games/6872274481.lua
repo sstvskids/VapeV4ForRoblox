@@ -718,14 +718,14 @@ run(function()
 		AfkStatus = debug.getproto(Knit.Controllers.AfkController.KnitStart, 1),
 		AttackEntity = Knit.Controllers.SwordController.sendServerRequest,
 		BeePickup = Knit.Controllers.BeeNetController.trigger,
-		ConsumeBattery = debug.getproto(debug.getproto(Knit.Controllers.BatteryController.KnitStart, 1), 1),
+		ConsumeBattery = debug.getproto(Knit.Controllers.BatteryController.KnitStart, 1),
 		CannonAim = debug.getproto(Knit.Controllers.CannonController.startAiming, 5),
 		CannonLaunch = Knit.Controllers.CannonHandController.launchSelf,
 		ConsumeItem = debug.getproto(Knit.Controllers.ConsumeController.onEnable, 1),
 		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
 		ConsumeTreeOrb = debug.getproto(Knit.Controllers.EldertreeController.createTreeOrbInteraction, 1),
 		DepositPinata = debug.getproto(debug.getproto(Knit.Controllers.PiggyBankController.KnitStart, 2), 5),
-		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.KnitStart, 4),
+		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.KnitStart, 1),
 		DragonEndFly = debug.getproto(Knit.Controllers.VoidDragonController.flapWings, 1),
 		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
 		DropItem = Knit.Controllers.ItemDropController.dropItemInHand,
@@ -733,9 +733,9 @@ run(function()
 		FireProjectile = debug.getupvalue(Knit.Controllers.ProjectileController.launchProjectileWithValues, 2),
 		GroundHit = Knit.Controllers.FallDamageController.KnitStart,
 		GuitarHeal = Knit.Controllers.GuitarController.performHeal,
-		HannahKill = debug.getproto(debug.getproto(Knit.Controllers.HannahController.KnitStart, 2), 1),
+		HannahKill = debug.getproto(Knit.Controllers.HannahController.KnitStart, 2),
 		HarvestCrop = debug.getproto(debug.getproto(Knit.Controllers.CropController.KnitStart, 4), 1),
-		KaliyahPunch = debug.getproto(debug.getproto(Knit.Controllers.DragonSlayerController.KnitStart, 2), 1),
+		KaliyahPunch = Knit.Controllers.DragonSlayerController.KnitStart,
 		MageSelect = debug.getproto(Knit.Controllers.MageController.registerTomeInteraction, 1),
 		MinerDig = debug.getproto(Knit.Controllers.MinerController.setupMinerPrompts, 1),
 		PickupItem = Knit.Controllers.ItemDropController.checkForPickup,
@@ -2355,7 +2355,7 @@ run(function()
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
-									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
+									local dir = CFrame.lookAt(selfpos, actualRoot.Position + v.Character.Humanoid.MoveDirection).LookVector
 									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
@@ -2369,7 +2369,7 @@ run(function()
 												cameraPosition = {value = pos},
 												cursorDirection = {value = dir}
 											},
-											targetPosition = {value = actualRoot.Position},
+											targetPosition = {value = actualRoot.Position + v.Character.Humanoid.MoveDirection},
 											selfPosition = {value = pos}
 										}
 									})
@@ -8376,4 +8376,3 @@ run(function()
 		List = WinEffectName
 	})
 end)
-	
