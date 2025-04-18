@@ -2903,7 +2903,10 @@ run(function()
 			if callback then
 				--bedwars.Client:Get(remotes.GroundHit):SendToServer()
 				NoFall:Clean(runService.Heartbeat:Connect(function(dt)
-					lplr.Character.HumanoidRootPart.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X, -10, lplr.Character.HumanoidRootPart.Velocity.Z)
+					if lplr.Character.PrimaryPart.Velocity.Y < -70 then
+						task.wait()
+						lplr.Character.HumanoidRootPart.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X, -10, lplr.Character.HumanoidRootPart.Velocity.Z)
+					end
 				end))
 			end
 		end,
