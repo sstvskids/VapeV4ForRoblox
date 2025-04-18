@@ -1,5 +1,5 @@
 local run = function(func)
-	func()
+	pcall(func)
 end
 local cloneref = cloneref or function(obj)
 	return obj
@@ -740,7 +740,7 @@ run(function()
 		MinerDig = debug.getproto(Knit.Controllers.MinerController.setupMinerPrompts, 1),
 		PickupItem = Knit.Controllers.ItemDropController.checkForPickup,
 		PickupMetal = debug.getproto(debug.getproto(Knit.Controllers.MetalDetectorController.KnitStart, 1), 2),
-		ReportPlayer = require(lplr.PlayerScripts.TS.controllers.global.report['report-controller']).default.reportPlayer,
+		--ReportPlayer = require(lplr.PlayerScripts.TS.controllers.global.report['report-controller']).default.reportPlayer,
 		ResetCharacter = debug.getproto(Knit.Controllers.ResetController.createBindable, 1),
 		SpawnRaven = Knit.Controllers.RavenController.spawnRaven,
 		SummonerClawAttack = Knit.Controllers.SummonerClawController.attack,
@@ -2896,11 +2896,15 @@ run(function()
 end)
 	
 run(function()
-	vape.Categories.Blatant:CreateModule({
+	local NoFall
+	NoFall = vape.Categories.Blatant:CreateModule({
 		Name = 'NoFall',
 		Function = function(callback)
-			if callback then 
-				bedwars.Client:Get(remotes.GroundHit):SendToServer() 
+			if callback then
+				--bedwars.Client:Get(remotes.GroundHit):SendToServer()
+				NoFall:Clean(runService.Heartbeat:Connect(function(dt)
+					lplr.Character.HumanoidRootPart.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X, -10, lplr.Character.HumanoidRootPart.Velocity.Z)
+				end))
 			end
 		end,
 		Tooltip = 'Prevents taking fall damage.'
