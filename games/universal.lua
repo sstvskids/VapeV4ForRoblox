@@ -29,7 +29,7 @@ end
 local run = function(func)
 	func()
 end
-local queue_on_teleport = queue_on_teleport or function() end
+local queue_on_teleport = (queue_on_teleport or queueonteleport) or function() end
 local cloneref = cloneref or function(obj)
 	return obj
 end
@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion = 'v1.0', 'v1.0'
+local version, cfgversion = 'v1.01', 'v1.0'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -824,18 +824,20 @@ run(function()
 	end)
 end)
 
+local gotversion
 run(function()
 	repeat task.wait()
 		local suc, res = pcall(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
 		if suc then
-			if not (res.version ~= version or res.cfgversion ~= cfgversion) then return end
-			notif('Vape', 'A new version/config of Vape/KoolAid released.', 6)
+			if not (version >= res.version or cfgversion >= res.cfgversion) then return end
+			gotversion = true
+			notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
 		else
 			notif('Vape', 'Could not grab version url; bad exec ig', 6, 'alert')
 		end
-	until vape.Loaded == nil
+	until (vape.Loaded == nil or gotversion == true)
 end)
 
 entitylib.start()
