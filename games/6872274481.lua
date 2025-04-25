@@ -1741,14 +1741,14 @@ end)
 
 local Value
 local calcSpeed = function()
-	return Value.Value * math.clamp(1 - math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue()),  0.7, 1)
+	return Value.Value * math.clamp(1 - math.round(math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue())), 0.7, 1)
 end
 run(function()
 	AntiLagback = vape.Categories.Utility:CreateModule({
 		Name = 'AntiLagback',
 		Function = function(callback) end,
 		ExtraText = function()
-			return 'Ping ('..math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue())..')'
+			return 'Ping'
 		end,
 		Tooltip = 'Prevents lagback on higher ping'
 	})
@@ -1788,7 +1788,7 @@ run(function()
 						local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
-						local velo = AntiLagback.Enabled and getSpeed() + calcSpeed() or getSpeed()
+						local velo = AntiLagback.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -2662,7 +2662,7 @@ run(function()
 	
 					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
-							root.AssemblyLinearVelocity = Direction * (AntiLagback.Enabled and (calcSpeed() + getSpeed()) or getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
@@ -2725,7 +2725,6 @@ run(function()
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
-				local tracked = 0
 				repeat
 					if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
 						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
@@ -3001,7 +3000,7 @@ run(function()
 						local state = entitylib.character.Humanoid:GetState()
 						if state == Enum.HumanoidStateType.Climbing then return end
 	
-						local root, velo = entitylib.character.RootPart, AntiLagback.Enabled and getSpeed() + calcSpeed() or getSpeed()
+						local root, velo = entitylib.character.RootPart, AntiLagback.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
 						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 	
@@ -8200,4 +8199,3 @@ run(function()
 		List = WinEffectName
 	})
 end)
-	
