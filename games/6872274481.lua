@@ -1739,9 +1739,11 @@ run(function()
 	})
 end)
 
-local Value
-local calcSpeed = function()
-	return math.max(1, math.min(Value.Value / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 23))
+local calcSpeed = function(val: string): string
+	return math.max(1, math.min(val / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 23))
+end
+local calcLongSpeed = function(val: string): string
+	return math.max(1, math.min(val / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 37))
 end
 run(function()
 	AnticheatBypass = vape.Categories.Utility:CreateModule({
@@ -1757,6 +1759,7 @@ end)
 local Fly
 local LongJump
 run(function()
+	local Value
 	local VerticalValue
 	local WallCheck
 	local PopBalloons
@@ -1788,7 +1791,7 @@ run(function()
 						local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
-						local velo = AnticheatBypass.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
+						local velo = AnticheatBypass.Enabled and ((getSpeed() + calcSpeed(Value.Value)) / 2) or getSpeed()
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -2491,6 +2494,7 @@ run(function()
 end)
 	
 run(function()
+	local Value
 	local CameraDir
 	local start
 	local JumpTick, JumpSpeed, Direction = tick(), 0
@@ -2662,7 +2666,7 @@ run(function()
 	
 					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
-							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+							root.AssemblyLinearVelocity = Direction * (AnticheatBypass.Enabled and ((getSpeed() + calcLongSpeed(Value.Value)) / 1) or getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
@@ -2978,6 +2982,7 @@ end)
 
 run(function()
 	local Speed
+	local Value
 	local WallCheck
 	local AutoJump
 	local AlwaysJump
@@ -3000,7 +3005,7 @@ run(function()
 						local state = entitylib.character.Humanoid:GetState()
 						if state == Enum.HumanoidStateType.Climbing then return end
 	
-						local root, velo = entitylib.character.RootPart, AnticheatBypass.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
+						local root, velo = entitylib.character.RootPart, AnticheatBypass.Enabled and ((getSpeed() + calcSpeed(Value.Value)) / 2) or getSpeed()
 						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 	
