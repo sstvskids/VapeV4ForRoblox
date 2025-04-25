@@ -1741,7 +1741,7 @@ end)
 
 local Value
 local calcSpeed = function()
-	return math.max(21, math.min(Value.Value / math.clamp(1 - (stats.Network.ServerStatsItem['Data Ping']:GetValue()), 0.1, 1), 23))
+	return math.max(1, math.min(Value.Value / math.clamp(1 - (stats.Network.ServerStatsItem['Data Ping']:GetValue()), 0.1, 1), 23))
 end
 run(function()
 	AntiLagback = vape.Categories.Utility:CreateModule({
