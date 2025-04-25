@@ -1206,7 +1206,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				AimAssist:Clean(runService.Heartbeat:Connect(function(dt)
-					if entitylib.isAlive and store.hand.toolType == 'sword' and ((not ClickAim.Enabled) or (os.clock() - bedwars.SwordController.lastSwing) < 0.4) then
+					if entitylib.isAlive and store.hand.toolType == 'sword' and ((not ClickAim.Enabled) or (tick() - bedwars.SwordController.lastSwing) < 0.4) then
 						local ent = KillauraTarget.Enabled and store.KillauraTarget or entitylib.EntityPosition({
 							Range = Distance.Value,
 							Part = 'RootPart',
@@ -1298,11 +1298,6 @@ run(function()
 							end
 						end
 					elseif store.hand.toolType == 'sword' then
-						if bedwars.SwordController:getChargeState() ~= 'IDLE' then
-							bedwars.SwordController:stopCharging(store.hand.tool.Name)
-							bedwars.SwordController.chargingMaid:DoCleaning()
-						end
-	
 						bedwars.SwordController:swingSwordAtMouse(0.39)
 					end
 				end
