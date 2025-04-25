@@ -1741,7 +1741,7 @@ end)
 
 local Value
 local calcSpeed = function()
-	return math.max(1, math.min(Value.Value / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick)), 0.1, 1), 23))
+	return math.max(1, math.min(Value.Value / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 23))
 end
 run(function()
 	AnticheatBypass = vape.Categories.Utility:CreateModule({
