@@ -22,6 +22,7 @@ local collectionService = cloneref(game:GetService('CollectionService'))
 local contextActionService = cloneref(game:GetService('ContextActionService'))
 local coreGui = cloneref(game:GetService('CoreGui'))
 local starterGui = cloneref(game:GetService('StarterGui'))
+local stats = cloneref(game:GetService('Stats'))
 
 local isnetworkowner = identifyexecutor and table.find({'AWP', 'Nihon'}, ({identifyexecutor()})[1]) and isnetworkowner or function()
 	return true
@@ -1737,11 +1738,25 @@ run(function()
 		Suffix = 'seconds'
 	})
 end)
+
+local Value
+run(function()
+	local calcSpeed = function()
+		return Value.Value * math.clamp(1 - math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue()),  0.7, 1)
+	end
+	AntiLagback = vape.Categories.Utility:CreateModule({
+		Name = 'AntiLagback',
+		Function = function(callback) end,
+		ExtraText = function()
+			return 'Ping ('..math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue())..')'
+		end,
+		Tooltip = 'Prevents lagback on higher ping'
+	})
+end)
 	
 local Fly
 local LongJump
 run(function()
-	local Value
 	local VerticalValue
 	local WallCheck
 	local PopBalloons
@@ -1773,7 +1788,7 @@ run(function()
 						local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
-						local velo = getSpeed()
+						local velo = AntiLagback.Enabled and getSpeed() + calcSpeed() or getSpeed()
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -2476,7 +2491,6 @@ run(function()
 end)
 	
 run(function()
-	local Value
 	local CameraDir
 	local start
 	local JumpTick, JumpSpeed, Direction = tick(), 0
@@ -2648,7 +2662,7 @@ run(function()
 	
 					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
-							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+							root.AssemblyLinearVelocity = Direction * (AntiLagback.Enabled and (calcSpeed() + getSpeed()) or getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
@@ -2713,13 +2727,10 @@ run(function()
 			if callback then
 				local tracked = 0
 				repeat
-					if entitylib.isAlive then
-						tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0
-						if tracked < -85 then
-							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
-						end
+					if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
+						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
-					task.wait(0.03)
+					task.wait()
 				until not NoFall.Enabled
 			end
 		end,
@@ -2965,10 +2976,9 @@ run(function()
 		end
 	})
 end)
-	
+
 run(function()
 	local Speed
-	local Value
 	local WallCheck
 	local AutoJump
 	local AlwaysJump
@@ -2991,7 +3001,7 @@ run(function()
 						local state = entitylib.character.Humanoid:GetState()
 						if state == Enum.HumanoidStateType.Climbing then return end
 	
-						local root, velo = entitylib.character.RootPart, getSpeed()
+						local root, velo = entitylib.character.RootPart, AntiLagback.Enabled and getSpeed() + calcSpeed() or getSpeed()
 						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 	
