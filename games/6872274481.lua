@@ -1740,10 +1740,10 @@ run(function()
 end)
 
 local Value
+local calcSpeed = function()
+	return Value.Value * math.clamp(1 - math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue()),  0.7, 1)
+end
 run(function()
-	local calcSpeed = function()
-		return Value.Value * math.clamp(1 - math.round(stats.Network.ServerStatsItem['Data Ping']:GetValue()),  0.7, 1)
-	end
 	AntiLagback = vape.Categories.Utility:CreateModule({
 		Name = 'AntiLagback',
 		Function = function(callback) end,
