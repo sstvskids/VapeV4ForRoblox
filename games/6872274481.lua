@@ -2171,7 +2171,7 @@ run(function()
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
-									task.wait(ChargeTime.Value / 2)
+									task.wait(ChargeTime.Value == 0 or ChargeTime.Value / 2)
 									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
 									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
