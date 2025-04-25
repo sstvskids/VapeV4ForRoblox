@@ -176,7 +176,7 @@ local function getSword()
 	for slot, item in store.inventory.inventory.items do
 		local swordMeta = bedwars.ItemMeta[item.itemType].sword
 		if swordMeta then
-			local swordDamage = swordMeta.baseDamage or 0
+			local swordDamage = swordMeta.damage or 0
 			if swordDamage > bestSwordDamage then
 				bestSword, bestSwordSlot, bestSwordDamage = item, slot, swordDamage
 			end
@@ -2008,7 +2008,6 @@ run(function()
 	local Sort
 	local SwingRange
 	local AttackRange
-	local ChargeTime
 	local UpdateRate
 	local AngleSlider
 	local MaxTargets
@@ -2053,7 +2052,7 @@ run(function()
 		end
 
 		if LegitAura.Enabled then
-			if (os.clock() - bedwars.SwordController.lastSwing) > 0.2 then return false end
+			if (tick() - bedwars.SwordController.lastSwing) > 0.2 then return false end
 		end
 
 		return sword, meta
@@ -2183,7 +2182,8 @@ run(function()
 									store.attackReachUpdate = tick() + 1
 									AttackRemote:FireServer({
 										weapon = sword.tool,
-										chargeRatio = ChargeTime.Value,
+										chargedAttack = {chargeRatio = 0},
+										lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
 										entityInstance = v.Character,
 										validate = {
 											raycast = {
@@ -2272,13 +2272,6 @@ run(function()
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
-	})
-	ChargeTime = Killaura:CreateSlider({
-		Name = 'Charge time',
-		Min = 0,
-		Max = 1,
-		Default = 0.65,
-		Decimal = 100
 	})
 	AngleSlider = Killaura:CreateSlider({
 		Name = 'Max angle',
@@ -7211,7 +7204,7 @@ run(function()
 				oldvalues = table.clone(tab)
 				oldfont = debug.getconstant(bedwars.DamageIndicator, 86)
 				debug.setconstant(bedwars.DamageIndicator, 86, Enum.Font[FontOption.Value])
-				debug.setconstant(bedwars.DamageIndicator, 105, Stroke.Enabled and 'Thickness' or 'Enabled')
+				debug.setconstant(bedwars.DamageIndicator, 119, Stroke.Enabled and 'Thickness' or 'Enabled')
 				tab.strokeThickness = Stroke.Enabled and 1 or false
 				tab.textSize = Size.Value
 				tab.blowUpSize = Size.Value
@@ -7224,7 +7217,7 @@ run(function()
 					tab[i] = v
 				end
 				debug.setconstant(bedwars.DamageIndicator, 86, oldfont)
-				debug.setconstant(bedwars.DamageIndicator, 105, 'Thickness')
+				debug.setconstant(bedwars.DamageIndicator, 119, 'Thickness')
 			end
 		end,
 		Tooltip = 'Customize the damage indicator'
