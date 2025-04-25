@@ -2003,6 +2003,7 @@ run(function()
 	local Sort
 	local SwingRange
 	local AttackRange
+	local ChargeTime
 	local UpdateRate
 	local AngleSlider
 	local MaxTargets
@@ -2170,6 +2171,7 @@ run(function()
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
+									task.wait(ChargeTime.Value / 2)
 									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
 									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
@@ -2273,6 +2275,12 @@ run(function()
 		Min = 1,
 		Max = 360,
 		Default = 360
+	})
+	ChargeTime = Killaura:CreateSlider({
+		Name = 'Update rate',
+		Min = 0,
+		Max = 1,
+		Default = 0
 	})
 	UpdateRate = Killaura:CreateSlider({
 		Name = 'Update rate',
