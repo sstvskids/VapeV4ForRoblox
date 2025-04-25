@@ -2270,17 +2270,18 @@ run(function()
 			return val == 1 and 'stud' or 'studs'
 		end
 	})
+	ChargeTime = Killaura:CreateSlider({
+		Name = 'ChargeTime',
+		Min = 0,
+		Max = 1,
+		Default = 0,
+		Decimal = 100
+	})
 	AngleSlider = Killaura:CreateSlider({
 		Name = 'Max angle',
 		Min = 1,
 		Max = 360,
 		Default = 360
-	})
-	ChargeTime = Killaura:CreateSlider({
-		Name = 'Update rate',
-		Min = 0,
-		Max = 1,
-		Default = 0
 	})
 	UpdateRate = Killaura:CreateSlider({
 		Name = 'Update rate',
