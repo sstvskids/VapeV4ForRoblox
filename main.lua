@@ -16,7 +16,7 @@ local loadstring = function(...)
 	end
 	return res
 end
-local queue_on_teleport = queue_on_teleport or function() end
+local queue_on_teleport = (queue_on_teleport or queueonteleport) or function() end
 local isfile = isfile or function(file)
 	local suc, res = pcall(function()
 		return readfile(file)

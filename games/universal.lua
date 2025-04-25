@@ -61,6 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
+local version, cfgversion = 'v1.0', 'v1.0'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -822,6 +823,21 @@ run(function()
 		table.clear(whitelist)
 	end)
 end)
+
+run(function()
+	repeat task.wait()
+		local suc, res = pcall(function()
+			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
+		end)
+		if suc then
+			if not (res.version ~= version or res.cfgversion ~= cfgversion) then return end
+			notif('Vape', 'A new version/config of Vape/KoolAid released.', 6)
+		else
+			notif('Vape', 'Could not grab version url; bad exec ig', 6, 'alert')
+		end
+	until vape.Loaded == nil
+end)
+
 entitylib.start()
 run(function()
 	local AimAssist
@@ -7880,6 +7896,4 @@ run(function()
 			end
 		end
 	})
-	
 end)
-	

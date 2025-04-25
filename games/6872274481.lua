@@ -1742,9 +1742,6 @@ end)
 local calcSpeed = function(val: string): string
 	return math.max(1, math.min(val / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 23))
 end
-local calcLongSpeed = function(val: string): string
-	return math.max(1, math.min(val / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick())), 0.1, 1), 37))
-end
 run(function()
 	AnticheatBypass = vape.Categories.Utility:CreateModule({
 		Name = 'AnticheatBypass',
@@ -2666,7 +2663,7 @@ run(function()
 	
 					if root and isnetworkowner(root) then
 						if JumpTick > tick() then
-							root.AssemblyLinearVelocity = Direction * (AnticheatBypass.Enabled and ((getSpeed() + calcLongSpeed(Value.Value)) / 1) or getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
+							root.AssemblyLinearVelocity = Direction * (getSpeed() + ((JumpTick - tick()) > 1.1 and JumpSpeed or 0)) + Vector3.new(0, root.AssemblyLinearVelocity.Y, 0)
 							if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and not start then
 								root.AssemblyLinearVelocity += Vector3.new(0, dt * (workspace.Gravity - 23), 0)
 							else
