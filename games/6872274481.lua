@@ -1741,16 +1741,16 @@ end)
 
 local Value
 local calcSpeed = function()
-	return math.max(1, math.min(Value.Value / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue())), 0.1, 1), 23))
+	return math.max(1, math.min(Value.Value / math.clamp(1 - (math.floor(stats.Network.ServerStatsItem['Data Ping']:GetValue() + tick)), 0.1, 1), 23))
 end
 run(function()
-	AntiLagback = vape.Categories.Utility:CreateModule({
-		Name = 'AntiLagback',
+	AnticheatBypass = vape.Categories.Utility:CreateModule({
+		Name = 'AnticheatBypass',
 		Function = function(callback) end,
 		ExtraText = function()
-			return 'Ping'
+			return 'Bedwars'
 		end,
-		Tooltip = 'Prevents speed related lagbacks on higher ping'
+		Tooltip = 'Bypass the anticheat with ease'
 	})
 end)
 	
@@ -1788,7 +1788,7 @@ run(function()
 						local flyAllowed = (lplr.Character:GetAttribute('InflatedBalloons') and lplr.Character:GetAttribute('InflatedBalloons') > 0) or store.matchState == 2
 						local mass = (1.5 + (flyAllowed and 6 or 0) * (tick() % 0.4 < 0.2 and -1 or 1)) + ((up + down) * VerticalValue.Value)
 						local root, moveDirection = entitylib.character.RootPart, entitylib.character.Humanoid.MoveDirection
-						local velo = AntiLagback.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
+						local velo = AnticheatBypass.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 						rayCheck.FilterDescendantsInstances = {lplr.Character, gameCamera, AntiFallPart}
 						rayCheck.CollisionGroup = root.CollisionGroup
@@ -3000,7 +3000,7 @@ run(function()
 						local state = entitylib.character.Humanoid:GetState()
 						if state == Enum.HumanoidStateType.Climbing then return end
 	
-						local root, velo = entitylib.character.RootPart, AntiLagback.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
+						local root, velo = entitylib.character.RootPart, AnticheatBypass.Enabled and ((getSpeed() + calcSpeed()) / 2) or getSpeed()
 						local moveDirection = AntiFallDirection or entitylib.character.Humanoid.MoveDirection
 						local destination = (moveDirection * math.max(Value.Value - velo, 0) * dt)
 	
