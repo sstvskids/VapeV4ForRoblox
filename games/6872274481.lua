@@ -2716,14 +2716,14 @@ end)
 	
 run(function()
 	local NoFall
-	
+	local tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and lplr.character.PrimaryPart.Velocity.Y > -35
 	NoFall = vape.Categories.Blatant:CreateModule({
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
 				repeat
 					if entitylib.isAlive then
-						if (entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and (inputService.TouchEnabled and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0) < -30) then
+						if (inputService.TouchEnabled and tracked) or entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 						end
 					end

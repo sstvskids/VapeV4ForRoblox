@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion = 'v1.1.2', 'v1.1'
+local version, cfgversion = 'v1.1.3', 'v1.1'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
