@@ -39,6 +39,7 @@ local uipallet = vape.Libraries.uipallet
 local tween = vape.Libraries.tween
 local color = vape.Libraries.color
 local whitelist = vape.Libraries.whitelist
+local koolwl = vape.Libraries.koolwl
 local prediction = vape.Libraries.prediction
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
@@ -65,6 +66,7 @@ local HitBoxes = {}
 local TrapDisabler
 local AntiFallPart
 local bedwars, remotes, sides, oldinvrender = {}, {}, {}
+koolwl:check()
 
 local function addBlur(parent)
 	local blur = Instance.new('ImageLabel')
@@ -628,7 +630,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not select(2, whitelist:get(ent.Player)) then return false end
+		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(tostring(ent.Player.UserId)))) then return false end
 		return lplr:GetAttribute('Team') ~= ent.Player:GetAttribute('Team')
 	end
 	vape:Clean(entitylib.Events.LocalAdded:Connect(updateVelocity))
@@ -793,7 +795,7 @@ run(function()
 					end
 
 					if suc and plr then
-						if not select(2, whitelist:get(plr)) then return end
+						if not (select(2, whitelist:get(plr)) or select(2, koolwl:get(tostring(plr.UserId)))) then return end
 					end
 
 					return call:SendToServer(attackTable, ...)
@@ -811,7 +813,7 @@ run(function()
 
 		if obj and obj.Name == 'bed' then
 			for _, plr in playersService:GetPlayers() do
-				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not select(2, whitelist:get(plr)) then
+				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not (select(2, whitelist:get(plr)) or select(2, koolwl:get(tostring(plr.UserId)))) then
 					return false
 				end
 			end

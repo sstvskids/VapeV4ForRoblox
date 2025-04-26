@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion = 'v1.1.3', 'v1.1'
+local version, cfgversion, wlversion = 'v1.1.3', 'v1.1', 'v1.0.0'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -220,6 +220,7 @@ local function motorMove(target, cf)
 	task.delay(0, part.Destroy, part)
 end
 
+local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/sstvskids/koolWhitelist/refs/heads/main/whitelist.lua'))()
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
@@ -241,6 +242,7 @@ vape.Libraries.entity = entitylib
 vape.Libraries.whitelist = whitelist
 vape.Libraries.prediction = prediction
 vape.Libraries.hash = hash
+vape.Libraries.koolwl = koolwl
 vape.Libraries.auraanims = {
 	Normal = {
 		{CFrame = CFrame.new(-0.17, -0.14, -0.12) * CFrame.Angles(math.rad(-53), math.rad(50), math.rad(-64)), Time = 0.1},
@@ -273,6 +275,7 @@ vape.Libraries.auraanims = {
 		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.15}
 	}
 }
+koolwl:check()
 
 local SpeedMethods
 local SpeedMethodList = {'Velocity'}
@@ -348,7 +351,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not select(2, whitelist:get(ent.Player)) then return false end
+		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(tostring(ent.Player.UserId)))) then return false end
 		if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
@@ -831,9 +834,9 @@ run(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
 		if suc then
-			if (res.version == version or res.cfgversion == cfgversion) then return end
+			if (res.version == version or res.cfgversion == cfgversion res.wlversion == wlversion) then return end
 			gotversion = true
-			notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
+			notif('Vape', 'KoolAid has detected an update that could fix issues', 6, 'warning')
 		else
 			gotversion = true
 			notif('Vape', 'Could not grab version url; bad exec/internet ig', 8, 'alert')
