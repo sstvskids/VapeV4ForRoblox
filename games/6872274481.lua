@@ -2724,13 +2724,12 @@ run(function()
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
-				repeat
+				repeat task.wait()
 					if entitylib.isAlive then
 						if (inputService.TouchEnabled and tracked) or entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 						end
 					end
-					task.wait()
 				until not NoFall.Enabled
 			end
 		end,
