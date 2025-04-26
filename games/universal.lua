@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion = 'v1.1.1', 'v1.1'
+local version, cfgversion = 'v1.1.2', 'v1.1'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -830,12 +830,16 @@ run(function()
 		local suc, res = pcall(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
-		if suc then
-			if (res.version ~= version or res.cfgversion ~= cfgversion) then return end
-			gotversion = true
-			notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
+		if suc and gotversion == false then
+			if (res.version > version) then
+				gotversion = true
+				notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
+			elseif (res.cfgversion > version) then
+				gotversion = true
+				notif('Vape', 'NEW KOOLAID CONFIG DROPPED, REINSTALL BY USING CFGINSTALLER!!', 6, 'alert')
+			end
 		else
-			notif('Vape', 'Could not grab version url; bad exec ig', 6, 'alert')
+			notif('Vape', 'Could not grab version url; bad exec/internet ig', 6, 'alert')
 		end
 	until (vape.Loaded == nil or gotversion == true)
 end)
