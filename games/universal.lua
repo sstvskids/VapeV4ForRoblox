@@ -834,7 +834,7 @@ run(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
 		if suc then
-			if (res.version == version or res.cfgversion == cfgversion res.wlversion == wlversion) then return end
+			if (res.version == version or res.cfgversion == cfgversion or res.wlversion == wlversion) then return end
 			gotversion = true
 			notif('Vape', 'KoolAid has detected an update that could fix issues', 6, 'warning')
 		else
