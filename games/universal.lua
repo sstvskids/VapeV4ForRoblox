@@ -845,6 +845,10 @@ run(function()
 	until (vape.Loaded == nil or gotversion == true)
 end)
 
+run(function()
+	if (debug.getupvalue or debug.getconstants) == nil then notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert')
+end)
+
 entitylib.start()
 run(function()
 	local AimAssist
