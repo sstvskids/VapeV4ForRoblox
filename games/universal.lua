@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion = 'v1.1', 'v1.0.1'
+local version, cfgversion = 'v1.1.1', 'v1.1'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -831,7 +831,7 @@ run(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
 		if suc then
-			if (version >= res.version or cfgversion >= res.cfgversion) then return end
+			if (res.version ~= version or res.cfgversion ~= cfgversion) then return end
 			gotversion = true
 			notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
 		else
