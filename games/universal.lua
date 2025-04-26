@@ -839,7 +839,8 @@ run(function()
 				notif('Vape', 'NEW KOOLAID CONFIG DROPPED, REINSTALL BY USING CFGINSTALLER!!', 6, 'alert')
 			end
 		else
-			notif('Vape', 'Could not grab version url; bad exec/internet ig', 6, 'alert')
+			gotversion = true
+			notif('Vape', 'Could not grab version url; bad exec/internet ig', 8, 'alert')
 		end
 	until (vape.Loaded == nil or gotversion == true)
 end)
