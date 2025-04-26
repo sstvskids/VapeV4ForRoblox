@@ -2722,7 +2722,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				repeat
-					if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
+					if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0 < -55 then
 						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
 					task.wait()
