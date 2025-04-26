@@ -830,7 +830,7 @@ run(function()
 		local suc, res = pcall(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
-		if suc and gotversion == false then
+		if suc then
 			if (res.version > version) then
 				gotversion = true
 				notif('Vape', 'NEW KOOLAID VERSION DROPPED BOI!!', 6)
