@@ -846,7 +846,7 @@ run(function()
 end)
 
 run(function()
-	if (debug.getupvalue or debug.getconstants) == nil then notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert') end
+	if not (debug.getupvalue or debug.getconstants) then notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert') end
 end)
 
 entitylib.start()
