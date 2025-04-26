@@ -1347,9 +1347,9 @@ run(function()
 	CPS = AutoClicker:CreateTwoSlider({
 		Name = 'CPS',
 		Min = 1,
-		Max = 9,
-		DefaultMin = 9,
-		DefaultMax = 9
+		Max = 7,
+		DefaultMin = 7,
+		DefaultMax = 7
 	})
 	AutoClicker:CreateToggle({
 		Name = 'Place Blocks',
