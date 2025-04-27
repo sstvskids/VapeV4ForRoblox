@@ -2745,7 +2745,7 @@ run(function()
 			if callback then
 				repeat task.wait()
 					if entitylib.isAlive then
-						local tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and lplr.character.PrimaryPart.Velocity.Y > -35
+						local tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and entitylib.character.RootPart.Velocity.Y > -35
 						if (inputService.TouchEnabled and tracked) or entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 						end
