@@ -763,7 +763,7 @@ run(function()
 		return ind and tab[ind + 1] or ''
 	end
 
-	for i, v in remoteNames do
+	for i, v in pcall(remoteNames) do
 		local remote = dumpRemote(debug.getconstants(v))
 		if remote == '' then
 			notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
