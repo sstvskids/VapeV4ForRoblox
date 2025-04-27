@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion, wlversion = 'v1.1.3', 'v1.1', 'v1.0.0'
+local version, cfgversion, wlversion = 'v1.1.3', 'v1.1', 'v1.0.1'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -351,7 +351,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(tostring(ent.Player.UserId)))) then return false end
+		if not (select(2, whitelist:get(ent.Player)) or (select(1, koolwl:get(tostring(ent.Player.UserId))) >= koolwl.level and select(2, koolwl:get(tostring(ent.Player.UserId))))) then return false end
 		if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
