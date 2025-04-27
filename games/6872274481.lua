@@ -1,7 +1,5 @@
 local run = function(func)
-	task.spawn(function()
-		pcall(run)
-	end)
+	pcall(func)
 end
 local cloneref = cloneref or function(obj)
 	return obj
@@ -2176,28 +2174,30 @@ run(function()
 								if delta.Magnitude < 14.4 and (tick() - attackTime) < (OneTap.Enabled and OneTapSpeed.Value or ChargeTime.Value) then continue end
 
 								local actualRoot = v.Character.PrimaryPart
-								if actualRoot then
-									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
-									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
-									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
-									store.attackReach = (delta.Magnitude * 100) // 1 / 100
-									store.attackReachUpdate = tick() + 1
-									attackTime = tick()
-									AttackRemote:FireServer({
-										weapon = sword.tool,
-										chargedAttack = {chargeRatio = 0},
-										lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
-										entityInstance = v.Character,
-										validate = {
-											raycast = {
-												cameraPosition = {value = pos},
-												cursorDirection = {value = dir}
-											},
-											targetPosition = {value = actualRoot.Position},
-											selfPosition = {value = pos}
-										}
-									})
-								end
+								task.spawn(function()
+									if actualRoot then
+										local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
+										local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
+										bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
+										store.attackReach = (delta.Magnitude * 100) // 1 / 100
+										store.attackReachUpdate = tick() + 1
+										attackTime = tick()
+										AttackRemote:FireServer({
+											weapon = sword.tool,
+											chargedAttack = {chargeRatio = 0},
+											lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
+											entityInstance = v.Character,
+											validate = {
+												raycast = {
+													cameraPosition = {value = pos},
+													cursorDirection = {value = dir}
+												},
+												targetPosition = {value = actualRoot.Position},
+												selfPosition = {value = pos}
+											}
+										})
+									end
+								end)
 							end
 						end
 					end
