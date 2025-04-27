@@ -2158,7 +2158,7 @@ run(function()
 									Attacking = true
 									store.KillauraTarget = v
 									if not Swing.Enabled and AnimDelay <= tick() and not LegitAura.Enabled then
-										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25)
+										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) + (OneTap.Enabled and (OneTapSpeed.Value - (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25)) or 0)
 										bedwars.SwordController:playSwordEffect(meta, false)
 										if meta.displayName:find(' Scythe') then
 											bedwars.ScytheController:playLocalAnimation()
@@ -2171,11 +2171,10 @@ run(function()
 								end
 
 								if delta.Magnitude > AttackRange.Value then continue end
-								if delta.Magnitude < 14.4 and (tick() - attackTime) < ChargeTime.Value then continue end
+								if delta.Magnitude < 14.4 and (tick() - attackTime) < (OneTap.Enabled and OneTapSpeed.Value or ChargeTime.Value) then continue end
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
-									task.wait(OneTap.Enabled and OneTapSpeed.Value or 0)
 									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
 									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
@@ -2185,7 +2184,7 @@ run(function()
 									AttackRemote:FireServer({
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
-										lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
+										lastSwingServerTimeDelta = (tick() - (attackTime + workspace:GetServerTimeNow())),
 										entityInstance = v.Character,
 										validate = {
 											raycast = {
