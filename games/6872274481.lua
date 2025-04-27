@@ -1,7 +1,6 @@
 local run = function(func)
 	task.spawn(function()
-		local suc, res = pcall(run)
-		if res then notify('Vape', 'Module failed to load: '..debug.getinfo(res), 6, 'alert') end
+		pcall(run)
 	end)
 end
 local cloneref = cloneref or function(obj)
