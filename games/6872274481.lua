@@ -1,5 +1,8 @@
 local run = function(func)
-	func()
+	task.spawn(function()
+		local suc, res = pcall(run)
+		if res then notify('Vape', 'Module failed to load: '..debug.getinfo(res), 6, 'alert')
+	end)
 end
 local cloneref = cloneref or function(obj)
 	return obj
@@ -763,7 +766,7 @@ run(function()
 		return ind and tab[ind + 1] or ''
 	end
 
-	for i, v in pcall(remoteNames) do
+	for i, v in remoteNames do
 		local remote = dumpRemote(debug.getconstants(v))
 		if remote == '' then
 			notif('Vape', 'Failed to grab remote ('..i..')', 10, 'alert')
