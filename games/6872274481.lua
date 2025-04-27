@@ -2184,7 +2184,7 @@ run(function()
 									AttackRemote:FireServer({
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
-										lastSwingServerTimeDelta = (tick() - (attackTime + workspace:GetServerTimeNow())),
+										lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
 										entityInstance = v.Character,
 										validate = {
 											raycast = {
