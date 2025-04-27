@@ -813,7 +813,7 @@ run(function()
 
 		if obj and obj.Name == 'bed' then
 			for _, plr in playersService:GetPlayers() do
-				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not (select(2, whitelist:get(plr)) or (select(1, koolwl:get(tostring(plr.UserId))) >= koolwl.level select(2, koolwl:get(tostring(plr.UserId))))) then
+				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not (select(2, whitelist:get(plr)) or (select(1, koolwl:get(tostring(plr.UserId))) >= koolwl.level and select(2, koolwl:get(tostring(plr.UserId))))) then
 					return false
 				end
 			end
