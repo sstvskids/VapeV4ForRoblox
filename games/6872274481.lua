@@ -2023,6 +2023,7 @@ run(function()
 	local AnimationTween
 	local Limit
 	local LegitAura
+	local OneTap
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 	local AttackRemote = {FireServer = function() end}
@@ -2173,6 +2174,7 @@ run(function()
 
 								local actualRoot = v.Character.PrimaryPart
 								if actualRoot then
+									task.wait(OneTap.Enabled and 0.68 or 0)
 									local dir = CFrame.lookAt(selfpos, actualRoot.Position).LookVector
 									local pos = selfpos + dir * math.max(delta.Magnitude - 14.399, 0)
 									bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
@@ -2487,6 +2489,10 @@ run(function()
 	LegitAura = Killaura:CreateToggle({
 		Name = 'Swing only',
 		Tooltip = 'Only attacks while swinging manually'
+	})
+	OneTap = Killaura:CreateToggle({
+		Name = 'OneTap',
+		Tooltip = 'Makes you one-tap, without hits getting delayed'
 	})
 end)
 	
