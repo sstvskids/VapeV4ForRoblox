@@ -2018,13 +2018,12 @@ run(function()
 	local ParticleSize
 	local Face
 	local Animation
+	local AnimationSync
 	local AnimationMode
 	local AnimationSpeed
 	local AnimationTween
 	local Limit
 	local LegitAura
-	local OneTap
-	local OneTapSpeed
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 	local AttackRemote = {FireServer = function() end}
@@ -2158,7 +2157,7 @@ run(function()
 									Attacking = true
 									store.KillauraTarget = v
 									if not Swing.Enabled and AnimDelay <= tick() and not LegitAura.Enabled then
-										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) + (OneTap.Enabled and (OneTapSpeed.Value - (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25)) or 0)
+										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) + math.max((((AnimationSync.Enabled and ChargeTime.Value) or 0) - (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) or 0), 0)
 										bedwars.SwordController:playSwordEffect(meta, false)
 										if meta.displayName:find(' Scythe') then
 											bedwars.ScytheController:playLocalAnimation()
@@ -2171,7 +2170,7 @@ run(function()
 								end
 
 								if delta.Magnitude > AttackRange.Value then continue end
-								if delta.Magnitude < 14.4 and (tick() - attackTime) < (OneTap.Enabled and OneTapSpeed.Value or ChargeTime.Value) then continue end
+								if delta.Magnitude < 14.4 and (tick() - attackTime) < (ChargeTime.Value) then continue end
 
 								local actualRoot = v.Character.PrimaryPart
 								task.spawn(function()
@@ -2280,7 +2279,7 @@ run(function()
 	ChargeTime = Killaura:CreateSlider({
 		Name = 'Swing Time',
 		Min = 0,
-		Max = 0.5,
+		Max = 1,
 		Default = 0.4,
 		Decimal = 100
 	})
@@ -2440,6 +2439,10 @@ run(function()
 		Darker = true,
 		Visible = false
 	})
+	AnimationSync = Killaura:CreateToggle({
+		Name = 'Synced Animation',
+		Tooltip = 'Syncs the animation with the sword swing animation'
+	})
 	Face = Killaura:CreateToggle({Name = 'Face target'})
 	Animation = Killaura:CreateToggle({
 		Name = 'Custom Animation',
@@ -2491,22 +2494,6 @@ run(function()
 	LegitAura = Killaura:CreateToggle({
 		Name = 'Swing only',
 		Tooltip = 'Only attacks while swinging manually'
-	})
-	OneTap = Killaura:CreateToggle({
-		Name = 'OneTap',
-		Tooltip = 'Only attacks while swinging manually',
-		Function = function(callback)
-			OneTapSpeed.Object.Visible = callback
-		end
-	})
-	OneTapSpeed = Killaura:CreateSlider({
-		Name = 'OneTap Speed',
-		Min = 0.5,
-		Max = 1,
-		Default = 0.68,
-		Decimal = 100,
-		Darker = true,
-		Visible = false
 	})
 end)
 	
