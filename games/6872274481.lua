@@ -2079,7 +2079,7 @@ run(function()
 	local AnimationSpeed
 	local AnimationTween
 	local Limit
-	local LegitAura
+	local LegitAura = {}
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
 	local AttackRemote = {FireServer = function() end}
@@ -2177,7 +2177,7 @@ run(function()
 					end)
 				end
 
-				local attackTime = 0
+				local swingCooldown = 0
 				repeat
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
@@ -2226,7 +2226,7 @@ run(function()
 								end
 
 								if delta.Magnitude > AttackRange.Value then continue end
-								if delta.Magnitude < 14.4 and (tick() - attackTime) < (ChargeTime.Value) then continue end
+								if delta.Magnitude < 14.4 and (tick() - swingCooldown) < ChargeTime.Value then continue end
 
 								local actualRoot = v.Character.PrimaryPart
 								task.spawn(function()
@@ -2236,7 +2236,8 @@ run(function()
 										bedwars.SwordController.lastAttack = workspace:GetServerTimeNow()
 										store.attackReach = (delta.Magnitude * 100) // 1 / 100
 										store.attackReachUpdate = tick() + 1
-										attackTime = tick()
+										swingCooldown = tick()
+										if delta.Magnitude < 14.4 and ChargeTime.Value > 0.11 then AnimDelay = tick() end
 										AttackRemote:FireServer({
 											weapon = sword.tool,
 											chargedAttack = {chargeRatio = 0},
@@ -2333,10 +2334,10 @@ run(function()
 		end
 	})
 	ChargeTime = Killaura:CreateSlider({
-		Name = 'Swing Time',
+		Name = 'Swing time',
 		Min = 0,
 		Max = 1,
-		Default = 0.4,
+		Default = 0.42,
 		Decimal = 100
 	})
 	AngleSlider = Killaura:CreateSlider({
@@ -7300,7 +7301,7 @@ run(function()
 		List = fontitems,
 		Function = function(val)
 			if DamageIndicator.Enabled then
-				debug.setconstant(bedwars.DamageIndicator, 82, val)
+				debug.setconstant(bedwars.DamageIndicator, 86, val)
 			end
 		end
 	})
@@ -7340,7 +7341,7 @@ run(function()
 		Name = 'Stroke',
 		Function = function(callback)
 			if DamageIndicator.Enabled then
-				debug.setconstant(bedwars.DamageIndicator, 102, callback and 'Thickness' or 'Enabled')
+				debug.setconstant(bedwars.DamageIndicator, 119, callback and 'Thickness' or 'Enabled')
 				tab.strokeThickness = callback and 1 or false
 			end
 		end
