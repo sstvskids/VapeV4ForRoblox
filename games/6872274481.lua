@@ -1275,6 +1275,62 @@ run(function()
 	})
 	StrafeIncrease = AimAssist:CreateToggle({Name = 'Strafe increase'})
 end)
+
+run(function()
+	local old
+	local oldSwing
+	
+	AutoCharge = vape.Categories.Combat:CreateModule({
+	    Name = 'AutoCharge',
+	    Function = function(callback)
+	        debug.setconstant(bedwars.SwordController.attackEntity, 58, callback and 'damage' or 'multiHitCheckDurationSec')
+	        if callback then
+	            local chargeSwingTime = 0
+	            local canSwing
+	
+	            old = bedwars.SwordController.sendServerRequest
+	            bedwars.SwordController.sendServerRequest = function(self, ...)
+	                if (os.clock() - chargeSwingTime) < AutoChargeTime.Value then return end
+	                self.lastSwingServerTimeDelta = 0.5
+	                chargeSwingTime = os.clock()
+	                canSwing = true
+	
+	                local item = self:getHandItem()
+	                if item and item.tool then
+	                    self:playSwordEffect(bedwars.ItemMeta[item.tool.Name], false)
+	                end
+	
+	                return old(self, ...)
+	            end
+	
+	            oldSwing = bedwars.SwordController.playSwordEffect
+	            bedwars.SwordController.playSwordEffect = function(...)
+	                if not canSwing then return end
+	                canSwing = false
+	                return oldSwing(...)
+	            end
+	        else
+	            if old then
+	                bedwars.SwordController.sendServerRequest = old
+	                old = nil
+	            end
+	
+	            if oldSwing then
+	                bedwars.SwordController.playSwordEffect = oldSwing
+	                oldSwing = nil
+	            end
+	        end
+	    end,
+	    Tooltip = 'Allows you to get charged hits while spam clicking.'
+	})
+	AutoChargeTime = AutoCharge:CreateSlider({
+	    Name = 'Charge Time',
+	    Min = 0,
+	    Max = 0.5,
+	    Default = 0.4,
+	    Decimal = 100
+	})
+end)
 	
 run(function()
 	local AutoClicker
@@ -2157,7 +2213,7 @@ run(function()
 									Attacking = true
 									store.KillauraTarget = v
 									if not Swing.Enabled and AnimDelay <= tick() and not LegitAura.Enabled then
-										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) + math.max((((AnimationSync.Enabled and ChargeTime.Value) or 0) - (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or 0.25) or 0), 0)
+										AnimDelay = tick() + (meta.sword.respectAttackSpeedForEffects and meta.sword.attackSpeed or math.max(ChargeTime.Value, 0.11))
 										bedwars.SwordController:playSwordEffect(meta, false)
 										if meta.displayName:find(' Scythe') then
 											bedwars.ScytheController:playLocalAnimation()
@@ -2439,10 +2495,6 @@ run(function()
 		Darker = true,
 		Visible = false
 	})
-	AnimationSync = Killaura:CreateToggle({
-		Name = 'Synced Animation',
-		Tooltip = 'Syncs the animation with the sword swing animation'
-	})
 	Face = Killaura:CreateToggle({Name = 'Face target'})
 	Animation = Killaura:CreateToggle({
 		Name = 'Custom Animation',
@@ -2491,10 +2543,10 @@ run(function()
 		end,
 		Tooltip = 'Only attacks when the sword is held'
 	})
-	LegitAura = Killaura:CreateToggle({
+	--[[LegitAura = Killaura:CreateToggle({
 		Name = 'Swing only',
 		Tooltip = 'Only attacks while swinging manually'
-	})
+	})]]
 end)
 	
 run(function()
