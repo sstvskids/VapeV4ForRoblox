@@ -2179,7 +2179,7 @@ run(function()
 				end
 
 				local swingCooldown = 0
-				repeat
+				Killaura:Clean(runService.Stepped:Connect(function()
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
 					store.KillauraTarget = nil
@@ -2279,7 +2279,7 @@ run(function()
 
 					-- #attacked > 0 and #attacked * 0.02 or 
 					task.wait(1 / UpdateRate.Value)
-				until not Killaura.Enabled
+				end))
 			else
 				store.KillauraTarget = nil
 				for _, v in Boxes do
