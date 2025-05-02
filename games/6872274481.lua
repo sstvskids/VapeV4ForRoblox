@@ -2242,7 +2242,7 @@ run(function()
 										AttackRemote:FireServer({
 											weapon = sword.tool,
 											chargedAttack = {chargeRatio = 0},
-											lastSwingServerTimeDelta = (tick() - workspace:GetServerTimeNow()),
+											lastSwingServerTimeDelta = tick() - (store.attackReach + bedwars.SwordController.lastAttack),
 											entityInstance = v.Character,
 											validate = {
 												raycast = {

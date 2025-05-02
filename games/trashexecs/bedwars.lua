@@ -90,8 +90,15 @@ local remotes = {
 koolwl:check()
 
 bedwars.GetRemote = function(name: string)
-    if name:IsA('RemoteEvent') or name:IsA('RemoteFunction') then return name end
+	local remote
+	for _,v in pairs(game:GetDescendants()) do
+		if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
+			remotes = v
+			break
+		end
+	end
 	if name == nil then return Instance.new('RemoteEvent') end
+	return remote
 end
 
 run(function()
