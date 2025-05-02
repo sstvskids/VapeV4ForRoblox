@@ -2249,7 +2249,7 @@ run(function()
 													cameraPosition = {value = pos},
 													cursorDirection = {value = dir}
 												},
-												targetPosition = {value = actualRoot.Position},
+												targetPosition = {value = actualRoot.Position + v.Character.Humanoid.MoveDirection},
 												selfPosition = {value = pos}
 											}
 										})
