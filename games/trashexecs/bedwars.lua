@@ -97,7 +97,7 @@ end
 run(function()
 	local remoteNames: table = {}
 	for i,v in pairs(remotes) do
-		bedwars[name] = bedwars.GetRemote(remoteName)
+		remoteName[i] = bedwars.GetRemote(v)
 	end
 end)
 
