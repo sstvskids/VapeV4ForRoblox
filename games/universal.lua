@@ -845,7 +845,10 @@ run(function()
 end)
 
 run(function()
-	if not (debug.getupvalue or debug.getconstants) then notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert') end
+	if not (debug.getupvalue or debug.getconstants) then
+		getgenv().koolce = true
+		notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert')
+	end
 end)
 
 entitylib.start()

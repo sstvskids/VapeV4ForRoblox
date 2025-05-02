@@ -1,3 +1,4 @@
+if getgenv().koolce == true then return loadfile('cebw.lua')() end
 local run = function(func)
 	pcall(func)
 end
