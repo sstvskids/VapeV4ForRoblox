@@ -2369,6 +2369,10 @@ run(function()
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
 	GUI = Killaura:CreateToggle({Name = 'GUI check'})
+	LastSwing = Killaura:CreateToggle({
+		Name = 'LastSwing',
+		Tooltip = 'Grabs the last-swing time instead of getting the server-time'
+	})
 	Killaura:CreateToggle({
 		Name = 'Show target',
 		Function = function(callback)
@@ -2546,10 +2550,6 @@ run(function()
 			end
 		end,
 		Tooltip = 'Only attacks when the sword is held'
-	})
-	LastSwing = Killaura:CreateToggle({
-		Name = 'LastSwing',
-		Tooltip = 'Grabs the last-swing time instead of getting the server-time'
 	})
 	--[[LegitAura = Killaura:CreateToggle({
 		Name = 'Swing only',
