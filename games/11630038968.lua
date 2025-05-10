@@ -246,6 +246,7 @@ end)
 run(function()
 	local Killaura
 	local Targets
+	local CPSToggle
 	local CPS
 	local SwingRange
 	local AttackRange
@@ -333,7 +334,7 @@ run(function()
 	
 								if delta.Magnitude > AttackRange.Value then continue end
 								if AttackDelay < tick() then
-									AttackDelay = tick() + (1 / CPS.GetRandomValue())
+									AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
 									local bdent = bd.Entity.FindByCharacter(v.Character)
 									if bdent then
 										bd.Blink.item_action.attack_entity.fire({
@@ -378,15 +379,26 @@ run(function()
 				end
 			end
 		end,
-		Tooltip = 'Attack players around you\nwithout aiming at them.'
+		Tooltip = 'Attack players around you\nwithout aiming at them.',
+		ExtraText = function()
+			return 'Mutliple'
+		end
 	})
 	Targets = Killaura:CreateTargets({Players = true})
+	CPSToggle = Killaura:CreateToggle({
+		Name = 'CPS Limit',
+		Tooltip = 'Good for closet-cheaters',
+		Function = function(callback)
+			CPS.Object.Visible = callback
+		end
+	})
 	CPS = Killaura:CreateTwoSlider({
 		Name = 'Attacks per Second',
 		Min = 1,
 		Max = 20,
 		DefaultMin = 12,
-		DefaultMax = 12
+		DefaultMax = 12,
+		Visible = false
 	})
 	SwingRange = Killaura:CreateSlider({
 		Name = 'Swing range',
