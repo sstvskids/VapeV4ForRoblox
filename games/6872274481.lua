@@ -1805,7 +1805,7 @@ run(function()
 		ExtraText = function()
 			return 'Bedwars'
 		end,
-		Tooltip = 'Bypass the anticheat with ease'
+		Tooltip = 'Bypass the anticheat with ease using a formula to calculate the best speed based on your ping'
 	})
 end)
 
