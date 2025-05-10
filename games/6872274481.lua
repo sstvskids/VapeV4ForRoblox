@@ -2082,7 +2082,7 @@ run(function()
 	local AnimationSpeed
 	local AnimationTween
 	local Limit
-	local SwingTime
+	local LastSwing
 	local LegitAura = {}
 	local Particles, Boxes = {}, {}
 	local anims, AnimDelay, AnimTween, armC0 = vape.Libraries.auraanims, tick()
@@ -2245,7 +2245,7 @@ run(function()
 										AttackRemote:FireServer({
 											weapon = sword.tool,
 											chargedAttack = {chargeRatio = 0},
-											lastSwingServerTimeDelta = bedwars.SwordController.lastSwingServerTimeDelta or bedwars.SwordController.lastAttack,
+											lastSwingServerTimeDelta = (lastSwing.Enabled and bedwars.SwordController.lastSwingServerTimeDelta) or bedwars.SwordController.lastAttack,
 											entityInstance = v.Character,
 											validate = {
 												raycast = {
@@ -2548,7 +2548,7 @@ run(function()
 		end,
 		Tooltip = 'Only attacks when the sword is held'
 	})
-	SwingTime = Killaura:CreateToggle({
+	LastSwing = Killaura:CreateToggle({
 		Name = 'LastSwing',
 		Tooltip = 'Grabs the last-swing time instead of getting the server-time'
 	})
