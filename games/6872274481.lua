@@ -1,7 +1,6 @@
 if getgenv().koolce == true then return loadfile('cebw.lua')() end
 local run = function(func)
-	local suc, res = pcall(func)
-	if res then warn(res) end
+	pcall(func)
 end
 local cloneref = cloneref or function(obj)
 	return obj
