@@ -2368,11 +2368,11 @@ run(function()
 	})
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
-	GUI = Killaura:CreateToggle({Name = 'GUI check'})
 	LastSwing = Killaura:CreateToggle({
-		Name = 'LastSwing',
+		Name = 'Last Swing',
 		Tooltip = 'Grabs the last-swing time instead of getting the server-time'
 	})
+	GUI = Killaura:CreateToggle({Name = 'GUI check'})
 	Killaura:CreateToggle({
 		Name = 'Show target',
 		Function = function(callback)
