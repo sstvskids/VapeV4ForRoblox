@@ -236,7 +236,7 @@ getKoolWL = function()
 	until (vape.Loaded == nil or koolwlcheck == true)
 end
 
-local koolwl = getKoolWL()
+local koolwl = loadstring(getKoolWL)()
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
