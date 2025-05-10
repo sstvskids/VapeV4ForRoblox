@@ -1,6 +1,7 @@
 if getgenv().koolce == true then return loadfile('cebw.lua')() end
 local run = function(func)
-	pcall(func)
+	local suc, res = pcall(func)
+	if res then warn(res) end
 end
 local cloneref = cloneref or function(obj)
 	return obj
@@ -3564,7 +3565,7 @@ run(function()
 				end
 
 				if Distance.Enabled then
-					local mag = local mag = entitylib.isAlive and math.floor((entitylib.character.RootPart.Position - ent.RootPart.Position).Magnitude) or 0
+					local mag = entitylib.isAlive and math.floor((entitylib.character.RootPart.Position - ent.RootPart.Position).Magnitude) or 0
 					if Sizes[ent] ~= mag then
 						nametag.Text.Text = string.format(Strings[ent], mag)
 						nametag.BG.Size = Vector2.new(nametag.Text.TextBounds.X + 8, nametag.Text.TextBounds.Y + 7)
