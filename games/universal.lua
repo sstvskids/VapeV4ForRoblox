@@ -220,23 +220,7 @@ local function motorMove(target, cf)
 	task.delay(0, part.Destroy, part)
 end
 
-koolwlcheck = false
-getKoolWL = function()
-	repeat
-		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua')
-		end)
-		if suc then
-			koolwlcheck = true
-			return res
-		else
-			koolwlcheck = true
-			return notify('Vape', 'Failed to grab whitelist!', 10, 'alert')
-		end
-	until (vape.Loaded == nil or koolwlcheck == true)
-end
-
-local koolwl = loadstring(getKoolWL)()
+local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua'))
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
