@@ -2245,7 +2245,7 @@ run(function()
 										AttackRemote:FireServer({
 											weapon = sword.tool,
 											chargedAttack = {chargeRatio = 0},
-											lastSwingServerTimeDelta = (lastSwing.Enabled and bedwars.SwordController.lastSwingServerTimeDelta) or bedwars.SwordController.lastAttack,
+											lastSwingServerTimeDelta = (LastSwing.Enabled and bedwars.SwordController.lastSwingServerTimeDelta) or bedwars.SwordController.lastAttack,
 											entityInstance = v.Character,
 											validate = {
 												raycast = {
