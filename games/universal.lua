@@ -220,7 +220,16 @@ local function motorMove(target, cf)
 	task.delay(0, part.Destroy, part)
 end
 
-local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua'))()
+getKoolWL = function()
+	repeat
+		local suc, res = pcall(function()
+			return game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua')
+		end)
+		if suc then return res else notify('Vape', 'Failed to grab whitelist!', 10, 'alert') end
+	until vape.Loaded == nil
+end
+
+local koolwl = getKoolWL()
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
@@ -827,14 +836,14 @@ run(function()
 	end)
 end)
 
-local gotversion
+local gotversion = false
 run(function()
 	repeat task.wait()
 		local suc, res = pcall(function()
 			return httpService:JSONDecode(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/refs/heads/main/libraries/version.json'))
 		end)
 		if suc then
-			if (res.version == version or res.cfgversion == cfgversion or res.wlversion == wlversion) then return end
+			if (res.version == version or res.cfgversion == cfgversion or res.wlversion == wlversion) then return gotversion == false end
 			gotversion = true
 			notif('Vape', 'KoolAid has detected an update that could fix issues', 6, 'warning')
 		else
