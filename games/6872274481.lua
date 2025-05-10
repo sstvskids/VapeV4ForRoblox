@@ -2798,11 +2798,9 @@ run(function()
 			if callback then
 				local tracked = 0
 				repeat task.wait()
-					if entitylib.isAlive then
-						tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0
-						if tracked < -85 then
-							groundHit:FireServer(nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
-						end
+					tracked = entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0
+					if tracked < -1 then
+						groundHit:FireServer(nil, Vector3.new(0, tracked, 0), workspace:GetServerTimeNow())
 					end
 				until not NoFall.Enabled
 			end
