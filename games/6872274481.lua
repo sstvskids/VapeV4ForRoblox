@@ -2796,10 +2796,8 @@ run(function()
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
-				local tracked = 0
 				repeat task.wait()
-					tracked = entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air
-					if tracked then
+					if entitylib.isAlive then
 						groundHit:FireServer(nil, Vector3.new(0, entitylib.character.RootPart.Velocity.Y, 0), workspace:GetServerTimeNow())
 					end
 				until not NoFall.Enabled
