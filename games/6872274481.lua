@@ -2785,10 +2785,39 @@ run(function()
 		Name = 'Camera Direction'
 	})
 end)
-	
+
 run(function()
 	local NoFall
 	local groundHit
+	task.spawn(function()
+		groundHit = bedwars.Client:Get(remotes.GroundHit).instance
+	end)
+	
+	NoFall = vape.Categories.Blatant:CreateModule({
+		Name = 'NoFall',
+		Function = function(callback)
+			if callback then
+				local tracked = 0
+				repeat
+					task.spawn(function()
+						if entitylib.isAlive then
+							tracked = entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and math.min(tracked, entitylib.character.RootPart.AssemblyLinearVelocity.Y) or 0
+							if tracked < 9e9 then
+								groundHit:FireServer(nil, Vector3.new(0, entitylib.character.RootPart.Velocity.Y + entitylib.character.Humanoid.MoveDirection.Y, 0), workspace:GetServerTimeNow())
+							end
+						end
+					end)
+					task.wait()
+				until not NoFall.Enabled
+			end
+		end,
+		Tooltip = 'Prevents taking fall damage.'
+	})
+end)
+	
+run(function()
+	local NoFall
+	local groundHit, tracked
 	task.spawn(function()
 		groundHit = bedwars.Client:Get(remotes.GroundHit).instance
 	end)
@@ -2796,10 +2825,12 @@ run(function()
 		Name = 'NoFall',
 		Function = function(callback)
 			if callback then
-				repeat task.wait()
+				repeat
+					tracked = entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air
 					if entitylib.isAlive then
-						groundHit:FireServer(nil, Vector3.new(0, entitylib.character.RootPart.Velocity.Y, 0), workspace:GetServerTimeNow())
+						groundHit:FireServer(nil, Vector3.new(0, tonumber(entitylib.character.RootPart.Velocity.Y + entitylib.character.Humanoid.MoveDirection), 0), workspace:GetServerTimeNow())
 					end
+					task.wait()
 				until not NoFall.Enabled
 			end
 		end,
