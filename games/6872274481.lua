@@ -1281,7 +1281,6 @@ end)
 
 run(function()
 	local old
-	local oldSwing
 	
 	AutoCharge = vape.Categories.Combat:CreateModule({
 	    Name = 'AutoCharge',
