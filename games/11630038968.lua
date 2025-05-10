@@ -278,6 +278,7 @@ run(function()
 		Name = 'Killaura',
 		Function = function(callback)
 			if callback then
+				task.spawn(function()
 				if LegitAura.Enabled then
 					Killaura:Clean(inputService.InputBegan:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -285,8 +286,8 @@ run(function()
 						end
 					end))
 				end
-	
-				repeat
+				
+				Killaura:Clean(runService.Stepped:Connect(function()
 					local tool = getAttackData()
 					local attacked = {}
 					if tool and tool:HasTag('Sword') then
@@ -299,12 +300,13 @@ run(function()
 							Limit = Max.Value
 						})
 	
+						task.spawn(function()
 						if #plrs > 0 then
 							local selfpos = entitylib.character.RootPart.Position
 							local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 	
 							for _, v in plrs do
-								local delta = (v.RootPart.Position - selfpos)
+								local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
 								local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
 								if angle > (math.rad(AngleSlider.Value) / 2) then continue end
 								table.insert(attacked, {
@@ -348,6 +350,7 @@ run(function()
 								end
 							end
 						end
+						end)
 					end
 	
 					for i, v in Boxes do
@@ -364,7 +367,8 @@ run(function()
 					end
 	
 					task.wait()
-				until not Killaura.Enabled
+				end))
+				end)
 			else
 				for _, v in Boxes do
 					v.Adornee = nil
@@ -879,4 +883,3 @@ run(function()
 		end
 	})
 end)
-	
