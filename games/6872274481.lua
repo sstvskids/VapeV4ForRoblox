@@ -633,7 +633,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) >= koolwl.level) then return false end
+		if not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) > koolwl.level) then return false end
 		return lplr:GetAttribute('Team') ~= ent.Player:GetAttribute('Team')
 	end
 	vape:Clean(entitylib.Events.LocalAdded:Connect(updateVelocity))
@@ -798,7 +798,7 @@ run(function()
 					end
 
 					if suc and plr then
-						if not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) >= koolwl.level) then return end
+						if not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) > koolwl.level) then return end
 					end
 
 					return call:SendToServer(attackTable, ...)
@@ -816,7 +816,7 @@ run(function()
 
 		if obj and obj.Name == 'bed' then
 			for _, plr in playersService:GetPlayers() do
-				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) >= koolwl.level) then
+				if obj:GetAttribute('Team'..(plr:GetAttribute('Team') or 0)..'NoBreak') and not select(2, whitelist:get(ent.Player)) or (select(2, koolwl:get(ent.Player.UserId)) and select(1, koolwl:get(ent.Player.UserId)) > koolwl.level) then
 					return false
 				end
 			end
