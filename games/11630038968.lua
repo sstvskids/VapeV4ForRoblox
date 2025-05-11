@@ -133,7 +133,7 @@ run(function()
 	Reach = vape.Categories.Combat:CreateModule({
 		Name = 'Reach',
 		Function = function(callback)
-			if callback then 
+			if callback then
 				old = rawget(bd.CombatConstants, 'REACH_IN_STUDS')
 				rawset(bd.CombatConstants, 'REACH_IN_STUDS', Value.Value)
 				rawset(bd.Entity.LocalEntity, 'Reach', Value.Value)
