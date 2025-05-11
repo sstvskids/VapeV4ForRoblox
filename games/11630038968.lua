@@ -317,7 +317,7 @@ run(function()
 											Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
 										})
 										targetinfo.Targets[v] = tick() + 1
-										if Block.Enabled then
+										if Block.Enabled and not AutoBlock.Enabled then
 											if bd.Entity.LocalEntity.IsBlocking then continue end
 										end
 										if AutoBlock.Enabled then
