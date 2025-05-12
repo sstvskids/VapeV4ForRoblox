@@ -295,9 +295,9 @@ run(function()
 						local tool = getAttackData()
 						Killaura:Clean(runService.Stepped:Connect(function()
 							if tool and AutoBlock.Enabled and not AutoBlockRange.Enabled then
-								if inputService:IsKeyDown('MouseButton1') then return end
+								if inputService:IsMouseButtonPressed(0) then return end
 								bd.ToolService:ToggleBlockSword(true, tool.Name)
-							elseif not (AutoBlock.Enabled and AutoBlockRange.Enabled) then
+							elseif tool and not (AutoBlock.Enabled and AutoBlockRange.Enabled or Swing.Enabled) then
 								bd.ToolService:ToggleBlockSword(false, tool.Name)
 							end
 						end))
