@@ -1,9 +1,11 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func) func() end
 local cloneref = cloneref or function(obj) return obj end
 
 local playersService = cloneref(game:GetService('Players'))
 local inputService = cloneref(game:GetService('UserInputService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
+local collectionService = cloneref(game:GetService('CollectionService'))
 local runService = cloneref(game:GetService('RunService'))
 
 local gameCamera = workspace.CurrentCamera
@@ -11,6 +13,7 @@ local lplr = playersService.LocalPlayer
 local vape = shared.vape
 local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
+local prediction = vape.Libraries.prediction
 
 local bd = {}
 local store = {
@@ -49,13 +52,18 @@ run(function()
 	end
 
 	bd = setmetatable({
+		BedwarsShop = require(replicatedStorage.Constants.BedWarsShop),
+		BedwarsUpgrades = require(replicatedStorage.Constants.BedWarsTeamUpgrades), 
 		Blink = require(replicatedStorage.Blink.Client),
+		BreakTimes = require(replicatedStorage.Constants.Blocks),
+		BowClient = require(replicatedStorage.Client.Components.All.Tools.BowClient),
 		CombatService = Knit.GetService('CombatService'),
 		CombatConstants = require(replicatedStorage.Constants.Melee),
+		Communication = require(replicatedStorage.Client.Communication),
 		Knit = Knit,
 		Entity = require(replicatedStorage.Modules.Entity),
 		ServerData = require(replicatedStorage.Modules.ServerData),
-		ToolService = Knit.GetService('ToolService'),
+		ToolService = Knit.GetService('ToolService')
 	}, {
 		__index = function(self, ind)
 			rawset(self, ind, ind:find('Service') and Knit.GetService(ind) or Knit.GetController(ind))
@@ -148,8 +156,8 @@ run(function()
 	Value = Reach:CreateSlider({
 		Name = 'Range',
 		Min = 0,
-		Max = 16,
-		Default = 16,
+		Max = 18,
+		Default = 18,
 		Decimal = 10,
 		Suffix = function(val) 
 			return val == 1 and 'stud' or 'studs' 
@@ -243,6 +251,30 @@ run(function()
 		Tooltip = 'Always hit criticals'
 	})
 end)
+
+
+run(function()
+	local old
+	
+	vape.Categories.Blatant:CreateModule({
+		Name = 'InvMove',
+		Function = function(callback)
+			if callback then
+				old = hookfunction(bd.MovementController.AddSpeedOverride, function(...)
+					if select(2, ...) == 'MenuOpen' then
+						return
+					end
+					return old(...)
+				end)
+				bd.MovementController:RemoveSpeedOverride('MenuOpen')
+			else
+				hookfunction(bd.MovementController.AddSpeedOverride, old)
+				old = nil
+			end
+		end,
+		Tooltip = 'Prevents slowing down when using items.'
+	})
+end)
 	
 run(function()
 	local Killaura
@@ -253,7 +285,6 @@ run(function()
 	local AttackRange
 	local AngleSlider
 	local AutoBlock
-	local AutoBlockRange
 	local Max
 	local Mouse
 	local Swing
@@ -266,6 +297,7 @@ run(function()
 	local ParticleSize
 	local LegitAura
 	local Particles, Boxes, AttackDelay, SwingDelay, ClickDelay = {}, {}, tick(), tick(), tick()
+	local lMouse = cloneref(lplr:GetMouse())
 	
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -290,19 +322,6 @@ run(function()
 							end
 						end))
 					end
-
-					task.spawn(function()
-						local tool = getAttackData()
-						Killaura:Clean(runService.Stepped:Connect(function()
-							if tool and AutoBlock.Enabled and not AutoBlockRange.Enabled then
-								if inputService:IsMouseButtonPressed(0) then return end
-								bd.ToolService:ToggleBlockSword(true, tool.Name)
-							elseif tool and not AutoBlock.Enabled then
-								if Swing.Enabled or Block.Enabled then return end
-								bd.ToolService:ToggleBlockSword(false, tool.Name)
-							end
-						end))
-					end)
 					
 					Killaura:Clean(runService.Stepped:Connect(function()
 						local tool = getAttackData()
@@ -321,6 +340,12 @@ run(function()
 								if #plrs > 0 then
 									local selfpos = entitylib.character.RootPart.Position
 									local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+									task.spawn(function()
+										if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
+											bd.ToolService:ToggleBlockSword(true, tool.Name)
+										end
+									end)
 			
 									for _, v in plrs do
 										local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
@@ -331,11 +356,8 @@ run(function()
 											Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
 										})
 										targetinfo.Targets[v] = tick() + 1
-										if Block.Enabled and not AutoBlock.Enabled then
+										if Block.Enabled then
 											if bd.Entity.LocalEntity.IsBlocking then continue end
-										end
-										if AutoBlock.Enabled and AutoBlockRange.Enabled then
-											bd.ToolService:ToggleBlockSword(true, tool.Name)
 										end
 			
 										if not Swing.Enabled and SwingDelay < tick() then
@@ -371,7 +393,7 @@ run(function()
 											end
 										end)
 									end
-								elseif AutoBlock.Enabled and AutoBlockRange.Enabled then
+								elseif AutoBlock.Enabled then
 									bd.ToolService:ToggleBlockSword(false, tool.Name)
 								end
 							end)
@@ -394,14 +416,14 @@ run(function()
 					end))
 				end)
 			else
+				if AutoBlock.Enabled and bd.Entity.LocalEntity.IsBlocking then
+					bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
+				end
 				for _, v in Boxes do
 					v.Adornee = nil
 				end
 				for _, v in Particles do
 					v.Parent = nil
-				end
-				if AutoBlock.Enabled then
-					bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
 				end
 			end
 		end,
@@ -458,16 +480,7 @@ run(function()
 	})
 	AutoBlock = Killaura:CreateToggle({
 		Name = 'AutoBlock',
-		Tooltip = 'Automatically blocks for you',
-		Function = function(callback)
-			AutoBlockRange.Object.Visible = callback
-		end
-	})
-	AutoBlockRange = Killaura:CreateToggle({
-		Name = 'Block in range',
-		Tooltip = 'Blocks inside swing range instead of everytime',
-		Darker = true,
-		Visible = false
+		Tooltip = 'Automatically blocks for you'
 	})
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
@@ -611,6 +624,62 @@ run(function()
 			end
 		end,
 		Tooltip = 'Only attacks while swinging manually'
+	})
+end)
+
+
+run(function()
+	local TargetPart
+	local FOV
+	local old
+	local rayCheck = RaycastParams.new()
+	rayCheck.FilterType = Enum.RaycastFilterType.Exclude
+	
+	local function aimFunction(...)
+		local plr = entitylib.EntityMouse({
+	        Range = FOV.Value,
+	        Part = 'RootPart',
+	        Players = true
+	    })
+	
+	    if plr then
+	        rayCheck.FilterDescendantsInstances = {plr.Character, gameCamera}
+	        rayCheck.CollisionGroup = plr[TargetPart.Value].CollisionGroup
+	        local offsetpos = entitylib.character.Head.CFrame
+	        local calc = prediction.SolveTrajectory(offsetpos.Position, 180, 60, plr[TargetPart.Value].Position, plr[TargetPart.Value].Velocity, workspace.Gravity, plr.HipHeight, nil, rayCheck)
+	
+	        if calc then
+	            targetinfo.Targets[plr] = tick() + 1
+	            return offsetpos.Position + CFrame.new(offsetpos.Position, calc).LookVector * 100
+	        end
+	    end
+	
+		return old(...)
+	end
+	
+	local ProjectileAimbot = vape.Categories.Blatant:CreateModule({
+		Name = 'ProjectileAimbot',
+		Function = function(callback)
+			if callback then
+				old = hookfunction(debug.getupvalue(bd.BowClient.Start, 11), function(...)
+					return aimFunction(...)
+				end)
+			else
+	            hookfunction(debug.getupvalue(bd.BowClient.Start, 11), old)
+				old = nil
+			end
+		end,
+		Tooltip = 'Silently adjusts your aim towards the enemy'
+	})
+	TargetPart = ProjectileAimbot:CreateDropdown({
+		Name = 'Part',
+		List = {'RootPart', 'Head'}
+	})
+	FOV = ProjectileAimbot:CreateSlider({
+		Name = 'FOV',
+		Min = 1,
+		Max = 1000,
+		Default = 1000
 	})
 end)
 	
@@ -847,6 +916,180 @@ run(function()
 	})
 	LimitItem = Scaffold:CreateToggle({Name = 'Limit to items'})
 end)
+
+run(function()
+	local AutoBuy
+	local Sword
+	local Armor
+	local Upgrades
+	local Pickaxe
+	local NPCs = {}
+	local UpgradeToggles = {}
+	local Functions = {}
+	local Callbacks = {Functions}
+	local npctick = tick()
+	
+	local function canBuy(item, currencytable, amount)
+		return (currencytable[item.currency or 'Iron'] or 0) >= (item.cost * (amount or 1))
+	end
+	
+	local function buyItem(item, itemTier, itemCategory, currencytable)
+		notif('AutoBuy', 'Bought '..item.name, 3)
+		task.spawn(function()
+			bd.Blink.player_state.bedwars_buy_item.invoke({
+				item = itemCategory or item.name,
+				tier = itemTier
+			})
+		end)
+		currencytable[item.currency or 'Iron'] -= item.cost
+	end
+	
+	local function buyTier(category, currencytable)
+		local nextItem, itemTier
+		for i, v in category.tiers do
+			if currencytable[v.name] then
+				nextItem, nextTier = category.tiers[i + 1], i + 1
+				break
+			end
+		end
+	
+		if nextItem and canBuy(nextItem, currencytable) then
+			buyItem(nextItem, nextTier, category.name, currencytable)
+		end
+	end
+	
+	local function buyUpgrade(upgrade, currencytable)
+		local upgradeItem = bd.BedwarsUpgrades[upgrade]
+		local localTeam = bd.Entity.LocalEntity.Team or {Name = ''}
+		local teamUpgrades = bd.Communication.team_upgrades.value[localTeam.Name] or {}
+		local currentTier = (teamUpgrades[upgrade] or 0) + 1
+		local bought = false
+	
+		for i = currentTier, #upgradeItem.tiers do
+			local tier = upgradeItem.tiers[i]
+	
+			if canBuy({currency = 'Diamond', cost = tier.cost}, currencytable) then
+				notif('AutoBuy', 'Bought '..upgrade..' '..i, 3)
+				task.spawn(function()
+					bd.Blink.player_state.bedwars_buy_upgrade.invoke(upgrade)
+				end)
+				currencytable.Diamond -= tier.cost
+				bought = true
+			else
+				break
+			end
+		end
+	
+		return bought
+	end
+	
+	local function getShopNPC()
+		local shop, items, upgrades, newid = nil, false, false, nil
+		if entitylib.isAlive then
+			local localPosition = entitylib.character.RootPart.Position
+			for ent, upgrade in NPCs do
+				if (ent.Position - localPosition).Magnitude <= 10 then
+					shop = true
+					items = items or not upgrade
+					upgrades = upgrade or upgrades
+				end
+			end
+		end
+		return shop, items, upgrades
+	end
+	
+	AutoBuy = vape.Categories.Inventory:CreateModule({
+		Name = 'AutoBuy',
+		Function = function(callback)
+			if callback then
+				AutoBuy:Clean(collectionService:GetInstanceAddedSignal('menu_opener'):Connect(function(obj)
+					NPCs[obj.Parent] = obj:GetAttribute('menu') == 'TeamUpgrades'
+				end))
+	
+				for _, obj in collectionService:GetTagged('menu_opener') do
+					NPCs[obj.Parent] = obj:GetAttribute('menu') == 'TeamUpgrades'
+				end
+	
+				repeat
+					local npc, shop, upgrades, newid = getShopNPC()
+	
+					if npc and npctick <= tick() then
+						local currencytable = table.clone(bd.Entity.LocalEntity.Inventory)
+						for _, tab in Callbacks do
+							for _, callback in tab do
+								callback(currencytable, shop, upgrades)
+							end
+						end
+						npctick = tick() + 0.4
+					end
+	
+					task.wait(0.1)
+				until not AutoBuy.Enabled
+			else
+				table.clear(NPCs)
+			end
+		end,
+		Tooltip = 'Automatically buys items when you go near the shop'
+	})
+	Sword = AutoBuy:CreateToggle({
+		Name = 'Buy Sword',
+		Function = function(callback)
+			npctick = tick()
+			Functions[2] = callback and function(currencytable, shop)
+				if not shop then return end
+				buyTier(bd.BedwarsShop[2].items[1], currencytable)
+			end or nil
+		end,
+		Default = true
+	})
+	Armor = AutoBuy:CreateToggle({
+		Name = 'Buy Armor',
+		Function = function(callback)
+			npctick = tick()
+			Functions[1] = callback and function(currencytable, shop)
+				if not shop then return end
+				buyTier(bd.BedwarsShop[2].items[2], currencytable)
+			end or nil
+		end,
+		Default = true
+	})
+	Pickaxe = AutoBuy:CreateToggle({
+		Name = 'Buy Pickaxe',
+		Function = function(callback)
+			npctick = tick()
+			Functions[1] = callback and function(currencytable, shop)
+				if not shop then return end
+				buyTier(bd.BedwarsShop[3].items[1], currencytable)
+			end or nil
+		end
+	})
+	Upgrades = AutoBuy:CreateToggle({
+		Name = 'Buy Upgrades',
+		Function = function(callback)
+			for _, v in UpgradeToggles do
+				v.Object.Visible = callback
+			end
+		end,
+		Default = true
+	})
+	local count = 0
+	for i, v in bd.BedwarsUpgrades do
+		local toggleCount = count
+		table.insert(UpgradeToggles, AutoBuy:CreateToggle({
+			Name = 'Buy '..i,
+			Function = function(callback)
+				npctick = tick()
+				Functions[5 + toggleCount + (i == 'ArmorProtection' and 20 or 0)] = callback and function(currencytable, shop, upgrades)
+					if not upgrades then return end
+					return buyUpgrade(i, currencytable)
+				end or nil
+			end,
+			Darker = true,
+			Default = (i == 'ArmorProtection' or i == 'SwordDamage')
+		}))
+		count += 1
+	end
+end)
 	
 run(function()
 	local Breaker
@@ -880,12 +1123,13 @@ run(function()
 		Name = 'Breaker',
 		Function = function(callback)
 			if callback then
-				local breakPosition
+				local breakBlock
 				local breakTime = 0
 				local lastBreak
 	
 				repeat
-					breakPosition = nil
+					breakBlock = nil
+	
 					if entitylib.isAlive then
 						local pickaxe = getPickaxe()
 	
@@ -895,26 +1139,26 @@ run(function()
 	
 							for blockpos, block in getBlocksInPoints(pos - rvec, pos + rvec) do
 								if block and block.Name == 'Block' and (block.Parent.Name == 'Bed' and lplr.Team and block.Parent:GetAttribute('Team') ~= lplr.Team.Name) then
-									breakPosition = block.Position
+									breakBlock = block
 									break
 								end
 							end
 	
-							if breakPosition ~= lastBreak then
-								if breakPosition then
-									breakTime = os.clock() + 0.3
+							if breakBlock ~= lastBreak then
+								if breakBlock then
+									breakTime = os.clock() + bd.BreakTimes[breakBlock:GetAttribute('block_type') or 'Clay']
 									bd.Blink.item_action.start_break_block.fire({
-										position = breakPosition,
+										position = breakBlock.Position,
 										pickaxe_name = pickaxe,
 										timestamp = workspace:GetServerTimeNow()
 									})
 								else
 									bd.Blink.item_action.stop_break_block.fire(false)
 								end
-								lastBreak = breakPosition
-							elseif breakPosition and breakTime < os.clock() then
+								lastBreak = breakBlock
+							elseif breakBlock and breakTime < os.clock() then
 								bd.Blink.item_action.stop_break_block.fire(true)
-								breakTime = os.clock() + 9999
+								breakTime = math.huge
 							end
 						end
 					end
