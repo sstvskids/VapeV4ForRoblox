@@ -297,7 +297,8 @@ run(function()
 							if tool and AutoBlock.Enabled and not AutoBlockRange.Enabled then
 								if inputService:IsMouseButtonPressed(0) then return end
 								bd.ToolService:ToggleBlockSword(true, tool.Name)
-							elseif tool and not (AutoBlock.Enabled and AutoBlockRange.Enabled or Swing.Enabled) then
+							elseif tool and not AutoBlock.Enabled then
+								if Swing.Enabled or Block.Enabled then return end
 								bd.ToolService:ToggleBlockSword(false, tool.Name)
 							end
 						end))
@@ -335,8 +336,6 @@ run(function()
 										end
 										if AutoBlock.Enabled and AutoBlockRange.Enabled then
 											bd.ToolService:ToggleBlockSword(true, tool.Name)
-										elseif not AutoBlock.Enabled then
-											bd.ToolService:ToggleBlockSword(false, tool.Name)
 										end
 			
 										if not Swing.Enabled and SwingDelay < tick() then
