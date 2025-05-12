@@ -253,6 +253,7 @@ run(function()
 	local AttackRange
 	local AngleSlider
 	local AutoBlock
+	local AutoBlockRange
 	local Max
 	local Mouse
 	local Swing
@@ -289,6 +290,18 @@ run(function()
 							end
 						end))
 					end
+
+					task.spawn(function()
+						local tool = getAttackData()
+						Killaura:Clean(runService.Stepped:Connect(function()
+							if tool and AutoBlock.Enabled and not AutoBlockRange.Enabled then
+								if inputService:IsKeyDown('MouseButton1') then return end
+								bd.ToolService:ToggleBlockSword(true, tool.Name)
+							elseif not (AutoBlock.Enabled and AutoBlockRange.Enabled) then
+								bd.ToolService:ToggleBlockSword(false, tool.Name)
+							end
+						end))
+					end)
 					
 					Killaura:Clean(runService.Stepped:Connect(function()
 						local tool = getAttackData()
@@ -320,9 +333,9 @@ run(function()
 										if Block.Enabled and not AutoBlock.Enabled then
 											if bd.Entity.LocalEntity.IsBlocking then continue end
 										end
-										if AutoBlock.Enabled then
+										if AutoBlock.Enabled and AutoBlockRange.Enabled then
 											bd.ToolService:ToggleBlockSword(true, tool.Name)
-										else
+										elseif not AutoBlock.Enabled then
 											bd.ToolService:ToggleBlockSword(false, tool.Name)
 										end
 			
@@ -340,24 +353,26 @@ run(function()
 										end
 			
 										if delta.Magnitude > AttackRange.Value then continue end
-										if AttackDelay < tick() then
-											AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-											local bdent = bd.Entity.FindByCharacter(v.Character)
-											if bdent then
-												bd.Blink.item_action.attack_entity.fire({
-													target_entity_id = bdent.Id,
-													is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
-													weapon_name = tool.Name,
-													extra = {
-														rizz = 'No.',
-														sigma = 'The...',
-														those = workspace.Name == 'Ok'
-													}
-												})
+										task.spawn(function()
+											if AttackDelay < tick() then
+												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+												local bdent = bd.Entity.FindByCharacter(v.Character)
+												if bdent then
+													bd.Blink.item_action.attack_entity.fire({
+														target_entity_id = bdent.Id,
+														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
+														weapon_name = tool.Name,
+														extra = {
+															rizz = 'No.',
+															sigma = 'The...',
+															those = workspace.Name == 'Ok'
+														}
+													})
+												end
 											end
-										end
+										end)
 									end
-								elseif AutoBlock.Enabled then
+								elseif AutoBlock.Enabled and AutoBlockRange.Enabled then
 									bd.ToolService:ToggleBlockSword(false, tool.Name)
 								end
 							end)
@@ -442,7 +457,19 @@ run(function()
 		Max = 10,
 		Default = 10
 	})
-	AutoBlock = Killaura:CreateToggle({Name = 'AutoBlock'})
+	AutoBlock = Killaura:CreateToggle({
+		Name = 'AutoBlock',
+		Tooltip = 'Automatically blocks for you',
+		Function = function(callback)
+			AutoBlockRange.Object.Visible = callback
+		end
+	})
+	AutoBlockRange = Killaura:CreateToggle({
+		Name = 'Block in range',
+		Tooltip = 'Blocks inside swing range instead of everytime',
+		Darker = true,
+		Visible = false
+	})
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
 	Block = Killaura:CreateToggle({Name = 'No Block'})
