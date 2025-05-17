@@ -34,6 +34,10 @@ local function wipeFolder(path)
 	end
 end
 
+if not debug.getupvalue or debug.getconstants then
+	getgenv().koolce = true
+end
+
 for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)

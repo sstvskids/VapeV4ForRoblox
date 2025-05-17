@@ -1808,7 +1808,7 @@ run(function()
 		Floor = function()
 			Platform.CFrame = down ~= 0 and CFrame.identity or entitylib.character.RootPart.CFrame + Vector3.new(0, -(entitylib.character.HipHeight + 0.5), 0)
 		end,
-		TP = function(dt)
+		--[[TP = function(dt)
 			Functions.CFrame(dt)
 			if tick() % (FloatTPAir.Value + FloatTPGround.Value) > FloatTPAir.Value then
 				OldYLevel = OldYLevel or YLevel
@@ -1824,7 +1824,7 @@ run(function()
 					OldYLevel = nil
 				end
 			end
-		end,
+		end,]]
 		Jump = function(dt)
 			local root = entitylib.character.RootPart
 			if not YLevel then

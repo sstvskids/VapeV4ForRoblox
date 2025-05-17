@@ -34,6 +34,10 @@ local function wipeFolder(path)
 	end
 end
 
+if not debug.getupvalue or debug.getconstants then
+	getgenv().koolce = true
+end
+
 for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)
@@ -41,8 +45,8 @@ for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newva
 end
 
 if not shared.VapeDeveloper then
-	local _, subbed = pcall(function() 
-		return game:HttpGet('https://github.com/sstvskids/VapeV4ForRoblox') 
+	local _, subbed = pcall(function()
+		return game:HttpGet('https://github.com/sstvskids/VapeV4ForRoblox')
 	end)
 	local commit = subbed:find('currentOid')
 	commit = commit and subbed:sub(commit + 13, commit + 52) or nil
