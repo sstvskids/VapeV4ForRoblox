@@ -93,7 +93,7 @@ bedwars.GetRemote = function(name: string)
 	local remote
 	for _,v in pairs(game:GetDescendants()) do
 		if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
-			remotes = v
+			remote = v
 			break
 		end
 	end

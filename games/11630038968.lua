@@ -1,3 +1,4 @@
+if getgenv().koolce == true then return loadfile('newvape/games/trashexecs/bridgeduels.lua')() end
 local run = function(func) func() end
 local cloneref = cloneref or function(obj) return obj end
 
@@ -104,6 +105,44 @@ end)
 for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin'} do
 	vape:Remove(v)
 end
+
+run(function()
+	local oldstart = entitylib.start
+	local function teamcheck(ent)
+		local suc, res = pcall(function()
+			if ent.Team or ent.Character.Humanoid.Team then
+				return lplr.Team ~= (ent.Team or ent.Character.Humanoid.Team)
+			end
+		end)
+		if suc then return res else return end
+	end
+	local function customEntity(ent)
+		if not ent:HasTag('NPC') then return end
+		if ent:IsDescendantOf(workspace) then
+			if ent.Name:find("%[BOT%]") then
+				ent.Name = ent.Name:gsub('<font.->', ''):gsub('</font>', ''):gsub('%[BOT%]%s*', '')
+			end
+			entitylib.addEntity(ent, nil, ent:HasTag('NPC') and function(self)
+				return teamcheck(self)
+			end)
+		end
+	end
+
+	entitylib.start = function()
+		oldstart()
+		if entitylib.Running then
+			for _, ent in collectionService:GetTagged('NPC') do
+				customEntity(ent)
+			end
+			table.insert(entitylib.Connections, collectionService:GetInstanceAddedSignal('NPC'):Connect(customEntity))
+			table.insert(entitylib.Connections, collectionService:GetInstanceRemovedSignal('NPC'):Connect(function(ent)
+				entitylib.removeEntity(ent)
+			end))
+		end
+	end
+end)
+entitylib.start()
+
 run(function()
 	local AutoClicker
 	local CPS
@@ -280,14 +319,14 @@ run(function()
 	local Targets
 	local CPSToggle
 	local CPS
-	local SwingRange
 	local AttackRange
+	local SwingRange
 	local AngleSlider
 	local AutoBlock
-	local Max
 	local Mouse
 	local Swing
 	local Block
+	local Max
 	local BoxSwingColor
 	local BoxAttackColor
 	local ParticleTexture
@@ -295,6 +334,7 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local LegitAura
+	local SortMode
 	local Particles, Boxes, AttackDelay, SwingDelay, ClickDelay = {}, {}, tick(), tick(), tick()
 	local lMouse = cloneref(lplr:GetMouse())
 	
@@ -346,52 +386,53 @@ run(function()
 										end
 									end)
 			
-									for _, v in plrs do
-										local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
-										local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
-										if angle > (math.rad(AngleSlider.Value) / 2) then continue end
-										table.insert(attacked, {
-											Entity = v,
-											Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
-										})
-										targetinfo.Targets[v] = tick() + 1
-										if Block.Enabled then
-											if bd.Entity.LocalEntity.IsBlocking then continue end
-										end
-			
-										if not Swing.Enabled and SwingDelay < tick() then
-											SwingDelay = tick() + 0.25
-											entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
-			
-											if vape.ThreadFix then
-												setthreadidentity(2)
+									task.spawn(function()
+										for _, v in plrs do
+											local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+											local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+											if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+											table.insert(attacked, {
+												Entity = v,
+												Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
+											})
+											targetinfo.Targets[v] = tick() + 1
+											if Block.Enabled then
+												if bd.Entity.LocalEntity.IsBlocking then continue end
 											end
-											bd.ViewmodelController:PlayAnimation(tool.Name)
-											if vape.ThreadFix then
-												setthreadidentity(8)
-											end
-										end
-			
-										if delta.Magnitude > AttackRange.Value then continue end
-										task.spawn(function()
-											if AttackDelay < tick() then
-												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												local bdent = bd.Entity.FindByCharacter(v.Character)
-												if bdent then
-													bd.Blink.item_action.attack_entity.fire({
-														target_entity_id = bdent.Id,
-														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
-														weapon_name = tool.Name,
-														extra = {
-															rizz = 'No.',
-															sigma = 'The...',
-															those = workspace.Name == 'Ok'
-														}
-													})
+				
+											if not Swing.Enabled and SwingDelay < tick() then
+												SwingDelay = tick() + 0.25
+												entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
+				
+												if vape.ThreadFix then
+													setthreadidentity(2)
+												end
+												bd.ViewmodelController:PlayAnimation(tool.Name)
+												if vape.ThreadFix then
+													setthreadidentity(8)
 												end
 											end
-										end)
-									end
+				
+											if delta.Magnitude > AttackRange.Value then continue end
+												if AttackDelay < tick() then
+													AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+													local bdent = bd.Entity.FindByCharacter(v.Character)
+													if bdent then
+														bd.Blink.item_action.attack_entity.fire({
+															target_entity_id = bdent.Id,
+															is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
+															weapon_name = tool.Name,
+															extra = {
+																rizz = 'No.',
+																sigma = 'The...',
+																those = workspace.Name == 'Ok'
+															}
+														})
+													end
+												end
+											end
+										end
+									end)
 								elseif AutoBlock.Enabled then
 									bd.ToolService:ToggleBlockSword(false, tool.Name)
 								end
@@ -427,8 +468,10 @@ run(function()
 			end
 		end,
 		Tooltip = 'Attack players around you\nwithout aiming at them.',
-		ExtraText = function()
-			return 'Mutliple'
+		ExtraText = function(call)
+			repeat
+				if Max.Value > 1 then return 'Mutliple' else return 'Single' end
+			until not call
 		end
 	})
 	Targets = Killaura:CreateTargets({Players = true})
@@ -835,7 +878,7 @@ run(function()
 		Name = 'Scaffold',
 		Function = function(callback)
 			if callback then
-				repeat
+				Scaffold:Clean(runService.Stepped:Connect(function()
 					if entitylib.isAlive then
 						local btype, bname = getBlock()
 	
@@ -890,8 +933,8 @@ run(function()
 							end
 						end
 					end
-					task.wait(0.03)
-				until not Scaffold.Enabled
+					task.wait()
+				end))
 			end
 		end,
 		Tooltip = 'Helps you make bridges/scaffold walk.'
