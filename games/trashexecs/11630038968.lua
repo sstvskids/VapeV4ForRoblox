@@ -62,7 +62,7 @@ run(function()
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-		--ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
+		ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
         --Entity = replicatedStorage.Modules.Entity
     }
 
@@ -258,9 +258,11 @@ run(function()
 				
 											if getTool().Animations and not Swing.Enabled and SwingDelay < tick() then
 												SwingDelay = tick() + 0.25
+				
 												if vape.ThreadFix then
 													setthreadidentity(2)
 												end
+
 												lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Play()
 												if vape.ThreadFix then
 													setthreadidentity(8)
@@ -272,25 +274,13 @@ run(function()
 											if delta.Magnitude > AttackRange.Value then continue end
 											if AttackDelay < tick() then
 												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												--[[local bdent = bd.Entity.FindByCharacter(v.Character)
-												if bdent then
-													bd.Blink.item_action.attack_entity.fire({
-														target_entity_id = bdent.Id,
-														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
-														weapon_name = tool.Name,
-														extra = {
-															rizz = 'No.',
-															sigma = 'The...',
-															those = workspace.Name == 'Ok'
-														}
-													})
-												end]]
 												bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
 											end
 										end
 									end)
 								elseif AutoBlock.Enabled then
 									bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
+									--bd.ToolService:ToggleBlockSword(false, tool.Name)
 								end
 							end)
 						end
@@ -314,7 +304,6 @@ run(function()
 			else
 				if AutoBlock.Enabled then
 					bd.Remotes.BlockSword:InvokeServer(false, getAttackData().Name)
-					--bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
 				end
 				for _, v in Boxes do
 					v.Adornee = nil
@@ -653,7 +642,7 @@ run(function()
 										fake:AddTag('TempBlock')
 										fake:AddTag('Block')
 										fake.Parent = workspace.Map
-										bd.EffectsController:PlaySound(blockpos)
+										--bd.EffectsController:PlaySound(blockpos)
 										bd.Entity.LocalEntity:RemoveTool(bname, 1)
 	
 										task.spawn(function()
@@ -667,6 +656,9 @@ run(function()
 												}
 											})
 											fake:Destroy()
+											if not (suc or block) then
+												bd.Entity.LocalEntity:AddTool(bname, 1)
+											end
 										end)
 									end
 								end
