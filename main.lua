@@ -43,9 +43,6 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
-if not debug.getupvalue or debug.getconstants then
-	getgenv().koolce = true
-end
 
 local function finishLoading()
 	vape.Init = nil
