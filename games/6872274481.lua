@@ -1,4 +1,3 @@
-if getgenv().koolce == true then return loadfile('newvape/games/trashexecs/bedwars.lua')() end
 local run = function(func)
 	pcall(func)
 end

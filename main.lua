@@ -43,6 +43,9 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
+if not debug.getupvalue or debug.getconstants then
+	getgenv().koolce = true
+end
 
 local function finishLoading()
 	vape.Init = nil
@@ -98,15 +101,21 @@ shared.vape = vape
 
 if not shared.VapeIndependent then
 	loadstring(downloadFile('newvape/games/universal.lua'), 'universal')()
-	if isfile('newvape/games/'..game.PlaceId..'.lua') then
-		loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+	if isfile('newvape/games/'..game.PlaceId..'.lua') or (getgenv().koolce == true and isfile('newvape/games/trashexecs'..game.PlaceId..'.lua')) then
+		if getgenv().koolce == true then
+			loadstring(readfile('newvape/games/trashexecs/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+		else
+			loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+		end
 	else
 		if not shared.VapeDeveloper then
 			local suc, res = pcall(function()
-				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/games/'..game.PlaceId..'.lua', true)
+				urlpath == getgenv().koolce == true and '/games/trashexecs/' or '/games/'
+				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..urlpath..game.PlaceId..'.lua', true)
 			end)
 			if suc and res ~= '404: Not Found' then
-				loadstring(downloadFile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+				urlpath == getgenv().koolce == true and 'newvape/games/trashexecs/' or 'newvape/games/'
+				loadstring(downloadFile(urlpath..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 			end
 		end
 	end

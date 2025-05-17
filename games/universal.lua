@@ -845,15 +845,9 @@ run(function()
 end)
 
 run(function()
-	local suc, res = pcall(function()
-		if not debug.getupvalue and debug.getconstants then
-			getgenv().koolce = true
-			loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'))()
-			loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'))()
-			notif('Vape', 'bad exec mode has been turned on', 10, 'alert')
-		end
-	end)
-	if suc then return res else return end
+	if not debug.getupvalue and debug.getconstants then
+		notif('Vape', 'bad exec mode has been turned on', 10, 'alert')
+	end
 end)
 
 entitylib.start()

@@ -1,4 +1,3 @@
-if getgenv().koolce == true then return loadfile('newvape/games/trashexecs/bridgeduels.lua')() end
 local run = function(func) func() end
 local cloneref = cloneref or function(obj) return obj end
 
