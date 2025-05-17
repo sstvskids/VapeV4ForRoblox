@@ -271,7 +271,7 @@ run(function()
 											if delta.Magnitude > AttackRange.Value then continue end
 											if AttackDelay < tick() then
 												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												local bdent = bd.Entity.FindByCharacter(v.Character)
+												--[[local bdent = bd.Entity.FindByCharacter(v.Character)
 												if bdent then
 													bd.Blink.item_action.attack_entity.fire({
 														target_entity_id = bdent.Id,
@@ -283,7 +283,8 @@ run(function()
 															those = workspace.Name == 'Ok'
 														}
 													})
-												end
+												end]]
+												bd.Remotes.AttackPlayer:FireServer(v.Name, entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
 											end
 										end
 									end)
