@@ -17,9 +17,9 @@ local loadstring = function(...)
 	return res
 end
 local queue_on_teleport = (queue_on_teleport or queueonteleport) or function() end
-local isfile = task.spawn(isfile) or function(file)
+local isfile = isfile or function(file)
 	local suc, res = pcall(function()
-		return task.spawn(readfile(file))
+		return readfile(file)
 	end)
 	return suc and res ~= nil and res ~= ''
 end
