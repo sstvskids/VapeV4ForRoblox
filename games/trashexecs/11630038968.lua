@@ -62,7 +62,7 @@ run(function()
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-		ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
+		--ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
         --Entity = replicatedStorage.Modules.Entity
     }
 
