@@ -642,8 +642,8 @@ run(function()
 										fake:AddTag('TempBlock')
 										fake:AddTag('Block')
 										fake.Parent = workspace.Map
-										bd.EffectsController:PlaySound(blockpos)
-										bd.Entity.LocalEntity:RemoveTool(bname, 1)
+										--bd.EffectsController:PlaySound(blockpos)
+										--bd.Entity.LocalEntity:RemoveTool(bname, 1)
 	
 										task.spawn(function()
 											local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
@@ -656,9 +656,9 @@ run(function()
 												}
 											})
 											fake:Destroy()
-											if not (suc or block) then
+											--[[if not (suc or block) then
 												bd.Entity.LocalEntity:AddTool(bname, 1)
-											end
+											end]]
 										end)
 									end
 								end
