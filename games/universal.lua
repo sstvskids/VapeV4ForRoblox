@@ -848,8 +848,8 @@ run(function()
 	if not (debug.getupvalue or debug.getconstants) then
 		getgenv().koolce = true
 		notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert')
-		loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'), 'bridgeduels')()
-		loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'), 'bws')()
+		loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'))()
+		loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'))()
 	end
 end)
 
