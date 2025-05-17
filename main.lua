@@ -88,9 +88,7 @@ local function finishLoading()
 end
 
 if not isfile('newvape/profiles/gui.txt') then
-	task.spawn(function()
-		writefile('newvape/profiles/gui.txt', 'new')
-	end)
+	writefile('newvape/profiles/gui.txt', 'new')
 end
 local gui = readfile('newvape/profiles/gui.txt')
 
