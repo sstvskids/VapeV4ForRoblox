@@ -5434,10 +5434,13 @@ end)
 run(function()
 	local SessionInfo
 	local FontOption
+	local Hide
 	local TextSize
 	local BorderColor
 	local Title
 	local TitleOffset = {}
+	local Custom
+	local CustomBox
 	local infoholder
 	local infolabel
 	local infostroke
@@ -5472,8 +5475,25 @@ run(function()
 							stuff[1] = TitleOffset.Enabled and '<b>Session Info</b>\n<font size="4"> </font>' or '<b>Session Info</b>'
 						end
 						for i, v in vape.Libraries.sessioninfo.Objects do
-							stuff[v.Index] = i..': '..v.Function(v.Value)
+							stuff[v.Index] = not table.find(Hide.ListEnabled, i) and i..': '..v.Function(v.Value) or false
 						end
+	
+						if #Hide.ListEnabled > 0 then
+							local key, val
+							repeat
+								local oldkey = key
+								key, val = next(stuff, key)
+								if val == false then
+									table.remove(stuff, key)
+									key = oldkey
+								end
+							until not key
+						end
+	
+						if Custom.Enabled then
+							table.insert(stuff, CustomBox.Value)
+						end
+
 						if not Title.Enabled then
 							table.remove(stuff, 1)
 						end
@@ -5491,6 +5511,14 @@ run(function()
 	FontOption = SessionInfo:CreateFont({
 		Name = 'Font',
 		Blacklist = 'Arial'
+	})
+	Hide = SessionInfo:CreateTextList({
+		Name = 'Blacklist',
+		Tooltip = 'Name of entry to hide.',
+		Icon = getcustomasset('newvape/assets/new/blockedicon.png'),
+		Tab = getcustomasset('newvape/assets/new/blockedtab.png'),
+		TabSize = UDim2.fromOffset(21, 16),
+		Color = Color3.fromRGB(250, 50, 56)
 	})
 	SessionInfo:CreateColorSlider({
 		Name = 'Background Color',
@@ -5536,6 +5564,17 @@ run(function()
 			infostroke.Enabled = callback
 			BorderColor.Object.Visible = callback
 		end
+	})
+	Custom = SessionInfo:CreateToggle({
+		Name = 'Add custom text',
+		Function = function(enabled)
+			CustomBox.Object.Visible = enabled
+		end
+	})
+	CustomBox = SessionInfo:CreateTextBox({
+		Name = 'Custom text',
+		Darker = true,
+		Visible = false
 	})
 	infoholder = Instance.new('Frame')
 	infoholder.BackgroundColor3 = Color3.new()
@@ -6051,7 +6090,7 @@ run(function()
 			if callback then
 				local teleported
 				Blink:Clean(lplr.OnTeleport:Connect(function()
-					setfflag('S2PhysicsSenderRate', '15')
+					setfflag('PhysicsSenderMaxBandwithBps', '38760')
 					setfflag('DataSenderRate', '60')
 					teleported = true
 				end))
@@ -6059,11 +6098,11 @@ run(function()
 				repeat
 					local physicsrate, senderrate = '0', Type.Value == 'All' and '-1' or '60'
 					if AutoSend.Enabled and tick() % (AutoSendLength.Value + 0.1) > AutoSendLength.Value then
-						physicsrate, senderrate = '15', '60'
+						physicsrate, senderrate = '38760', '60'
 					end
 	
 					if physicsrate ~= oldphys or senderrate ~= oldsend then
-						setfflag('S2PhysicsSenderRate', physicsrate)
+						setfflag('PhysicsSenderMaxBandwidthBps', physicsrate)
 						setfflag('DataSenderRate', senderrate)
 						oldphys, oldsend = physicsrate, senderrate
 					end
@@ -6072,7 +6111,7 @@ run(function()
 				until (not Blink.Enabled and not teleported)
 			else
 				if setfflag then
-					setfflag('S2PhysicsSenderRate', '15')
+					setfflag('PhysicsSenderMaxBandwidthBps', '38760')
 					setfflag('DataSenderRate', '60')
 				end
 				oldphys, oldsend = nil, nil
@@ -7244,7 +7283,7 @@ run(function()
 			repeat
 				if pcall(function()
 					desc = playersService:GetHumanoidDescriptionFromUserId(IDBox.Value == '' and 239702688 or tonumber(IDBox.Value))
-				end) then break end
+				end) and desc then break end
 				task.wait(1)
 			until not Disguise.Enabled
 			if not Disguise.Enabled then

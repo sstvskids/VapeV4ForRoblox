@@ -54,7 +54,7 @@ local function notif(...)
 	return vape:CreateNotification(...) 
 end
 
-if not select(1, ...) then
+if not select(1, ...) and game.PlaceId == 5938036553 then
 	if run_on_actor and getactors then 
 		local oldreload = shared.vapereload
 		vape.Load = function()
@@ -110,7 +110,7 @@ local function addBlur(parent)
 end
 
 local function getTeam(plr)
-	return frontlines.Main.globals.sol_teams[table.find(frontlines.Main.globals.cli_names, plr.Name)]
+	return frontlines.Main.globals.cli_teams[table.find(frontlines.Main.globals.cli_names, plr.Name)]
 end
 
 local function getKey(id, server)
@@ -158,30 +158,34 @@ end
 
 run(function()
 	repeat
-		local gc = getgc(true)
-		for _, v in gc do
-			if type(v) == 'table' then
-				if rawget(v, 'script') then
-					frontlines.Main = v._G
-				end
-			elseif type(v) == 'function' and islclosure(v) then
-				local name = debug.info(v, 'n')
-				if name == 'spawn_bullet' and debug.getinfo(v).nups == 14 then
-					frontlines.ShootFunction = v
-					frontlines.ShootRay = debug.getupvalue(v, 6)
-				elseif name == 'on_melee_hit' then
-					frontlines.KnifeFunction = v
-				elseif name == 'spawn_throwable' then
-					frontlines.SpawnThrowable = v
-					frontlines.Throwables = debug.getupvalue(v, 1)
+		if not frontlines.ShootFunction then
+			local gc = getgc(true)
+			for _, v in gc do
+				if type(v) == 'table' then
+					if rawget(v, 'script') and v._G and v._G.append_exe_set then
+						frontlines.Main = v._G
+					end
+				elseif type(v) == 'function' and islclosure(v) then
+					local name = debug.info(v, 'n')
+					if name == 'spawn_bullet' and debug.getinfo(v).nups > 11 then
+						frontlines.ShootFunction = v
+						frontlines.ShootRay = typeof(debug.getupvalue(v, 6)) == 'RaycastParams' and debug.getupvalue(v, 6) or debug.getupvalue(v, 5)
+					elseif name == 'on_melee_hit' then
+						frontlines.KnifeFunction = v
+					elseif name == 'spawn_throwable' then
+						frontlines.SpawnThrowable = v
+						frontlines.Throwables = debug.getupvalue(v, 1)
+					end
 				end
 			end
+			table.clear(gc)
 		end
-		table.clear(gc)
-		if not frontlines.ShootFunction then 
+		if not (frontlines.ShootFunction and (game.PlaceId == 5938036553 or game.StarterGui:GetCore('ResetButtonCallback') == false)) then
 			task.wait(1)
+		else
+			break
 		end
-	until frontlines.ShootFunction or vape.Loaded == nil
+	until vape.Loaded == nil
 	if vape.Loaded == nil then return end
 	frontlines.Events = debug.getupvalue(frontlines.Main.append_exe_set, 1)
 	frontlines.PickupBit = debug.getupvalue(frontlines.Events[frontlines.Main.exe_func_t.INIT_FPV_SOL_AMMO_PICKUP], 5)
@@ -224,21 +228,23 @@ run(function()
 		end
 	end)
 
-	hookEvent('UPDATE_CHAT_GUI', function(id, text)
-		text = string.unpack('z', text)
-		task.delay(0, function()
-			local name = frontlines.Main.globals.cli_names[id]
-			local plr = playersService:FindFirstChild(name)
-			if not plr then return end
-			for i, v in frontlines.Chat do
-				if v.TextLabel.TextTransparency > 0.5 and v.TextLabel.Text:find(name) then
-					v.TextLabel.Text = whitelist:tag(plr, true, true)..v.TextLabel.Text
-					whitelist:process(text, plr)
-					break
+	if game.PlaceId == 5938036553 then
+		hookEvent('UPDATE_CHAT_GUI', function(id, text)
+			text = string.unpack('z', text)
+			task.delay(0, function()
+				local name = frontlines.Main.globals.cli_names[id]
+				local plr = playersService:FindFirstChild(name)
+				if not plr then return end
+				for i, v in frontlines.Chat do
+					if v.TextLabel.TextTransparency > 0.5 and v.TextLabel.Text:find(name) then
+						v.TextLabel.Text = whitelist:tag(plr, true, true)..v.TextLabel.Text
+						whitelist:process(text, plr)
+						break
+					end
 				end
-			end
+			end)
 		end)
-	end)
+	end
 
 	vape:Clean(Drawing.kill)
 	vape:Clean(function()
