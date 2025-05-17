@@ -39,7 +39,9 @@ local function downloadFile(path, func)
 		if path:find('.lua') then
 			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
 		end
-		task.spawn(writefile(path, res))
+		task.spawn(function()
+			writefile(path, res)
+		end)
 	end
 	return (func or readfile)(path)
 end
@@ -86,7 +88,9 @@ local function finishLoading()
 end
 
 if not isfile('newvape/profiles/gui.txt') then
-	task.spawn(writefile('newvape/profiles/gui.txt', 'new'))
+	task.spawn(function()
+		writefile('newvape/profiles/gui.txt', 'new')
+	end)
 end
 local gui = readfile('newvape/profiles/gui.txt')
 

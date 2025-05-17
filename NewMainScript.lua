@@ -5,7 +5,9 @@ local isfile = isfile or function(file)
 	return suc and res ~= nil and res ~= ''
 end
 local delfile = delfile or function(file)
-	task.spawn(writefile(file, ''))
+	task.spawn(function()
+		writefile(file, '')
+	end)
 end
 
 local function downloadFile(path, func)
@@ -19,7 +21,9 @@ local function downloadFile(path, func)
 		if path:find('.lua') then
 			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
 		end
-		task.spawn(writefile(path, res))
+		task.spawn(function()
+			writefile(path, res)
+		end)
 	end
 	return (func or readfile)(path)
 end
