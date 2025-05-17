@@ -414,21 +414,20 @@ run(function()
 											end
 				
 											if delta.Magnitude > AttackRange.Value then continue end
-												if AttackDelay < tick() then
-													AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-													local bdent = bd.Entity.FindByCharacter(v.Character)
-													if bdent then
-														bd.Blink.item_action.attack_entity.fire({
-															target_entity_id = bdent.Id,
-															is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
-															weapon_name = tool.Name,
-															extra = {
-																rizz = 'No.',
-																sigma = 'The...',
-																those = workspace.Name == 'Ok'
-															}
-														})
-													end
+											if AttackDelay < tick() then
+												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+												local bdent = bd.Entity.FindByCharacter(v.Character)
+												if bdent then
+													bd.Blink.item_action.attack_entity.fire({
+														target_entity_id = bdent.Id,
+														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
+														weapon_name = tool.Name,
+														extra = {
+															rizz = 'No.',
+															sigma = 'The...',
+															those = workspace.Name == 'Ok'
+														}
+													})
 												end
 											end
 										end
