@@ -846,7 +846,7 @@ end)
 
 run(function()
 	local suc, res = pcall(function()
-		if not (debug.getupvalue or debug.getconstants) then
+		if not debug.getupvalue and debug.getconstants then
 			getgenv().koolce = true
 			loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'))()
 			loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'))()
