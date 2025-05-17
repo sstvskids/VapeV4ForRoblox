@@ -96,6 +96,7 @@ end
 vape = loadstring(downloadFile('newvape/guis/'..gui..'.lua'), 'gui')()
 shared.vape = vape
 
+local urlpath
 if not shared.VapeIndependent then
 	loadstring(downloadFile('newvape/games/universal.lua'), 'universal')()
 	if isfile('newvape/games/'..game.PlaceId..'.lua') or (getgenv().koolce == true and isfile('newvape/games/trashexecs'..game.PlaceId..'.lua')) then
@@ -107,11 +108,11 @@ if not shared.VapeIndependent then
 	else
 		if not shared.VapeDeveloper then
 			local suc, res = pcall(function()
-				local urlpath == (getgenv().koolce == true and '/games/trashexecs/') or '/games/'
+				urlpath = (getgenv().koolce == true and '/games/trashexecs/') or '/games/'
 				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..urlpath..game.PlaceId..'.lua', true)
 			end)
 			if suc and res ~= '404: Not Found' then
-				urlpath == (getgenv().koolce == true and 'newvape/games/trashexecs/') or 'newvape/games/'
+				urlpath = (getgenv().koolce == true and 'newvape/games/trashexecs/') or 'newvape/games/'
 				loadstring(downloadFile(urlpath..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 			end
 		end
