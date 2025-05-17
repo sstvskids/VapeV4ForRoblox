@@ -845,12 +845,15 @@ run(function()
 end)
 
 run(function()
-	if not (debug.getupvalue or debug.getconstants) then
-		getgenv().koolce = true
-		notif('Vape', 'Vape is semi-compatible with this executor', 10, 'alert')
-		loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'))()
-		loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'))()
-	end
+	local suc, res = pcall(function()
+		if not (debug.getupvalue or debug.getconstants) then
+			getgenv().koolce = true
+			loadstring(downloadFile('newvape/games/trashexecs/bridgeduels.lua'))()
+			loadstring(downloadFile('newvape/games/trashexecs/bedwars.lua'))()
+			notif('Vape', 'bad exec mode has been turned on', 10, 'alert')
+		end
+	end)
+	if suc then return res else return end
 end)
 
 entitylib.start()
