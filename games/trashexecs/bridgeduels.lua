@@ -284,7 +284,7 @@ run(function()
 														}
 													})
 												end]]
-												bd.Remotes.AttackPlayer:FireServer(v.Name, entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+												bd.Remotes.AttackPlayer:FireServer(v.Name, entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name, '')
 											end
 										end
 									end)
