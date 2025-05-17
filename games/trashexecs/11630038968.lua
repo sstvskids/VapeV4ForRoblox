@@ -59,16 +59,11 @@ run(function()
     end
     bd.Remotes = {
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
+		BlockSword = bd.GetRemote('ToggleBlockSword'),
+		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-        BlockSword = bd.GetRemote('ToggleBlockSword'),
-        --[[Entity = require(replicatedStorage.Modules.Entity) or {
-            added = bd.GetRemote('EntityAdded'),
-            removed = bd.GetRemote('EntityRemoving'),
-            changed = bd.GetRemote('EntityChanged'),
-            toolchanged = bd.GetRemote('EntityToolChanged'),
-            toolremoved = bd.GetRemote('EntityToolRemoved'),
-            invchanged = bd.GetRemote('EntityInventoryChanged'),
-        }]] -- not sure about this one
+		ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
+        --Entity = replicatedStorage.Modules.Entity
     }
 
     task.spawn(function()
@@ -171,6 +166,14 @@ run(function()
 	})
 end)
 
+local Criticals
+run(function()
+	Criticals = vape.Categories.Blatant:CreateModule({
+		Name = 'Criticals',
+		Tooltip = 'Always hit criticals w/ killaura enabled'
+	})
+end)
+
 run(function()
 	local Killaura
 	local Targets
@@ -190,7 +193,7 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local LegitAura
-	local SortMode
+	local track
 	local Particles, Boxes, AttackDelay, SwingDelay, ClickDelay = {}, {}, tick(), tick(), tick()
 	local lMouse = cloneref(lplr:GetMouse())
 	
@@ -238,8 +241,7 @@ run(function()
 
 									task.spawn(function()
 										if AutoBlock.Enabled and tool then
-                                            bd.Remotes.BlockSword:FireServer(true, tool.Name)
-											--bd.ToolService:ToggleBlockSword(true, tool.Name)
+											bd.Remotes.BlockSword:InvokeServer(true, tool.Name)
 										end
 									end)
 			
@@ -254,18 +256,17 @@ run(function()
 											})
 											targetinfo.Targets[v] = tick() + 1
 				
-											if not Swing.Enabled and SwingDelay < tick() then
+											if getTool().Animations and not Swing.Enabled and SwingDelay < tick() then
 												SwingDelay = tick() + 0.25
-												--entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
-				
 												if vape.ThreadFix then
 													setthreadidentity(2)
 												end
-                                                entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
-												--entitylib.character.Humanoid.Animator:PlayAnimation(tool.Animations.Swing)
+												lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Play()
 												if vape.ThreadFix then
 													setthreadidentity(8)
 												end
+											elseif getTool().Animations and Swing.Enabled then
+												lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Stop()
 											end
 				
 											if delta.Magnitude > AttackRange.Value then continue end
@@ -284,13 +285,12 @@ run(function()
 														}
 													})
 												end]]
-												bd.Remotes.AttackPlayer:FireServer(v.Name, entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name, '')
+												bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
 											end
 										end
 									end)
 								elseif AutoBlock.Enabled then
-                                    bd.Remotes.BlockSword:FireServer(false, tool.Name)
-									--bd.ToolService:ToggleBlockSword(false, tool.Name)
+									bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
 								end
 							end)
 						end
@@ -313,7 +313,7 @@ run(function()
 				end)
 			else
 				if AutoBlock.Enabled then
-                    bd.Remotes.BlockSword:FireServer(false, tool.Name)
+					bd.Remotes.BlockSword:InvokeServer(false, getAttackData().Name)
 					--bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
 				end
 				for _, v in Boxes do
@@ -321,6 +321,9 @@ run(function()
 				end
 				for _, v in Particles do
 					v.Parent = nil
+				end
+				if not Swing.Enabled and getTool().Animations then
+					lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Play()
 				end
 			end
 		end,
@@ -523,4 +526,176 @@ run(function()
 		end,
 		Tooltip = 'Only attacks while swinging manually'
 	})
+end)
+
+run(function()
+	local Scaffold
+	local Expand
+	local Tower
+	local Downwards
+	local Diagonal
+	local LimitItem
+	local adjacent, lastpos = {}, Vector3.zero
+	
+	for x = -3, 3, 3 do
+		for y = -3, 3, 3 do
+			for z = -3, 3, 3 do
+				local vec = Vector3.new(x, y, z)
+				if vec.Y ~= 0 and (vec.X ~= 0 or vec.Z ~= 0) then
+					continue
+				end
+	
+				if vec ~= Vector3.zero then
+					table.insert(adjacent, vec)
+				end
+			end
+		end
+	end
+	
+	local function getBlocksInPoints(s, e)
+		local list = {}
+		for x = s.X, e.X, 3 do
+			for y = s.Y, e.Y, 3 do
+				for z = s.Z, e.Z, 3 do
+					local vec = Vector3.new(x, y, z)
+					if store.blocks[vec] then
+						table.insert(list, vec)
+					end
+				end
+			end
+		end
+		return list
+	end
+	
+	local function roundPos(vec)
+		return Vector3.new(math.round(vec.X / 3) * 3, math.round(vec.Y / 3) * 3, math.round(vec.Z / 3) * 3)
+	end
+	
+	local function nearCorner(poscheck, pos)
+		local startpos = poscheck - Vector3.new(3, 3, 3)
+		local endpos = poscheck + Vector3.new(3, 3, 3)
+		local check = poscheck + (pos - poscheck).Unit * 100
+		if math.abs(check.Y - startpos.Y) > 3 then
+			return Vector3.new(poscheck.X, math.clamp(check.Y, startpos.Y, endpos.Y), poscheck.Z)
+		end
+		return Vector3.new(math.clamp(check.X, startpos.X, endpos.X), math.clamp(check.Y, startpos.Y, endpos.Y), math.clamp(check.Z, startpos.Z, endpos.Z))
+	end
+	
+	local function blockProximity(pos)
+		local mag, returned = 60
+		local tab = getBlocksInPoints(pos - Vector3.new(21, 21, 21), pos + Vector3.new(21, 21, 21))
+		for _, v in tab do
+			local blockpos = nearCorner(v, pos)
+			local newmag = (pos - blockpos).Magnitude
+			if newmag < mag then
+				mag, returned = newmag, blockpos
+			end
+		end
+		table.clear(tab)
+		return returned
+	end
+	
+	local function checkAdjacent(pos)
+		for _, v in adjacent do
+			if store.blocks[pos + v] then return true end
+		end
+		return false
+	end
+	
+	local function getBlock()
+		local tool = getTool()
+		if tool and tool:HasTag('Blocks') then
+			local btype = tool.Name == 'Blocks' and 'Clay' or tool.Name:sub(1, -6)
+			return btype, btype == 'Clay' and 'Blocks' or ("%*Block"):format(btype)
+		end
+	
+		if LimitItem.Enabled then return end
+		for _, tool in lplr.Backpack:GetChildren() do
+			if tool:IsA('Tool') and tool:HasTag('Blocks') then
+				local btype = tool.Name == 'Blocks' and 'Clay' or tool.Name:sub(1, -6)
+				return btype, btype == 'Clay' and 'Blocks' or ("%*Block"):format(btype)
+			end
+		end
+	end
+	
+	Scaffold = vape.Categories.Utility:CreateModule({
+		Name = 'Scaffold',
+		Function = function(callback)
+			if callback then
+				Scaffold:Clean(runService.Stepped:Connect(function()
+					if entitylib.isAlive then
+						local btype, bname = getBlock()
+	
+						if btype then
+							local root = entitylib.character.RootPart
+							if Tower.Enabled and inputService:IsKeyDown(Enum.KeyCode.Space) and (not inputService:GetFocusedTextBox()) then
+								root.Velocity = Vector3.new(root.Velocity.X, 38, root.Velocity.Z)
+							end
+	
+							for i = Expand.Value, 1, -1 do
+								local currentpos = roundPos(root.Position - Vector3.new(0, entitylib.character.HipHeight + (Downwards.Enabled and inputService:IsKeyDown(Enum.KeyCode.LeftShift) and 4.5 or 1.5), 0) + entitylib.character.Humanoid.MoveDirection * (i * 3))
+								if Diagonal.Enabled then
+									if math.abs(math.round(math.deg(math.atan2(-entitylib.character.Humanoid.MoveDirection.X, -entitylib.character.Humanoid.MoveDirection.Z)) / 45) * 45) % 90 == 45 then
+										local dt = (lastpos - currentpos)
+										if ((dt.X == 0 and dt.Z ~= 0) or (dt.X ~= 0 and dt.Z == 0)) and ((lastpos - root.Position) * Vector3.new(1, 0, 1)).Magnitude < 2.5 then
+											currentpos = lastpos
+										end
+									end
+								end
+	
+								local block = store.blocks[currentpos]
+								if not block then
+									blockpos = checkAdjacent(currentpos) and currentpos or blockProximity(currentpos)
+									if blockpos then
+										local fake = replicatedStorage.Assets.Blocks[btype]:Clone()
+										fake.Name = 'TempBlock'
+										fake.Position = blockpos
+										fake:AddTag('TempBlock')
+										fake:AddTag('Block')
+										fake.Parent = workspace.Map
+										bd.EffectsController:PlaySound(blockpos)
+										bd.Entity.LocalEntity:RemoveTool(bname, 1)
+	
+										task.spawn(function()
+											local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
+												position = blockpos,
+												block_type = btype,
+												extra = {
+													rizz = 'No.',
+													sigma = 'The...',
+													those = workspace.Name == 'Ok'
+												}
+											})
+											fake:Destroy()
+										end)
+									end
+								end
+								lastpos = currentpos
+							end
+						end
+					end
+					task.wait()
+				end))
+			end
+		end,
+		Tooltip = 'Helps you make bridges/scaffold walk.'
+	})
+	Expand = Scaffold:CreateSlider({
+		Name = 'Expand',
+		Min = 1,
+		Max = 6
+	})
+	Tower = Scaffold:CreateToggle({
+		Name = 'Tower',
+		Default = true
+	})
+	Downwards = Scaffold:CreateToggle({
+		Name = 'Downwards',
+		Default = true
+	})
+	Diagonal = Scaffold:CreateToggle({
+		Name = 'Diagonal',
+		Default = true
+	})
+	LimitItem = Scaffold:CreateToggle({Name = 'Limit to items'})
 end)
