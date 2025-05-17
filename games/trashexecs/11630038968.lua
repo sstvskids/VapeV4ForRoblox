@@ -61,14 +61,14 @@ run(function()
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
         BlockSword = bd.GetRemote('ToggleBlockSword'),
-        Entity = require(replicatedStorage.Modules.Entity) or {
+        --[[Entity = require(replicatedStorage.Modules.Entity) or {
             added = bd.GetRemote('EntityAdded'),
             removed = bd.GetRemote('EntityRemoving'),
             changed = bd.GetRemote('EntityChanged'),
             toolchanged = bd.GetRemote('EntityToolChanged'),
             toolremoved = bd.GetRemote('EntityToolRemoved'),
             invchanged = bd.GetRemote('EntityInventoryChanged'),
-        } -- not sure about this one
+        }]] -- not sure about this one
     }
 
     task.spawn(function()
