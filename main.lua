@@ -100,11 +100,8 @@ local urlpath
 if not shared.VapeIndependent then
 	loadstring(downloadFile('newvape/games/universal.lua'), 'universal')()
 	if isfile('newvape/games/'..game.PlaceId..'.lua') or (getgenv().koolce == true and isfile('newvape/games/trashexecs'..game.PlaceId..'.lua')) then
-		if getgenv().koolce == true then
-			loadstring(readfile('newvape/games/trashexecs/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
-		else
-			loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
-		end
+		urlpath = (getgenv().koolce == true and 'newvape/games/trashexecs/') or 'newvape/games/'
+		loadstring(readfile(urlpath..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 	else
 		if not shared.VapeDeveloper then
 			local suc, res = pcall(function()
