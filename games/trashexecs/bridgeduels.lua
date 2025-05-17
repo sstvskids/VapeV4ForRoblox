@@ -60,7 +60,7 @@ run(function()
     bd.Remotes = {
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-        Blocking = bd.GetRemote('ToggleBlockSword'),
+        BlockSword = bd.GetRemote('ToggleBlockSword'),
         Entity = require(replicatedStorage.Modules.Entity) or {
             added = bd.GetRemote('EntityAdded'),
             removed = bd.GetRemote('EntityRemoving'),
@@ -182,7 +182,6 @@ run(function()
 	local AutoBlock
 	local Mouse
 	local Swing
-	local Block
 	local Max
 	local BoxSwingColor
 	local BoxAttackColor
@@ -238,8 +237,9 @@ run(function()
 									local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 
 									task.spawn(function()
-										if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
-											bd.ToolService:ToggleBlockSword(true, tool.Name)
+										if AutoBlock.Enabled and tool then
+                                            bd.Remotes.BlockSword:FireServer(true, tool.Name)
+											--bd.ToolService:ToggleBlockSword(true, tool.Name)
 										end
 									end)
 			
@@ -253,18 +253,16 @@ run(function()
 												Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
 											})
 											targetinfo.Targets[v] = tick() + 1
-											if Block.Enabled then
-												if bd.Entity.LocalEntity.IsBlocking then continue end
-											end
 				
 											if not Swing.Enabled and SwingDelay < tick() then
 												SwingDelay = tick() + 0.25
-												entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
+												--entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
 				
 												if vape.ThreadFix then
 													setthreadidentity(2)
 												end
-												bd.ViewmodelController:PlayAnimation(tool.Name)
+                                                entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
+												--entitylib.character.Humanoid.Animator:PlayAnimation(tool.Animations.Swing)
 												if vape.ThreadFix then
 													setthreadidentity(8)
 												end
@@ -290,7 +288,8 @@ run(function()
 										end
 									end)
 								elseif AutoBlock.Enabled then
-									bd.ToolService:ToggleBlockSword(false, tool.Name)
+                                    bd.Remotes.BlockSword:FireServer(false, tool.Name)
+									--bd.ToolService:ToggleBlockSword(false, tool.Name)
 								end
 							end)
 						end
@@ -312,8 +311,9 @@ run(function()
 					end))
 				end)
 			else
-				if AutoBlock.Enabled and bd.Entity.LocalEntity.IsBlocking then
-					bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
+				if AutoBlock.Enabled then
+                    bd.Remotes.BlockSword:FireServer(false, tool.Name)
+					--bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
 				end
 				for _, v in Boxes do
 					v.Adornee = nil
@@ -382,7 +382,6 @@ run(function()
 	})
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
-	Block = Killaura:CreateToggle({Name = 'No Block'})
 	Killaura:CreateToggle({
 		Name = 'Show target',
 		Function = function(callback)
