@@ -168,7 +168,7 @@ local Criticals
 run(function()
 	Criticals = vape.Categories.Blatant:CreateModule({
 		Name = 'Criticals',
-		Tooltip = 'Always hit criticals w/ killaura enabled'
+		Tooltip = 'Always hit criticals\nwhen Aura is enabled.'
 	})
 end)
 

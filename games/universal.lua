@@ -61,7 +61,7 @@ local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
 local getcustomasset = vape.Libraries.getcustomasset
-local version, cfgversion, wlversion = 'v1.2.1', 'v1.1', 'v1.0.2'
+local version, cfgversion, wlversion = 'v1.3', 'v1.1', 'v1.0.2'
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
@@ -836,17 +836,17 @@ run(function()
 		if suc then
 			if (res.version == version or res.cfgversion == cfgversion or res.wlversion == wlversion) then return gotversion == false end
 			gotversion = true
-			notif('Vape', 'KoolAid has detected an update that could fix issues', 6, 'warning')
+			notif('Vape', 'We have detected an update that could fix issues', 6, 'warning')
 		else
 			gotversion = true
-			notif('Vape', 'Could not grab version url; bad exec/internet ig', 8, 'alert')
+			notif('Vape', 'Could not grab version url; executor or internet problem!', 8, 'alert')
 		end
 	until (vape.Loaded == nil or gotversion == true)
 end)
 
 run(function()
 	if getgenv().koolce == true then
-		notif('Vape', 'bad exec mode has been turned on', 10, 'alert')
+		notif('Vape', 'Cheat-engine mode is on to prevent issues with your executor.', 10, 'alert')
 	end
 end)
 
