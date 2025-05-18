@@ -62,8 +62,7 @@ run(function()
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-		ServerData = replicatedStorage.Modules:FindFirstChild("ServerData")
-        --Entity = replicatedStorage.Modules.Entity
+        Entity = (identifyexecutor == 'Xeno' and require(replicatedStorage.Modules.Entity)) or nil
     }
 
     task.spawn(function()
