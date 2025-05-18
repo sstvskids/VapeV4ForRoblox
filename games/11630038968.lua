@@ -15,6 +15,7 @@ local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
 
 local bd = {}
+local bdremotes = {}
 local store = {
 	blocks = {},
 	serverBlocks = {}
@@ -56,6 +57,7 @@ run(function()
 		Blink = require(replicatedStorage.Blink.Client),
 		BreakTimes = require(replicatedStorage.Constants.Blocks),
 		BowClient = require(replicatedStorage.Client.Components.All.Tools.BowClient),
+		BowConstants = require(replicatedStorage.Constants.Ranged),
 		CombatService = Knit.GetService('CombatService'),
 		CombatConstants = require(replicatedStorage.Constants.Melee),
 		Communication = require(replicatedStorage.Client.Communication),
@@ -99,6 +101,23 @@ run(function()
 		table.clear(store.blocks)
 		table.clear(store)
 	end)
+end)
+
+run(function()
+	bdremotes.GetRemote = function(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
+        local remote
+        for _,v in pairs(game:GetDescendants()) do
+            if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
+                remote = v
+                break
+            end
+        end
+        if name == nil then return Instance.new('RemoteEvent') end
+        return remote
+    end
+    bdremotes.Remotes = {
+		ShootBow = bd.GetRemote('Fire')
+    }
 end)
 
 for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin'} do
@@ -1216,5 +1235,56 @@ run(function()
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
+	})
+end)
+
+run(function()
+	local ProjectileAura
+	local BowRange
+	local Max
+	local AttackDelay
+	ProjectileAura = vape.Categories.Blatant:CreateModule({
+		Name = 'ProjectileAura',
+		Function = function(callback)
+			if callback then
+				Killaura:Clean(runService.Stepped:Connect(function()
+					local plrs = entitylib.AllPosition({
+						Range = BowRange.Value,
+						Wallcheck = Targets.Walls.Enabled or nil,
+						Part = 'RootPart',
+						Players = Targets.Players.Enabled,
+						NPCs = Targets.NPCs.Enabled,
+						Limit = Max.Value
+					})
+
+					if getTool() and getTool():HasTag('Bow') then
+						if #plrs > 0 then
+							for i, v in plrs do
+								if delta.Magnitude > BowRange.Value then continue end
+								if AttackDelay < tick() then
+									AttackDelay = (tick() + bd.BowConstants.BOW_COOLDOWN)
+									bdremotes.Remotes.ShootBow:InvokeServer(v.RootPart.Position + v.Humanoid.MoveDirection)
+								end
+							end
+						end
+					end
+				end))
+			end
+		end
+	})
+	BowRange = ProjectileAura:CreateSlider({
+		Name = 'Range',
+		Min = 20,
+		Max = 200,
+		Default = 150,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+	Limit = Killaura:CreateSlider({
+		Name = 'Max targets',
+		Min = 1,
+		Max = 10,
+		Default = 10
 	})
 end)
