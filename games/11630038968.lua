@@ -116,7 +116,7 @@ run(function()
         return remote
     end
     bdremotes.Remotes = {
-		ShootBow = bd.GetRemote('Fire')
+		ShootBow = bdremotes.GetRemote('Fire')
     }
 end)
 
