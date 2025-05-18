@@ -61,8 +61,7 @@ run(function()
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
-        PlaceBlock = bd.GetRemote('PlaceBlock'),
-        Entity = (identifyexecutor == 'Xeno' and require(replicatedStorage.Modules.Entity)) or nil
+        PlaceBlock = bd.GetRemote('PlaceBlock')
     }
 
     task.spawn(function()
