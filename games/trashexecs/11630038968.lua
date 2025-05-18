@@ -642,7 +642,7 @@ run(function()
 										fake:AddTag('TempBlock')
 										fake:AddTag('Block')
 										fake.Parent = workspace.Map
-										bd.EffectsController:PlaySound(blockpos)
+										--bd.EffectsController:PlaySound(blockpos)
 										bd.Entity.LocalEntity:RemoveTool(bname, 1)
 	
 										task.spawn(function()
