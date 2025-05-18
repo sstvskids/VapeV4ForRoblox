@@ -1281,7 +1281,7 @@ run(function()
 			return val == 1 and 'stud' or 'studs'
 		end
 	})
-	Limit = Killaura:CreateSlider({
+	Max = ProjectileAura:CreateSlider({
 		Name = 'Max targets',
 		Min = 1,
 		Max = 10,
