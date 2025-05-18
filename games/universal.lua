@@ -845,7 +845,7 @@ run(function()
 end)
 
 run(function()
-	if not debug.getupvalue and debug.getconstants then
+	if getgenv().koolce == true then
 		notif('Vape', 'bad exec mode has been turned on', 10, 'alert')
 	end
 end)
