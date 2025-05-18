@@ -272,7 +272,7 @@ run(function()
 											if delta.Magnitude > AttackRange.Value then continue end
 											if AttackDelay < tick() then
 												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+												bd.Remotes.AttackPlayer:InvokeServer(v.Character, ((Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0), tool.Name)
 											end
 										end
 									end)
