@@ -254,19 +254,15 @@ run(function()
 											})
 											targetinfo.Targets[v] = tick() + 1
 				
-											if getTool().Animations and not Swing.Enabled and SwingDelay < tick() then
+											if not Swing.Enabled and SwingDelay < tick() then
 												SwingDelay = tick() + 0.25
-				
 												if vape.ThreadFix then
 													setthreadidentity(2)
 												end
-
-												lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Play()
+												lplr.Character.Humanoid:WaitForChild("Animator"):LoadAnimation(getTool().Animations.Swing):Play()
 												if vape.ThreadFix then
 													setthreadidentity(8)
 												end
-											elseif getTool().Animations and Swing.Enabled then
-												lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Stop()
 											end
 				
 											if delta.Magnitude > AttackRange.Value then continue end
@@ -629,37 +625,39 @@ run(function()
 										end
 									end
 								end
-	
-								local block = store.blocks[currentpos]
-								if not block then
-									blockpos = checkAdjacent(currentpos) and currentpos or blockProximity(currentpos)
-									if blockpos then
-										local fake = replicatedStorage.Assets.Blocks[btype]:Clone()
-										fake.Name = 'TempBlock'
-										fake.Position = blockpos
-										fake:AddTag('TempBlock')
-										fake:AddTag('Block')
-										fake.Parent = workspace.Map
-										--bd.EffectsController:PlaySound(blockpos)
-										bd.Entity.LocalEntity:RemoveTool(bname, 1)
-	
-										task.spawn(function()
-											local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
-												position = blockpos,
-												block_type = btype,
-												extra = {
-													rizz = 'No.',
-													sigma = 'The...',
-													those = workspace.Name == 'Ok'
-												}
-											})
-											fake:Destroy()
-											if not (suc or block) then
-												bd.Entity.LocalEntity:AddTool(bname, 1)
-											end
-										end)
+
+								pcall(function()
+									local block = store.blocks[currentpos]
+									if not block then
+										blockpos = checkAdjacent(currentpos) and currentpos or blockProximity(currentpos)
+										if blockpos then
+											local fake = replicatedStorage.Assets.Blocks[btype]:Clone()
+											fake.Name = 'TempBlock'
+											fake.Position = blockpos
+											fake:AddTag('TempBlock')
+											fake:AddTag('Block')
+											fake.Parent = workspace.Map
+											--bd.EffectsController:PlaySound(blockpos)
+											bd.Entity.LocalEntity:RemoveTool(bname, 1)
+		
+											task.spawn(function()
+												local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
+													position = blockpos,
+													block_type = btype,
+													extra = {
+														rizz = 'No.',
+														sigma = 'The...',
+														those = workspace.Name == 'Ok'
+													}
+												})
+												fake:Destroy()
+												if not (suc or block) then
+													bd.Entity.LocalEntity:AddTool(bname, 1)
+												end
+											end)
+										end
 									end
-								end
+								end)
 								lastpos = currentpos
 							end
 						end
