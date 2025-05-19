@@ -168,6 +168,13 @@ local Criticals
 run(function()
 	Criticals = vape.Categories.Blatant:CreateModule({
 		Name = 'Criticals',
+		Function = function(calling)
+			if calling then
+				repeat task.wait()
+					entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(entitylib.character.RootPart.AssemblyLinearVelocity.X, -1, entitylib.character.RootPart.AssemblyLinearVelocity.Z)
+				until not Criticals.Enabled
+			end
+		end,
 		Tooltip = 'Always hit criticals\nwhen Aura is enabled.'
 	})
 end)
