@@ -168,15 +168,7 @@ local Criticals
 run(function()
 	Criticals = vape.Categories.Blatant:CreateModule({
 		Name = 'Criticals',
-		Function = function(calling)
-			if calling then
-				repeat task.wait()
-					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then return end
-					entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(entitylib.character.RootPart.AssemblyLinearVelocity.X, -40, entitylib.character.RootPart.AssemblyLinearVelocity.Z)
-				until not Criticals.Enabled
-			end
-		end,
-		Tooltip = 'Always hit criticals\nwhen Aura is enabled.'
+		Tooltip = 'Always hit criticals'
 	})
 end)
 
@@ -276,7 +268,7 @@ run(function()
 											if delta.Magnitude > AttackRange.Value then continue end
 											if AttackDelay < tick() then
 												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												bd.Remotes.AttackPlayer:InvokeServer(v.Character, entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+												bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
 											end
 										end
 									end)
