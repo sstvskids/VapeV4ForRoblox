@@ -34,7 +34,7 @@ local function wipeFolder(path)
 	end
 end
 
-if not debug.getupvalue or debug.getconstants then
+if not (debug.getupvalue or debug.getconstants) then
 	getgenv().koolce = true
 end
 
@@ -54,6 +54,7 @@ if not shared.VapeDeveloper then
 	if commit == 'main' or (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or '') ~= commit then
 		wipeFolder('newvape')
 		wipeFolder('newvape/games')
+		wipeFolder('newvape/games/trashexecs')
 		wipeFolder('newvape/guis')
 		wipeFolder('newvape/libraries')
 	end
