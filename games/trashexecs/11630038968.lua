@@ -172,7 +172,7 @@ run(function()
 			if calling then
 				repeat task.wait()
 					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then return end
-					entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(entitylib.character.RootPart.AssemblyLinearVelocity.X, -1, entitylib.character.RootPart.AssemblyLinearVelocity.Z)
+					entitylib.character.RootPart.AssemblyLinearVelocity = Vector3.new(entitylib.character.RootPart.AssemblyLinearVelocity.X, -40, entitylib.character.RootPart.AssemblyLinearVelocity.Z)
 				until not Criticals.Enabled
 			end
 		end,
