@@ -256,10 +256,11 @@ run(function()
 				
 											if not Swing.Enabled and SwingDelay < tick() then
 												SwingDelay = tick() + 0.25
+												lplr.Character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
+
 												if vape.ThreadFix then
 													setthreadidentity(2)
 												end
-												lplr.Character.Humanoid:WaitForChild("Animator"):LoadAnimation(getTool().Animations.Swing):Play()
 												if vape.ThreadFix then
 													setthreadidentity(8)
 												end
@@ -304,9 +305,6 @@ run(function()
 				end
 				for _, v in Particles do
 					v.Parent = nil
-				end
-				if not Swing.Enabled and getTool().Animations then
-					lplr.character.Humanoid:LoadAnimation(getTool().Animations.Swing):Play()
 				end
 			end
 		end,
