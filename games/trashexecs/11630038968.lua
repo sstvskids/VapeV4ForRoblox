@@ -190,9 +190,8 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local LegitAura
-	local track
+	local Max
 	local Particles, Boxes, AttackDelay, SwingDelay, ClickDelay = {}, {}, tick(), tick(), tick()
-	local lMouse = cloneref(lplr:GetMouse())
 	
 	local function getAttackData()
 		if Mouse.Enabled then
@@ -227,7 +226,7 @@ run(function()
 							Part = 'RootPart',
 							Players = Targets.Players.Enabled,
 							NPCs = Targets.NPCs.Enabled,
-							Limit = 1
+							Limit = Max.Value
 						})
 	
 						task.spawn(function()
@@ -262,12 +261,10 @@ run(function()
 									end
 			
 									if delta.Magnitude > AttackRange.Value then continue end
-									task.spawn(function()
-										if AttackDelay < tick() then
-											AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-											bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
-										end
-									end)
+									if AttackDelay < tick() then
+										AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+										bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+									end
 								end
 							elseif AutoBlock.Enabled then
 								bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
@@ -346,6 +343,12 @@ run(function()
 		Min = 1,
 		Max = 360,
 		Default = 360
+	})
+	Max = Killaura:CreateSlider({
+		Name = 'Max targets',
+		Min = 1,
+		Max = 10,
+		Default = 10
 	})
 	AutoBlock = Killaura:CreateToggle({
 		Name = 'AutoBlock',

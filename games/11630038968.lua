@@ -334,9 +334,7 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
 	local LegitAura
-	local SortMode
 	local Particles, Boxes, AttackDelay, SwingDelay, ClickDelay = {}, {}, tick(), tick(), tick()
-	local lMouse = cloneref(lplr:GetMouse())
 	
 	local function getAttackData()
 		if Mouse.Enabled then
