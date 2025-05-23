@@ -227,7 +227,7 @@ run(function()
 							Part = 'RootPart',
 							Players = Targets.Players.Enabled,
 							NPCs = Targets.NPCs.Enabled,
-							Max = 1
+							Limit = 1
 						})
 	
 						task.spawn(function()
