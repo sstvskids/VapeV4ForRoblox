@@ -226,7 +226,8 @@ run(function()
 							Wallcheck = Targets.Walls.Enabled or nil,
 							Part = 'RootPart',
 							Players = Targets.Players.Enabled,
-							NPCs = Targets.NPCs.Enabled
+							NPCs = Targets.NPCs.Enabled,
+							Max = 1
 						})
 	
 						task.spawn(function()
