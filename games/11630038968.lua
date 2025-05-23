@@ -353,107 +353,103 @@ run(function()
 		Name = 'Killaura',
 		Function = function(callback)
 			if callback then
-				task.spawn(function()
-					if LegitAura.Enabled then
-						Killaura:Clean(inputService.InputBegan:Connect(function(input)
-							if input.UserInputType == Enum.UserInputType.MouseButton1 then
-								ClickDelay = tick() + 0.1
-							end
-						end))
-					end
-					
-					Killaura:Clean(runService.Stepped:Connect(function()
-						local tool = getAttackData()
-						local attacked = {}
-						if tool and tool:HasTag('Sword') then
-							local plrs = entitylib.AllPosition({
-								Range = SwingRange.Value,
-								Wallcheck = Targets.Walls.Enabled or nil,
-								Part = 'RootPart',
-								Players = Targets.Players.Enabled,
-								NPCs = Targets.NPCs.Enabled,
-								Limit = Max.Value
-							})
-		
-							task.spawn(function()
-								if #plrs > 0 then
-									local selfpos = entitylib.character.RootPart.Position
-									local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
-
-									task.spawn(function()
-										if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
-											bd.ToolService:ToggleBlockSword(true, tool.Name)
-										end
-									end)
-			
-									task.spawn(function()
-										for _, v in plrs do
-											local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
-											local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
-											if angle > (math.rad(AngleSlider.Value) / 2) then continue end
-											table.insert(attacked, {
-												Entity = v,
-												Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
-											})
-											targetinfo.Targets[v] = tick() + 1
-											if Block.Enabled then
-												if bd.Entity.LocalEntity.IsBlocking then continue end
-											end
-				
-											if not Swing.Enabled and SwingDelay < tick() then
-												SwingDelay = tick() + 0.25
-												entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
-				
-												if vape.ThreadFix then
-													setthreadidentity(2)
-												end
-												bd.ViewmodelController:PlayAnimation(tool.Name)
-												if vape.ThreadFix then
-													setthreadidentity(8)
-												end
-											end
-				
-											if delta.Magnitude > AttackRange.Value then continue end
-											if AttackDelay < tick() then
-												AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-												local bdent = bd.Entity.FindByCharacter(v.Character)
-												if bdent then
-													bd.Blink.item_action.attack_entity.fire({
-														target_entity_id = bdent.Id,
-														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
-														weapon_name = tool.Name,
-														extra = {
-															rizz = 'No.',
-															sigma = 'The...',
-															those = workspace.Name == 'Ok'
-														}
-													})
-												end
-											end
-										end
-									end)
-								elseif AutoBlock.Enabled then
-									bd.ToolService:ToggleBlockSword(false, tool.Name)
-								end
-							end)
+				if LegitAura.Enabled then
+					Killaura:Clean(inputService.InputBegan:Connect(function(input)
+						if input.UserInputType == Enum.UserInputType.MouseButton1 then
+							ClickDelay = tick() + 0.1
 						end
-		
-						for i, v in Boxes do
-							v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
-							if v.Adornee then
-								v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
-								v.Transparency = 1 - attacked[i].Check.Opacity
-							end
-						end
-		
-						for i, v in Particles do
-							v.Position = attacked[i] and attacked[i].Entity.RootPart.Position or Vector3.new(9e9, 9e9, 9e9)
-							v.Parent = attacked[i] and gameCamera or nil
-						end
-		
-						task.wait()
 					end))
-				end)
+				end
+					
+				Killaura:Clean(runService.Stepped:Connect(function()
+					local tool = getAttackData()
+					local attacked = {}
+					if tool and tool:HasTag('Sword') then
+						local plrs = entitylib.AllPosition({
+							Range = SwingRange.Value,
+							Wallcheck = Targets.Walls.Enabled or nil,
+							Part = 'RootPart',
+							Players = Targets.Players.Enabled,
+							NPCs = Targets.NPCs.Enabled,
+							Limit = Max.Value
+						})
+		
+						task.spawn(function()
+							if #plrs > 0 then
+								local selfpos = entitylib.character.RootPart.Position
+								local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+								if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
+									bd.ToolService:ToggleBlockSword(true, tool.Name)
+								end
+			
+								for _, v in plrs do
+									local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+									local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+									if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+									table.insert(attacked, {
+										Entity = v,
+										Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
+									})
+									targetinfo.Targets[v] = tick() + 1
+									if Block.Enabled then
+										if bd.Entity.LocalEntity.IsBlocking then continue end
+									end
+			
+									if not Swing.Enabled and SwingDelay < tick() then
+										SwingDelay = tick() + 0.25
+										entitylib.character.Humanoid.Animator:LoadAnimation(tool.Animations.Swing):Play()
+		
+										if vape.ThreadFix then
+											setthreadidentity(2)
+										end
+										bd.ViewmodelController:PlayAnimation(tool.Name)
+										if vape.ThreadFix then
+											setthreadidentity(8)
+										end
+									end
+			
+									if delta.Magnitude > AttackRange.Value then continue end
+									task.spawn(function()
+										if AttackDelay < tick() then
+											AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+											local bdent = bd.Entity.FindByCharacter(v.Character)
+											if bdent then
+												bd.Blink.item_action.attack_entity.fire({
+													target_entity_id = bdent.Id,
+													is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
+													weapon_name = tool.Name,
+													extra = {
+														rizz = 'No.',
+														sigma = 'The...',
+														those = workspace.Name == 'Ok'
+													}
+												})
+											end
+										end
+									end)
+								end
+							elseif AutoBlock.Enabled then
+								bd.ToolService:ToggleBlockSword(false, tool.Name)
+							end
+						end)
+					end
+		
+					for i, v in Boxes do
+						v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
+						if v.Adornee then
+							v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
+							v.Transparency = 1 - attacked[i].Check.Opacity
+						end
+					end
+	
+					for i, v in Particles do
+						v.Position = attacked[i] and attacked[i].Entity.RootPart.Position or Vector3.new(9e9, 9e9, 9e9)
+						v.Parent = attacked[i] and gameCamera or nil
+					end
+	
+					task.wait()
+				end))
 			else
 				if AutoBlock.Enabled and bd.Entity.LocalEntity.IsBlocking then
 					bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
