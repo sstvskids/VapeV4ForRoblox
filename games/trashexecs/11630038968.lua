@@ -95,10 +95,6 @@ run(function()
 	end)
 end)
 
-for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin'} do
-	vape:Remove(v)
-end
-
 run(function()
 	local oldstart = entitylib.start
 	local function teamcheck(ent)
@@ -134,7 +130,11 @@ run(function()
 		end
 	end
 end)
+
 entitylib.start()
+for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin'} do
+	vape:Remove(v)
+end
 
 run(function()
 	local AutoClicker
