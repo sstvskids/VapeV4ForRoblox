@@ -281,7 +281,7 @@ run(function()
 							v.Transparency = 1 - attacked[i].Check.Opacity
 						end
 					end
-		
+					
 					for i, v in Particles do
 						v.Position = attacked[i] and attacked[i].Entity.RootPart.Position or Vector3.new(9e9, 9e9, 9e9)
 						v.Parent = attacked[i] and gameCamera or nil
