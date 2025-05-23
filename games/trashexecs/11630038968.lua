@@ -234,9 +234,11 @@ run(function()
 								local selfpos = entitylib.character.RootPart.Position
 								local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 
-								if AutoBlock.Enabled and tool then
-									bd.Remotes.BlockSword:InvokeServer(true, tool.Name)
-								end
+								task.spawn(function()
+									if AutoBlock.Enabled and tool then
+										bd.Remotes.BlockSword:InvokeServer(true, tool.Name)
+									end
+								end)
 			
 								for _, v in plrs do
 									local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
@@ -250,14 +252,7 @@ run(function()
 		
 									if not Swing.Enabled and SwingDelay < tick() then
 										SwingDelay = tick() + 0.25
-
-										if vape.ThreadFix then
-											setthreadidentity(2)
-										end
 										lplr.Character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
-										if vape.ThreadFix then
-											setthreadidentity(8)
-										end
 									end
 			
 									if delta.Magnitude > AttackRange.Value then continue end

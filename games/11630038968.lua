@@ -377,9 +377,11 @@ run(function()
 								local selfpos = entitylib.character.RootPart.Position
 								local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 
-								if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
-									bd.ToolService:ToggleBlockSword(true, tool.Name)
-								end
+								task.spawn(function()
+									if AutoBlock.Enabled and tool and not (bd.Entity.LocalEntity.IsBlocking and inputService:IsMouseButtonPressed(1)) then
+										bd.ToolService:ToggleBlockSword(true, tool.Name)
+									end
+								end)
 			
 								for _, v in plrs do
 									local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
