@@ -270,7 +270,6 @@ run(function()
 								end
 							elseif AutoBlock.Enabled then
 								bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
-								--bd.ToolService:ToggleBlockSword(false, tool.Name)
 							end
 						end)
 					end
