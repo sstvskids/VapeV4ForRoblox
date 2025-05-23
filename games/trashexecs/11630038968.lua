@@ -209,7 +209,7 @@ run(function()
 		Name = 'Killaura',
 		Function = function(callback)
 			if callback then
-				if LegitAura.Enabled then
+				if LegitAura and LegitAura.Enabled then
 					Killaura:Clean(inputService.InputBegan:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 then
 							ClickDelay = tick() + 0.1
