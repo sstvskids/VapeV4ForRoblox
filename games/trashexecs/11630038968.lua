@@ -49,7 +49,7 @@ run(function()
     bd.GetRemote = function(name: RemoteEvent | RemoteFunction): RemoteEvent | RemoteFunction
         local remote
 		task.spawn(function()
-			for _,v in pairs(game:GetDescendants()) do
+			for _, v in pairs(game:GetDescendants()) do
 				if (v:IsA('RemoteEvent') or v:IsA('RemoteFunction')) and v.Name == name then
 					remote = v
 					break
@@ -105,7 +105,7 @@ run(function()
 				return lplr.Team ~= (ent.Team or ent.Character.Humanoid.Team)
 			end
 		end)
-		if suc then return res else return end
+		return (suc and res) or true
 	end
 	local function customEntity(ent)
 		if not ent:HasTag('NPC') then return end
@@ -314,7 +314,7 @@ run(function()
 			end
 		end,
 		Tooltip = 'Attack players around you\nwithout aiming at them.',
-		ExtraText = function(call)
+		ExtraText = function()
 			return 'Single'
 		end
 	})

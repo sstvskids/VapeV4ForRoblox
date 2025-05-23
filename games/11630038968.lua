@@ -114,7 +114,7 @@ run(function()
 				return lplr.Team ~= (ent.Team or ent.Character.Humanoid.Team)
 			end
 		end)
-		if suc then return res else return end
+		return (suc and res) or true
 	end
 	local function customEntity(ent)
 		if not ent:HasTag('NPC') then return end
