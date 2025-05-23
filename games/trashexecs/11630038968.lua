@@ -173,6 +173,21 @@ run(function()
 end)
 
 run(function()
+	vape.Categories.Combat:CreateModule({
+		Name = 'Velocity',
+		Function = function(callback)
+			if callback then
+				local remote = game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CombatService"):WaitForChild("RE"):WaitForChild("KnockBackApplied")
+				remote:Destroy()
+			else
+				notif('Vape', 'Velocity will be disabled next game.', 7)
+			end
+		end,
+		Tooltip = 'Always hit criticals'
+	})
+end)
+
+run(function()
 	local Killaura
 	local Targets
 	local CPSToggle
@@ -240,27 +255,29 @@ run(function()
 									end
 								end)
 			
-								for _, v in plrs do
-									local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
-									local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
-									if angle > (math.rad(AngleSlider.Value) / 2) then continue end
-									table.insert(attacked, {
-										Entity = v,
-										Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
-									})
-									targetinfo.Targets[v] = tick() + 1
-		
-									if not Swing.Enabled and SwingDelay < tick() then
-										SwingDelay = tick() + 0.25
-										lplr.Character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
-									end
+								task.spawn(function()
+									for _, v in plrs do
+										local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+										local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+										if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+										table.insert(attacked, {
+											Entity = v,
+											Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
+										})
+										targetinfo.Targets[v] = tick() + 1
 			
-									if delta.Magnitude > AttackRange.Value then continue end
-									if AttackDelay < tick() then
-										AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-										bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+										if not Swing.Enabled and SwingDelay < tick() then
+											SwingDelay = tick() + 0.25
+											lplr.Character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
+										end
+				
+										if delta.Magnitude > AttackRange.Value then continue end
+										if AttackDelay < tick() then
+											AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
+											bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+										end
 									end
-								end
+								end)
 							elseif AutoBlock.Enabled then
 								bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
 							end
