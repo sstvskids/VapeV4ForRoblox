@@ -175,12 +175,12 @@ run(function()
 end)
 
 run(function()
+	local old = replicatedStorage.Modules.Knit.Services.CombatService.RE.KnockBackApplied
 	vape.Categories.Combat:CreateModule({
 		Name = 'Velocity',
 		Function = function(callback)
 			if callback then
-				local remote = game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("CombatService"):WaitForChild("RE"):WaitForChild("KnockBackApplied")
-				remote:Destroy()
+				old:Destroy()
 			else
 				notif('Vape', 'Velocity will be disabled next game.', 7)
 			end
