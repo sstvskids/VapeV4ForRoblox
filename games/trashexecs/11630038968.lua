@@ -7,6 +7,7 @@ local inputService = cloneref(game:GetService('UserInputService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local collectionService = cloneref(game:GetService('CollectionService'))
 local runService = cloneref(game:GetService('RunService'))
+local tweenService = cloneref(game:GetService('TweenService'))
 
 local gameCamera = workspace.CurrentCamera
 local lplr = playersService.LocalPlayer
@@ -175,12 +176,14 @@ run(function()
 end)
 
 run(function()
-	local old = replicatedStorage.Modules.Knit.Services.CombatService.RE.KnockBackApplied
 	vape.Categories.Combat:CreateModule({
 		Name = 'Velocity',
 		Function = function(callback)
 			if callback then
-				old:Destroy()
+				pcall(function()
+					local old = replicatedStorage.Modules.Knit.Services.CombatService.RE.KnockBackApplied
+					old:Destroy()
+				end)
 			else
 				notif('Vape', 'Velocity will be disabled next game.', 7)
 			end
@@ -268,7 +271,7 @@ run(function()
 										})
 										targetinfo.Targets[v] = tick() + 1
 			
-										if not Swing.Enabled and SwingDelay < tick() then
+										if not Swing.Enabled and SwingDelay < tick() and (tool and tool:HasTag('Sword')) then
 											SwingDelay = tick() + 0.25
 											lplr.Character.Humanoid.Animator:LoadAnimation(getTool().Animations.Swing):Play()
 										end
