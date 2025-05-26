@@ -205,7 +205,7 @@ run(function()
 				until not NoFall.Enabled
 			end
 		end,
-		Tooltip = 'Prevents taking slow damage.'
+		Tooltip = 'Prevents taking fall damage.'
 	})
 end)
 
