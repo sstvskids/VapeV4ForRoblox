@@ -199,7 +199,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				repeat task.wait()
-					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and Enum.HumanoidStateType.Falling then
+					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and Enum.HumanoidStateType.FallingDown then
 						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
 				until not NoFall.Enabled
