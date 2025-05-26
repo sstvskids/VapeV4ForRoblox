@@ -1,5 +1,5 @@
 -- bridge duels (cheat engine!!)
-local run = function(func) func() end
+local run = function(func) pcall(func) end
 local cloneref = cloneref or function(obj) return obj end
 
 local playersService = cloneref(game:GetService('Players'))
@@ -189,6 +189,23 @@ run(function()
 			end
 		end,
 		Tooltip = 'Always hit criticals'
+	})
+end)
+
+run(function()
+	local NoFall
+	NoFall = vape.Categories.Blatant:CreateModule({
+		Name = 'NoFall',
+		Function = function(callback)
+			if callback then
+				repeat task.wait()
+					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air then
+						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+					end
+				until not NoFall.Enabled
+			end
+		end,
+		Tooltip = 'Prevents taking slow damage.'
 	})
 end)
 
