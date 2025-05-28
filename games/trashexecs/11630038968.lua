@@ -664,12 +664,9 @@ run(function()
 											fake.Parent = workspace.Map
 											--bd.EffectsController:PlaySound(blockpos)
 											if vape.ThreadFix then
-												setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 8)
+												setthreadidentity(8)
 											end
 											bd.require.Entity.LocalEntity:RemoveTool(bname, 1)
-											if vape.ThreadFix then
-												setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 2)
-											end
 		
 											task.spawn(function()
 												local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
@@ -684,12 +681,9 @@ run(function()
 												fake:Destroy()
 												if not (suc or block) then
 													if vape.ThreadFix then
-														setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 8)
+														setthreadidentity(8)
 													end
 													bd.require.Entity.LocalEntity:AddTool(bname, 1)
-													if vape.ThreadFix then
-														setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 2)
-													end
 												end
 											end)
 										end
