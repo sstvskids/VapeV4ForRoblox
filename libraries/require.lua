@@ -1,3 +1,5 @@
+if getgenv().EXEC_REQUIRE_LOADED == true then return end
+
 -- og by the_vrillionaire on gitbub
 local execrequire = {} :: table
 local modulecache = {} :: table

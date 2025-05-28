@@ -66,7 +66,7 @@ run(function()
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-		Entity = getgenv().EXEC_REQUIRE_LOADED == true and require(replicatedStorage.Modules.Entity) or nil
+		Entity = (getgenv().EXEC_REQUIRE_LOADED == true and require(replicatedStorage.Modules.Entity)) or nil
     }
 
     task.spawn(function()
