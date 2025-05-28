@@ -15,6 +15,7 @@ local vape = shared.vape
 local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
+local execrequire = vape.Libraries.execrequire
 
 local bd = {}
 local store = {
@@ -64,7 +65,8 @@ run(function()
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
-        PlaceBlock = bd.GetRemote('PlaceBlock')
+        PlaceBlock = bd.GetRemote('PlaceBlock'),
+		Entity = getgenv().EXEC_REQUIRE_LOADED == true and require(replicatedStorage.Modules.Entity) or nil
     }
 
     task.spawn(function()
