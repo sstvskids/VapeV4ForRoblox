@@ -1,7 +1,6 @@
 -- og by the_vrillionaire on gitbub
 local execrequire = {} :: table
 local modulecache = {} :: table
-local vape = shared.vape
 local rbxrequire = require
 
 -- functions
@@ -59,14 +58,5 @@ end
 -- init
 getgenv().require = execrequire.require
 getgenv().EXEC_REQUIRE_LOADED = true
-
-repeat task.wait()
-    if vape.Loaded == nil then
-        getgenv().require = rbxrequire
-        getgenv().EXEC_REQUIRE_LOADED = false
-        execrequire = nil
-        modulecache = nil
-    end
-until vape.Loaded == nil and getgenv().EXEC_REQUIRE_LOADED == false
 
 return execrequire
