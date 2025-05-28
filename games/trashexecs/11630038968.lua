@@ -66,8 +66,10 @@ run(function()
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
-		Entity = (getgenv().EXEC_REQUIRE_LOADED == true and require(replicatedStorage.Modules.Entity)) or nil
     }
+	bd.require = {
+		Entity = require(replicatedStorage.Modules.Entity)
+	}
 
     task.spawn(function()
 		local map = workspace:WaitForChild('Map', 99999)
@@ -661,7 +663,13 @@ run(function()
 											fake:AddTag('Block')
 											fake.Parent = workspace.Map
 											--bd.EffectsController:PlaySound(blockpos)
-											bd.Entity.LocalEntity:RemoveTool(bname, 1)
+											if vape.ThreadFix then
+												setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 8)
+											end
+											bd.require.Entity.LocalEntity:RemoveTool(bname, 1)
+											if vape.ThreadFix then
+												setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 2)
+											end
 		
 											task.spawn(function()
 												local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
@@ -675,7 +683,13 @@ run(function()
 												})
 												fake:Destroy()
 												if not (suc or block) then
-													bd.Entity.LocalEntity:AddTool(bname, 1)
+													if vape.ThreadFix then
+														setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 8)
+													end
+													bd.require.Entity.LocalEntity:AddTool(bname, 1)
+													if vape.ThreadFix then
+														setthreadidentity((getgenv().getthreadidentity and getthreadidentity) or 2)
+													end
 												end
 											end)
 										end

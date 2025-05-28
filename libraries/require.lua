@@ -6,22 +6,31 @@ local modulecache = {} :: table
 local rbxrequire = require
 
 -- functions
-local function ismodule(filepath: string): boolean
-    local isluaFile = select(1, filepath:find('.lua')) ~= nil
-    local isluauFile = select(1, filepath:find('.luau')) ~= nil
-    return isfile(filepath) and (isluaFile or isluauFile)
+local function isModule(filepath: string): boolean
+	local isLuaFile = isfile(filepath:gsub("%.", "\\")..".lua")
+	local isLuauFile = isfile(filepath:gsub("%.", "\\")..".luau")
+	return (isLuaFile or isLuauFile)
 end
 
-local function loadFile(filepath: string)
-    local filepaths = firepath:split("\\")
+local function getModuleFileExtension(filepath): string?
+	if isfile(filepath .. ".lua") then
+		return ".lua"
+	elseif isfile(filepath .. ".luau") then
+		return ".luau"
+	end
+end
+
+local function loadModule(filepath: string)
+    local filepaths = firepath:split(".")
     local currentPath: string = '.'
 
     local requiredFile: any
     local err: string
 
     for i, path in next, filepaths do
-        currentpath ..="\\"..path
+        currentPath ..= path .. (i < #filepaths and "\\" or "")
         if ismodule(currentpath) then
+            currentPath ..= getModuleFileExtension(currentPath)
             requiredFile, err = loadfile(currentpath)
             return requiredFile, err
         end
@@ -37,18 +46,22 @@ execrequire.require = function(file: string | any): any
     if modulecache[file] then
         return modulecache[file]
     else
+        local filepath
         local requiredfile = isfile(file)
-        local isAModule = ismodule(file)
+        local isAModule = ismodule(file) or isModule(file..'.init')
         if not requiredfile then
             error("Attempt to require an invalid file: '"..file.."'", 2)
         end
         if not isAModule then
             error("Attempt to require a non-module file: '"..file.."'", 2)
         end
+        if not isModule(filepath) and isModule(filepath .. ".init") then
+			filepath = filepath .. ".init"
+		end
 
-        local loadedModule, err = loadFile(file)
+        local loadedModule, err = loadModule(file)
         if not loadedModule and err then
-            error("Attempt to load a module file failed: '"..file.."'", 2)
+            error("Attempt to load a module file failed: '"..filepath.."'", 2)
         end
 
         local returns = loadedModule()
