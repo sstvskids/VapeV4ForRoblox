@@ -26,7 +26,7 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
-local function downloadFile2(path, func)
+local function downloadFile2(path)
 	if not isfile(path) then
 		local suc, res = pcall(function()
 			return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
@@ -39,7 +39,7 @@ local function downloadFile2(path, func)
 		end
 		writefile(path, res)
 	end
-	return (func or dofile)(path)
+	return loadfile(path)
 end
 local run = function(func)
 	func()

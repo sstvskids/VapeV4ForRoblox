@@ -67,8 +67,9 @@ run(function()
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
     }
-	bd.require = {
-		Entity = require(replicatedStorage.Modules.Entity)
+	bd.requires = {
+		Entity = require(replicatedStorage.Modules.Entity),
+		Blink = require(replicatedStorage.Blink.Client)
 	}
 
     task.spawn(function()
@@ -663,10 +664,7 @@ run(function()
 											fake:AddTag('Block')
 											fake.Parent = workspace.Map
 											--bd.EffectsController:PlaySound(blockpos)
-											if vape.ThreadFix then
-												setthreadidentity(8)
-											end
-											bd.require.Entity.LocalEntity:RemoveTool(bname, 1)
+											bd.requires.Entity.LocalEntity:RemoveTool(bname, 1)
 		
 											task.spawn(function()
 												local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
@@ -680,10 +678,7 @@ run(function()
 												})
 												fake:Destroy()
 												if not (suc or block) then
-													if vape.ThreadFix then
-														setthreadidentity(8)
-													end
-													bd.require.Entity.LocalEntity:AddTool(bname, 1)
+													bd.requires.Entity.LocalEntity:AddTool(bname, 1)
 												end
 											end)
 										end

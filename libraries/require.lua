@@ -1,6 +1,6 @@
-if getgenv().EXEC_REQUIRE_LOADED == true then return end
+-- og by the_vrillionaire on github
+if getgenv().EXEC_REQUIRE_LOADED == true then getgenv().EXEC_REQUIRE_LOADED = false end
 
--- og by the_vrillionaire on gitbub
 local execrequire = {} :: table
 local modulecache = {} :: table
 local rbxrequire = require
