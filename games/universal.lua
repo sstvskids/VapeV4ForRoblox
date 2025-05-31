@@ -238,8 +238,18 @@ local function motorMove(target, cf)
 end
 
 local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua'))()
+local execRequire
 if getgenv().koolce then
-	local execRequire = downloadFile2('newvape/libraries/require.lua')
+	execRequire = downloadFile2('newvape/libraries/require.lua')
+	vape.Libraries.execRequire = execRequire
+
+	repeat task.wait()
+		if vape.Loaded == nil and getgenv().koolce then
+			execrequire.unload()
+		else
+			return
+		end
+	until vape.Loaded == nil
 end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
@@ -263,7 +273,6 @@ vape.Libraries.whitelist = whitelist
 vape.Libraries.prediction = prediction
 vape.Libraries.hash = hash
 vape.Libraries.koolwl = koolwl
-vape.Libraries.execRequire = execRequire
 vape.Libraries.auraanims = {
 	Normal = {
 		{CFrame = CFrame.new(-0.17, -0.14, -0.12) * CFrame.Angles(math.rad(-53), math.rad(50), math.rad(-64)), Time = 0.1},
@@ -296,13 +305,6 @@ vape.Libraries.auraanims = {
 		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.15}
 	}
 }
-repeat task.wait()
-	if vape.Loaded == nil and getgenv().koolce then
-		execrequire.unload()
-	else
-		return
-	end
-until vape.Loaded == nil
 koolwl:check()
 
 local SpeedMethods
