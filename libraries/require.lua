@@ -6,7 +6,7 @@ local modulecache = {} :: table
 local rbxrequire = require
 
 -- functions
-local function isModule(filepath: string): boolean
+local function ismodule(filepath: string): boolean
 	local isLuaFile = isfile(filepath:gsub("%.", "\\")..".lua")
 	local isLuauFile = isfile(filepath:gsub("%.", "\\")..".luau")
 	return (isLuaFile or isLuauFile)
@@ -37,6 +37,7 @@ local function loadModule(filepath: string)
     end
 end
 
+-- init
 execrequire.require = function(file: string | any): any
     local rbxrequired, res = pcall(rbxrequire, file)
     if rbxrequired then
@@ -48,14 +49,14 @@ execrequire.require = function(file: string | any): any
     else
         local filepath
         local requiredfile = isfile(file)
-        local isAModule = ismodule(file) or isModule(file..'.init')
+        local isAModule = ismodule(file) or ismodule(file..'.init')
         if not requiredfile then
             error("Attempt to require an invalid file: '"..file.."'", 2)
         end
         if not isAModule then
             error("Attempt to require a non-module file: '"..file.."'", 2)
         end
-        if not isModule(filepath) and isModule(filepath .. ".init") then
+        if not ismodule(filepath) and ismodule(filepath .. ".init") then
 			filepath = filepath .. ".init"
 		end
 
@@ -70,7 +71,13 @@ execrequire.require = function(file: string | any): any
     end
 end
 
--- init
+execrequire.unload = function()
+    getgenv().require = rbxrequire
+    getgenv().EXEC_REQUIRE_LOADED = nil
+    modulecache = nil
+    execrequire = nil
+end
+
 getgenv().require = execrequire.require
 getgenv().EXEC_REQUIRE_LOADED = true
 

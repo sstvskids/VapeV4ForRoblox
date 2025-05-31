@@ -39,7 +39,9 @@ local function downloadFile2(path)
 		end
 		writefile(path, res)
 	end
-	return loadfile(path)
+	return vape and vape:Clean(function()
+		dofile(path)
+	end)
 end
 local run = function(func)
 	func()
@@ -236,7 +238,9 @@ local function motorMove(target, cf)
 end
 
 local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua'))()
-local execRequire = loadstring(downloadFile2('newvape/libraries/require.lua'))()
+if getgenv().koolce then
+	local execRequire = downloadFile2('newvape/libraries/require.lua')
+end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
@@ -292,6 +296,13 @@ vape.Libraries.auraanims = {
 		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.15}
 	}
 }
+repeat task.wait()
+	if vape.Loaded == nil and getgenv().koolce then
+		execrequire.unload()
+	else
+		return
+	end
+until vape.Loaded == nil
 koolwl:check()
 
 local SpeedMethods
