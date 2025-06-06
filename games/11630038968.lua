@@ -732,9 +732,13 @@ run(function()
 					if not hooked and Mode.Value == 'Cancel' then
 						hooked = true
 						old = hookfunction(bd.Blink.player_state.take_fall_damage.fire, function() end)
+					elseif hooked and Mode.Value ~= 'Cancel' then
+						hookfunction(bd.Blink.player_state.take_fall_damage.fire, old)
+						old = nil
+						hooked = false
 					end
-					if Mode.Value == 'State' then
-						if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and Enum.HumanoidStateType.FallingDown then
+					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and entitylib.isAlive and (entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall or entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.FallingDown) then
+						if Mode.Value == 'State' then
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 						end
 					end
