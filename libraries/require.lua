@@ -7,9 +7,13 @@ local rbxrequire = require
 
 -- functions
 local function ismodule(filepath: string): boolean
-	local isLuaFile = isfile(filepath:gsub("%.", "\\")..".lua")
-	local isLuauFile = isfile(filepath:gsub("%.", "\\")..".luau")
-	return (isLuaFile or isLuauFile)
+    local isLuaFile
+    local isLuauFile
+    if string.find(filepath, '"') or string.find(filepath, "'") then
+        isLuaFile = isfile(filepath:gsub("%", "\\")..".lua")
+        isLuauFile = isfile(filepath:gsub("%", "\\")..".luau")
+    end
+	return (isLuaFile or isLuauFile) or true
 end
 
 local function getModuleFileExtension(filepath): string?
