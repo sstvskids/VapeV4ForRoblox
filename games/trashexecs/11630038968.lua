@@ -15,7 +15,6 @@ local vape = shared.vape
 local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
-local execrequire = vape.Libraries.execrequire
 
 local bd = {}
 local store = {
@@ -67,10 +66,6 @@ run(function()
 		EnterQueue = bd.GetRemote('EnterQueue'),
         PlaceBlock = bd.GetRemote('PlaceBlock'),
     }
-	bd.requires = {
-		Entity = require(replicatedStorage.Modules.Entity),
-		Blink = require(replicatedStorage.Blink.Client)
-	}
 
     task.spawn(function()
 		local map = workspace:WaitForChild('Map', 99999)
@@ -664,7 +659,7 @@ run(function()
 											fake:AddTag('Block')
 											fake.Parent = workspace.Map
 											--bd.EffectsController:PlaySound(blockpos)
-											bd.requires.Entity.LocalEntity:RemoveTool(bname, 1)
+											bd.Entity.LocalEntity:RemoveTool(bname, 1)
 		
 											task.spawn(function()
 												local suc, block = bd.Remotes.PlaceBlock:InvokeServer({
@@ -678,7 +673,7 @@ run(function()
 												})
 												fake:Destroy()
 												if not (suc or block) then
-													bd.requires.Entity.LocalEntity:AddTool(bname, 1)
+													bd.Entity.LocalEntity:AddTool(bname, 1)
 												end
 											end)
 										end

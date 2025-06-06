@@ -26,23 +26,6 @@ local function downloadFile(path, func)
 	end
 	return (func or readfile)(path)
 end
-local function downloadFile2(path)
-	if not isfile(path) then
-		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-		end)
-		if not suc or res == '404: Not Found' then
-			error(res)
-		end
-		if path:find('.lua') then
-			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-		end
-		writefile(path, res)
-	end
-	return vape and vape:Clean(function()
-		dofile(path)
-	end)
-end
 local run = function(func)
 	func()
 end
@@ -238,19 +221,6 @@ local function motorMove(target, cf)
 end
 
 local koolwl = loadstring(game:HttpGet('https://raw.githubusercontent.com/skidvape/koolCore/refs/heads/main/whitelist/whitelist.lua'))()
-local execRequire
-if getgenv().koolce then
-	execRequire = downloadFile2('newvape/libraries/require.lua')
-	vape.Libraries.execRequire = execRequire
-
-	repeat task.wait()
-		if vape.Loaded == nil and getgenv().koolce then
-			execrequire.unload()
-		else
-			return
-		end
-	until vape.Loaded == nil
-end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
