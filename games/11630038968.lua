@@ -719,19 +719,39 @@ run(function()
 end)
 	
 run(function()
+	local NoFall
+	local Mode
 	local old
+	local hooked
 	
-	vape.Categories.Blatant:CreateModule({
+	NoFall = vape.Categories.Blatant:CreateModule({
 		Name = 'NoFall',
 		Function = function(callback)
-			if callback then 
-				old = hookfunction(bd.Blink.player_state.take_fall_damage.fire, function() end)
+			if callback then
+				repeat task.wait()
+					if not hooked and Mode.Value == 'Cancel' then
+						hooked = true
+						old = hookfunction(bd.Blink.player_state.take_fall_damage.fire, function() end)
+					end
+					if Mode.Value == 'State' then
+						if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and Enum.HumanoidStateType.FallingDown then
+							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
+						end
+					end
+				until not NoFall.Enabled
 			else
-				hookfunction(bd.Blink.player_state.take_fall_damage.fire, old)
-				old = nil
+				if Mode.Value == 'Cancel' then
+					hookfunction(bd.Blink.player_state.take_fall_damage.fire, old)
+					old = nil
+					hooked = nil
+				end
 			end
 		end,
 		Tooltip = 'Prevents taking fall damage.'
+	})
+	Mode = NoFall:CreateDropdown({
+		Name = 'Mode',
+		List = {'Cancel', 'State'}
 	})
 end)
 	
