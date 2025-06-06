@@ -3,7 +3,7 @@ if shared.vape then shared.vape:Uninject() end
 
 -- why do exploits fail to implement anything correctly? Is it really that hard?
 if identifyexecutor then
-	if table.find({'Argon', 'Wave', 'Velocity'}, ({identifyexecutor()})[1]) then
+	if (getgenv().koolce == true and getcustomasset) or table.find({'Argon', 'Wave', 'Velocity'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = function(val)
 			return val
 		end
