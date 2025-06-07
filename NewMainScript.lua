@@ -34,13 +34,6 @@ local function wipeFolder(path)
 	end
 end
 
-if (identifyexecutor and table.find({'Xeno'}, ({identifyexecutor()})[1])) or not (debug.getupvalue or debug.getconstants) then
-	getgenv().koolce = true
-end
-if identifyexecutor and table.find({'Xeno'}, ({identifyexecutor()})[1]) then
-	getgenv().cloneref = function(val) return val end
-end
-
 for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)
