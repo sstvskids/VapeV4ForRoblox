@@ -323,7 +323,7 @@ run(function()
 				end))
 			else
 				if AutoBlock.Enabled then
-					bd.Remotes.BlockSword:InvokeServer(false, getAttackData().Name)
+					bd.Remotes.BlockSword:InvokeServer(false, getTool().Name)
 				end
 				for _, v in Boxes do
 					v.Adornee = nil
