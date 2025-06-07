@@ -10,18 +10,16 @@ end
 
 local function downloadFile(path, func)
 	if not isfile(path) then
-		task.spawn(function()
-			local suc, res = pcall(function()
-				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-			end)
-			if not suc or res == '404: Not Found' then
-				error(res)
-			end
-			if path:find('.lua') then
-				res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-			end
-			writefile(path, res)
+		local suc, res = pcall(function()
+			return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
+		if not suc or res == '404: Not Found' then
+			error(res)
+		end
+		if path:find('.lua') then
+			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
+		end
+		writefile(path, res)
 	end
 	return (func or readfile)(path)
 end
