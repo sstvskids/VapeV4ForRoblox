@@ -188,7 +188,7 @@ run(function()
 				notif('Vape', 'Velocity will be disabled next game.', 7)
 			end
 		end,
-		Tooltip = 'Always hit criticals'
+		Tooltip = 'Reduces knockback taken'
 	})
 end)
 
