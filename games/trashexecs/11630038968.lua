@@ -64,7 +64,7 @@ run(function()
         AttackPlayer = bd.GetRemote('AttackPlayerWithSword'),
 		BlockSword = bd.GetRemote('ToggleBlockSword'),
 		EnterQueue = bd.GetRemote('EnterQueue'),
-        PlaceBlock = bd.GetRemote('PlaceBlock'),
+        PlaceBlock = bd.GetRemote('PlaceBlock')
     }
 
     task.spawn(function()
@@ -199,7 +199,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				repeat task.wait()
-					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and Enum.HumanoidStateType.FallingDown then
+					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and (entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall or entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.FallingDown) then
 						entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)
 					end
 				until not NoFall.Enabled
