@@ -256,7 +256,9 @@ local function downloadFile(path, func)
 			writefile(path, res)
 		end)
 	end
-	return (func or readfile)(path)
+	if isfile(path) then
+		return (func or readfile)(path)
+	end
 end
 
 getcustomasset = not inputService.TouchEnabled and assetfunction and function(path)
