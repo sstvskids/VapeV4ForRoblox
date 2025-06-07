@@ -3,10 +3,6 @@ if shared.vape then shared.vape:Uninject() end
 
 -- why do exploits fail to implement anything correctly? Is it really that hard?
 if identifyexecutor then
-	if table.find({'Xeno'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
-		getgenv().koolce = true
-		if table.find({'Xeno'}, ({identifyexecutor()})[1]) then getgenv().cloneref = function(val) return val end end
-	end
 	if (getgenv().koolce == true and getcustomasset) or table.find({'Argon', 'Wave', 'Velocity'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = function(val)
 			return val
