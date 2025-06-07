@@ -40,6 +40,14 @@ for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newva
 	end
 end
 
+if identifyexecutor then
+	if table.find({'Xeno'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
+		if getgenv().koolce == true then return end
+		getgenv().koolce = true
+		if table.find({'Xeno'}, ({identifyexecutor()})[1]) then getgenv().cloneref = function(val) return val end end
+	end
+end
+
 if not shared.VapeDeveloper then
 	local _, subbed = pcall(function()
 		return game:HttpGet('https://github.com/sstvskids/VapeV4ForRoblox')
