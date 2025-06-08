@@ -311,28 +311,22 @@ end
 
 local function downloadFile(path, func)
 	if not isfile(path) then
-		task.spawn(function()
-			createDownloader(path)
-			local suc, res = pcall(function()
-				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-			end)
-			if not suc or res == '404: Not Found' then
-				error(res)
-			end
-			if path:find('.lua') then
-				res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-			end
-			writefile(path, res)
+		createDownloader(path)
+		local suc, res = pcall(function()
+			return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
-	end
-	repeat task.wait(0.08)
-		if isfile(path) then
-			return (func or readfile)(path)
+		if not suc or res == '404: Not Found' then
+			error(res)
 		end
-	until isfile(path)
+		if path:find('.lua') then
+			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
+		end
+		writefile(path, res)
+	end
+	return (func or readfile)(path)
 end
 
-getcustomasset = not inputService.TouchEnabled and assetfunction and function(path)
+getcustomasset = not (inputService.TouchEnabled or getgenv().koolce == true) and assetfunction and function(path)
 	return downloadFile(path, assetfunction)
 end or function(path)
 	return getcustomassets[path] or ''
