@@ -325,7 +325,7 @@ local function downloadFile(path, func)
 			writefile(path, res)
 		end)
 	end
-	repeat task.wait()
+	repeat task.wait(0.08)
 		if isfile(path) then
 			return (func or readfile)(path)
 		end
