@@ -309,8 +309,7 @@ local function createMobileButton(buttonapi, position)
 	buttonapi.Bind = {Button = button}
 end
 
-local downloadFile
-downloadFile = not getgenv().koolce == true and function(path, func)
+local function downloadFile(path, func)
 	if not isfile(path) then
 		createDownloader(path)
 		local suc, res = pcall(function()
@@ -325,26 +324,9 @@ downloadFile = not getgenv().koolce == true and function(path, func)
 		writefile(path, res)
 	end
 	return (func or readfile)(path)
-end or function(path, func)
-	if not isfile(path) then
-		task.spawn(function()
-			createDownloader(path)
-			local suc, res = pcall(function()
-				return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
-			end)
-			if not suc or res == '404: Not Found' then
-				error(res)
-			end
-			if path:find('.lua') then
-				res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
-			end
-			writefile(path, res)
-		end)
-	end
-	return (func or readfile)(path)
 end
 
-getcustomasset = not inputService.TouchEnabled and assetfunction and function(path)
+getcustomasset = not inputService.TouchEnabled and not getgenv().koolce == true and assetfunction and function(path)
 	return downloadFile(path, assetfunction)
 end or function(path)
 	return getcustomassets[path] or ''
