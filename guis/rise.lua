@@ -2500,7 +2500,6 @@ function mainapi:Uninject()
 	shared.vape = nil
 	shared.vapereload = nil
 	shared.VapeIndependent = nil
-	getgenv().koolce = nil
 end
 
 gui = Instance.new('ScreenGui')
@@ -3230,7 +3229,7 @@ function mainapi:UpdateTextGUI(afterload)
 					holderline.Size = UDim2.fromOffset(2, 18)
 					holderline.Position = UDim2.new(1, 0, 0, 2)
 					holderline.BackgroundTransparency = 1
-					holderline.Image = getcustomasset('newvape/assets/rise/slice.png')
+					holderline.Image = downloadFile('newvape/assets/rise/slice.png')
 					holderline.ImageColor3 = uipallet.MainColor
 					holderline.ZIndex = -1
 					holderline.Parent = holderbackground

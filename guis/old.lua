@@ -3365,7 +3365,6 @@ function mainapi:Uninject()
 	shared.vape = nil
 	shared.vapereload = nil
 	shared.VapeIndependent = nil
-	getgenv().koolce = nil
 end
 
 gui = Instance.new('ScreenGui')
