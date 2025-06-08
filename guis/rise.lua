@@ -256,9 +256,11 @@ local function downloadFile(path, func)
 			writefile(path, res)
 		end)
 	end
-	if isfile(path) then
-		return (func or readfile)(path)
-	end
+	repeat task.wait()
+		if isfile(path) then
+			return (func or readfile)(path)
+		end
+	until isfile(path)
 end
 
 getcustomasset = not inputService.TouchEnabled and assetfunction and function(path)
