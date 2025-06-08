@@ -121,7 +121,8 @@ local themecolors = {
 
 local getcustomassets = {
 	['newvape/assets/rise/slice.png'] = 'rbxasset://risesix/slice.png',
-	['newvape/assets/rise/blur.png'] = 'rbxassetid://14898786664'
+	['newvape/assets/rise/blur.png'] = 'rbxasset://risesix/blur.png',
+	['newvape/assets/new/blur.png'] = 'rbxassetid://14898786664',
 }
 
 local isfile = isfile or function(file)
@@ -146,7 +147,7 @@ local function addBlur(parent)
 	blur.Size = UDim2.new(1, 42, 1, 42)
 	blur.Position = UDim2.fromOffset(-24, -15)
 	blur.BackgroundTransparency = 1
-	blur.Image = getcustomasset('newvape/assets/rise/blur.png')
+	blur.Image = getcustomasset('newvape/assets/new/blur.png')
 	blur.ScaleType = Enum.ScaleType.Slice
 	blur.SliceCenter = Rect.new(44, 38, 804, 595)
 	blur.Parent = parent
@@ -2551,7 +2552,7 @@ mainframe.AnchorPoint = Vector2.new(0.5, 0.5)
 mainframe.BackgroundColor3 = uipallet.Main
 mainframe.GroupTransparency = 1
 mainframe.Parent = clickgui
-addBlur(mainframe)
+--addBlur(mainframe)
 local selected = Instance.new('TextButton')
 selected.Text = ''
 selected.BackgroundTransparency = 1
