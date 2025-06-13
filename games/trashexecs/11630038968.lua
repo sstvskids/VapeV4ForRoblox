@@ -253,7 +253,7 @@ run(function()
 					end))
 				end
 					
-				Killaura:Clean(runService.Stepped:Connect(function()
+				repeat
 					local tool = getAttackData()
 					local attacked = {}
 					if tool and tool:HasTag('Sword') then
@@ -320,7 +320,7 @@ run(function()
 					end
 					
 					task.wait()
-				end))
+				until not Killaura.Enabled
 			else
 				if AutoBlock.Enabled then
 					bd.Remotes.BlockSword:InvokeServer(false, getTool().Name)

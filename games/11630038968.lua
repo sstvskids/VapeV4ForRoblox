@@ -359,7 +359,7 @@ run(function()
 					end))
 				end
 					
-				Killaura:Clean(runService.RenderStepped:Connect(function()
+				repeat
 					local tool = getAttackData()
 					local attacked = {}
 					if tool and tool:HasTag('Sword') then
@@ -445,7 +445,7 @@ run(function()
 					end
 	
 					task.wait()
-				end))
+				until not Killaura.Enabled
 			else
 				if AutoBlock.Enabled and bd.Entity.LocalEntity.IsBlocking then
 					bd.ToolService:ToggleBlockSword(false, getAttackData().Name)
