@@ -34,13 +34,25 @@ local function wipeFolder(path)
 	end
 end
 
-if not (debug.getupvalue or debug.getconstants) then
-	getgenv().koolce = true
-end
-
 for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)
+	end
+end
+
+if identifyexecutor then
+	if string.find(({identifyexecutor()})[1], 'JJSploit') then
+		getgenv().identifyexecutor = function()
+			return 'Xeno'
+		end
+	end
+	if table.find({'Xeno'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
+		getgenv().koolce = true
+		if table.find({'Xeno'}, ({identifyexecutor()})[1]) then
+			getgenv().cloneref = function(val)
+				return val
+			end
+		end
 	end
 end
 
