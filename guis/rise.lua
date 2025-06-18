@@ -257,7 +257,19 @@ local function downloadFile(path, func)
 	return (func or readfile)(path)
 end
 
-getcustomasset = not inputService.TouchEnabled and not getgenv().koolce == true and assetfunction and function(path)
+local function getexec()
+	local execs = {'Velocity'}
+	local foundexecs = {}
+	if identifyexecutor then
+		for i,v in execs do
+			if string.find(identifyexecutor(), v) then
+				table.insert(foundexecs, identifyexecutor)
+			end
+		end
+	end
+	return (identifyexecutor == nil and true) or getgenv().koolce == true or (#foundexecs > 0)
+end
+getcustomasset = not inputService.TouchEnabled and not getexec() == true and assetfunction and function(path)
 	return downloadFile(path, assetfunction)
 end or function(path)
 	return getcustomassets[path] or ''
