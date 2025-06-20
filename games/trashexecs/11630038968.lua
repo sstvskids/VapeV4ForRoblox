@@ -240,6 +240,12 @@ run(function()
 	
 		return getTool()
 	end
+
+	local function blockSword(bool: boolean, sword: string)
+		task.spawn(function()
+			return bd.Remotes.BlockSword:InvokeServer(bool, sword)
+		end)
+	end
 	
 	Killaura = vape.Categories.Blatant:CreateModule({
 		Name = 'Killaura',
@@ -271,11 +277,9 @@ run(function()
 								local selfpos = entitylib.character.RootPart.Position
 								local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 
-								task.spawn(function()
-									if AutoBlock.Enabled and tool then
-										bd.Remotes.BlockSword:InvokeServer(true, tool.Name)
-									end
-								end)
+								if AutoBlock.Enabled and tool then
+									blockSword(true, tool.Name)
+								end
 			
 								task.spawn(function()
 									for _, v in plrs do
@@ -296,12 +300,14 @@ run(function()
 										if delta.Magnitude > AttackRange.Value then continue end
 										if AttackDelay < tick() then
 											AttackDelay = (CPSToggle.Enabled and tick() + (1 / CPS.GetRandomValue())) or 0
-											bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+											task.spawn(function()
+												bd.Remotes.AttackPlayer:InvokeServer(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
+											end)
 										end
 									end
 								end)
 							elseif AutoBlock.Enabled then
-								bd.Remotes.BlockSword:InvokeServer(false, tool.Name)
+								blockSword(false, tool.Name)
 							end
 						end)
 					end
@@ -323,7 +329,7 @@ run(function()
 				until not Killaura.Enabled
 			else
 				if AutoBlock.Enabled then
-					bd.Remotes.BlockSword:InvokeServer(false, getTool().Name)
+					blockSword(false, getTool().Name)
 				end
 				for _, v in Boxes do
 					v.Adornee = nil
