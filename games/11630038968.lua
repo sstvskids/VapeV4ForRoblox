@@ -744,6 +744,7 @@ run(function()
 						old = nil
 						hooked = false
 					end
+					
 					if entitylib.character.Humanoid.FloorMaterial == Enum.Material.Air and entitylib.isAlive and (entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall or entitylib.character.Humanoid:GetState() == Enum.HumanoidStateType.FallingDown) then
 						if Mode.Value == 'State' then
 							entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Landed)

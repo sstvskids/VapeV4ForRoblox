@@ -6,8 +6,8 @@ local playersService = cloneref(game:GetService('Players'))
 local inputService = cloneref(game:GetService('UserInputService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local collectionService = cloneref(game:GetService('CollectionService'))
+local httpService = cloneref(game:GetService('HttpService'))
 local runService = cloneref(game:GetService('RunService'))
-local tweenService = cloneref(game:GetService('TweenService'))
 
 local gameCamera = workspace.CurrentCamera
 local lplr = playersService.LocalPlayer
@@ -713,4 +713,26 @@ run(function()
 		Default = true
 	})
 	LimitItem = Scaffold:CreateToggle({Name = 'Limit to items'})
+end)
+
+run(function()
+	local AutoPlay
+	local path = replicatedStorage.Modules.ServerData.Cache
+	local jsonPath = httpService:JSONDecode(path.Value)
+	AutoPlay = vape.Categories.Utility:CreateModule({
+		Name = 'AutoPlay',
+		Function = function(callback)
+			if callback then
+				repeat
+					if jsonPath.Submode == 'Playground' or 'Lobby' then return end
+
+					if lplr.PlayerGui.Hotbar.MainFrame.GameEndFrame.Visible == true and lplr.PlayerGui.Hotbar.MainFrame.MatchmakingFrame.Visible == false then
+						bd.Remotes.EnterQueue:InvokeServer(jsonPath.Submode)
+					end
+					task.wait()
+				until not AutoPlay.Enabled
+			end
+		end,
+		Tooltip = 'Automatically queues after the match ends.'
+	})
 end)
