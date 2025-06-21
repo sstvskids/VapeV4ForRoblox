@@ -422,7 +422,7 @@ run(function()
 												if bdent then
 													bd.Blink.item_action.attack_entity.fire({
 														target_entity_id = bdent.Id,
-														is_crit = entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
+														is_crit = (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
 														weapon_name = tool.Name,
 														extra = {
 															rizz = 'No.',
