@@ -46,7 +46,7 @@ if identifyexecutor then
 			return 'Xeno'
 		end
 	end
-	if table.find({'Xeno'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
+	if table.find({'Xeno', '5.0'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
 		getgenv().koolce = true
 		if table.find({'Xeno'}, ({identifyexecutor()})[1]) then
 			getgenv().cloneref = function(val)
