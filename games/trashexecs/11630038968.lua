@@ -724,7 +724,7 @@ run(function()
 		Function = function(callback)
 			if callback then
 				repeat
-					if jsonPath.Submode == 'Playground' or 'Lobby' then return end
+					if jsonPath.Submode == 'Playground' then return end
 
 					if lplr.PlayerGui.Hotbar.MainFrame.GameEndFrame.Visible == true and lplr.PlayerGui.Hotbar.MainFrame.MatchmakingFrame.Visible == false then
 						bd.Remotes.EnterQueue:InvokeServer(jsonPath.Submode)
