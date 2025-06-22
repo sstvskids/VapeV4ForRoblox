@@ -1,9 +1,10 @@
 repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
+if shared.badexecs then return end
 
 -- why do exploits fail to implement anything correctly? Is it really that hard?
 if identifyexecutor then
-	if (getgenv().koolce == true and getcustomasset) or table.find({'Argon', 'Wave', 'Velocity'}, ({identifyexecutor()})[1]) then
+	if table.find({'Argon', 'Wave', 'Velocity'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = function(val)
 			return val
 		end
@@ -102,18 +103,15 @@ local urlpath
 if not shared.VapeIndependent then
 	loadstring(downloadFile('newvape/games/universal.lua'), 'universal')()
 	task.spawn(function(...)
-		urlpath = (getgenv().koolce == true and 'newvape/games/trashexecs/') or 'newvape/games/'
-		if isfile(urlpath..game.PlaceId..'.lua') then
-			loadstring(readfile(urlpath..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+		if isfile('newvape/games/'..game.PlaceId..'.lua') then
+			loadstring(readfile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 		else
 			if not shared.VapeDeveloper then
 				local suc, res = pcall(function()
-					urlpath = (getgenv().koolce == true and '/games/trashexecs/') or '/games/'
-					return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..urlpath..game.PlaceId..'.lua', true)
+					return game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/games/'..game.PlaceId..'.lua', true)
 				end)
 				if suc and res ~= '404: Not Found' then
-					urlpath = (getgenv().koolce == true and 'newvape/games/trashexecs/') or 'newvape/games/'
-					loadstring(downloadFile(urlpath..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
+					loadstring(downloadFile('newvape/games/'..game.PlaceId..'.lua'), tostring(game.PlaceId))(...)
 				end
 			end
 		end

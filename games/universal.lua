@@ -844,12 +844,6 @@ run(function()
 	until (vape.Loaded == nil or gotversion == true)
 end)
 
-run(function()
-	if getgenv().koolce == true then
-		notif('Vape', 'Cheat-engine mode is on to prevent issues with your executor.', 10, 'alert')
-	end
-end)
-
 entitylib.start()
 run(function()
 	local AimAssist

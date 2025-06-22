@@ -267,7 +267,7 @@ local function getexec()
 			end
 		end
 	end
-	return (identifyexecutor == nil and true) or getgenv().koolce == true or (#foundexecs > 0)
+	return (identifyexecutor == nil and true) or (#foundexecs > 0)
 end
 getcustomasset = not inputService.TouchEnabled and not getexec() == true and assetfunction and function(path)
 	return downloadFile(path, assetfunction)

@@ -1,3 +1,15 @@
+if identifyexecutor then
+	if string.find(({identifyexecutor()})[1], 'JJSploit') then
+		getgenv().identifyexecutor = function()
+			return 'Xeno'
+		end
+	end
+	if table.find({'Xeno', '5.0'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
+		shared.badexecs = true
+		return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
+	end
+end
+
 local isfile = isfile or function(file)
 	local suc, res = pcall(function()
 		return readfile(file)
@@ -34,25 +46,9 @@ local function wipeFolder(path)
 	end
 end
 
-for _, folder in {'newvape', 'newvape/games', 'newvape/games/trashexecs', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
+for _, folder in {'newvape', 'newvape/games', 'newvape/profiles', 'newvape/assets', 'newvape/libraries', 'newvape/guis'} do
 	if not isfolder(folder) then
 		makefolder(folder)
-	end
-end
-
-if identifyexecutor then
-	if string.find(({identifyexecutor()})[1], 'JJSploit') then
-		getgenv().identifyexecutor = function()
-			return 'Xeno'
-		end
-	end
-	if table.find({'Xeno'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants) then
-		getgenv().koolce = true
-		if table.find({'Xeno'}, ({identifyexecutor()})[1]) then
-			getgenv().cloneref = function(val)
-				return val
-			end
-		end
 	end
 end
 
@@ -66,7 +62,6 @@ if not shared.VapeDeveloper then
 	if commit == 'main' or (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or '') ~= commit then
 		wipeFolder('newvape')
 		wipeFolder('newvape/games')
-		wipeFolder('newvape/games/trashexecs')
 		wipeFolder('newvape/guis')
 		wipeFolder('newvape/libraries')
 	end
