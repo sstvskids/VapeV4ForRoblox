@@ -167,6 +167,37 @@ run(function()
 	})
 end)
 
+run(function()
+	local Reach
+	local path = replicatedStorage.Constants.Melee.Reach
+	local Value
+	
+	Reach = vape.Categories.Combat:CreateModule({
+		Name = 'Reach',
+		Function = function(callback)
+			if callback then
+				vape:Clean(path:GetPropertyChangedSignal('Value'):Connect(function()
+					path.Value = Value.Value
+				end))
+				path.Value = Value.Value
+			else
+				path.Value = 9
+			end
+		end,
+		Tooltip = 'Extends tool attack reach'
+	})
+	Value = Reach:CreateSlider({
+		Name = 'Range',
+		Min = 0,
+		Max = 18,
+		Default = 18,
+		Decimal = 10,
+		Suffix = function(val) 
+			return val == 1 and 'stud' or 'studs' 
+		end
+	})
+end)
+
 local Criticals
 run(function()
 	Criticals = vape.Categories.Blatant:CreateModule({
