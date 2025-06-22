@@ -170,6 +170,25 @@ run(function()
 		DefaultMax = 12
 	})
 end)
+
+run(function()
+	local NoClickDelay
+	local old
+
+	NoClickDelay = vape.Categories.Combat:CreateModule({
+		Name = 'NoClickDelay',
+		Function = function(callback)
+			if callback then
+				old = hookfunction(bd.Blink.player_state.update_cps.fire, function()
+				end)
+			else
+				hookfunction(bd.Blink.player_state.update_cps.fire, old)
+				old = nil
+			end
+		end,
+		Tooltip = 'Remove the CPS cap'
+	})
+end)
 	
 run(function()
 	local Reach
