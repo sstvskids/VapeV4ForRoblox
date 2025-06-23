@@ -6492,7 +6492,7 @@ run(function()
 							writefile(folder..v.name, game:HttpGet(v.download_url))
 						end
 					end)
-					if suc then
+					if suc and isfile('default'..game.PlaceId..'.txt') then
 						shared.vapereload = true
 						return loadstring(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/main/loader.lua', true))()
 					end
