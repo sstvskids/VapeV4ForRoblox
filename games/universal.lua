@@ -6476,6 +6476,7 @@ run(function()
 				cfg = shared.cfg
 				url = 'https://api.github.com/repos/skidvape/koolCore/contents/configs/'..cfg
 				InstallProfiles:Toggle()
+				vape:Uninject()
 
 				if isfolder('newvape/profiles') then
 					delfolder('newvape/profiles')
