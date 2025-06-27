@@ -10,7 +10,7 @@ if identifyexecutor then
 	end
 end
 
-if require and game.PlaceId == 11630038968 or game.PlaceId == 12011959048 or game.PlaceId == 14191889582 or game.PlaceId == 14662411059 then
+if require and (game.PlaceId == 11630038968 or game.PlaceId == 12011959048 or game.PlaceId == 14191889582 or game.PlaceId == 14662411059) then
 	local cloneref = cloneref or function(val) return val end
 	local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 	local suc, res = pcall(require, replicatedStorage.Blink.Client)
