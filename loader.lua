@@ -18,6 +18,9 @@ if require and (game.PlaceId == 11630038968 or game.PlaceId == 12011959048 or ga
 		shared.badexecs = true
 		return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 	end
+elseif not require then
+	shared.badexecs = true
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 end
 
 local isfile = isfile or function(file)
