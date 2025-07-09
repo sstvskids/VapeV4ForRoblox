@@ -124,7 +124,7 @@ run(function()
 
                     old1, old2, old3 = nil, nil, nil
                 else
-                    notif('Vape', 'failed to find glove, unable to clear values', 7)
+                    notif('Vape', 'failed to find glove; unable to clear values', 7)
                 end
             end
         end,
@@ -174,11 +174,14 @@ run(function()
                             firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
                         end
                         if AntiWin.Enabled then
-                            if workspace.MainGame.EndTower:GetChildren()[25].Transparency == 0 and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[25], 1)
-                            end
-                            if workspace.MainGame.EndTower:GetChildren()[26].Transparency == 0 and entitylib.isAlive then
+                            if workspace.MainGame.EndTower:GetChildren()[26].Transparency <= 0.1 and entitylib.isAlive then
                                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[26], 1)
+                            end
+                            if workspace.MainGame.EndTower:GetChildren()[27].Transparency <= 0.1 and entitylib.isAlive then
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[27], 1)
+                            end
+                            if workspace.MainGame.EndTower:GetChildren()[28].Transparency <= 0.1 and entitylib.isAlive then
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[25], 1)
                             end
                         end
                     end
@@ -189,8 +192,9 @@ run(function()
                 if firetouchinterest then
                     firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
                     firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
-                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[25], 2)
                     firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[26], 2)
+                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[27], 2)
+                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[28], 2)
                 end
             end
         end,
@@ -217,7 +221,7 @@ run(function()
         Function = function(callback)
             if callback then
                 if fireproximityprompt and entitylib.isAlive then
-                    notif('Vape', 'Do not move', 2)
+                    notif('Vape', 'English or Spanish? (Do not move else your gay)', 2)
 
                     oldpos = entitylib.character.RootPart.CFrame
                     entitylib.character.RootPart.CFrame = workspace.MainGame.SecretDoor.BadgeGiver.CFrame + Vector3.new(1, 1, 0)
