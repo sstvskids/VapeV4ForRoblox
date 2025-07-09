@@ -174,14 +174,17 @@ run(function()
                             firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
                         end
                         if AntiWin.Enabled then
-                            if workspace.MainGame.EndTower:GetChildren()[26].Transparency <= 0.1 and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[26], 1)
-                            end
-                            if workspace.MainGame.EndTower:GetChildren()[27].Transparency <= 0.1 and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[27], 1)
-                            end
-                            if workspace.MainGame.EndTower:GetChildren()[28].Transparency <= 0.1 and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[28], 1)
+                            for i,v in workspace.MainGame.EndTower:GetChildren() do
+                                if not v:IsA('Part') and not v:IsA('BasePart') then continue end
+                                if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
+                                    continue
+                                end
+                                if not v:FindFirstChildOfClass("TouchTransmitter") then
+                                    continue
+                                end
+                                if v.Transparency <= 0.1 and entitylib.isAlive then
+                                    firetouchinterest(entitylib.character.RootPart, v, 1)
+                                end
                             end
                         end
                     end
@@ -192,9 +195,18 @@ run(function()
                 if firetouchinterest then
                     firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
                     firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
-                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[26], 2)
-                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[27], 2)
-                    firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[28], 2)
+                    for i,v in workspace.MainGame.EndTower:GetChildren() do
+                        if not v:IsA('Part') or not v:IsA('BasePart') then continue end
+                        if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
+                            continue
+                        end
+                        if not v:FindFirstChildOfClass("TouchTransmitter") then
+                            continue
+                        end
+                        if v.Transparency <= 0.1 and entitylib.isAlive then
+                            firetouchinterest(entitylib.character.RootPart, v, 2)
+                        end
+                    end
                 end
             end
         end,
