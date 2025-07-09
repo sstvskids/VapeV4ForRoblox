@@ -181,7 +181,7 @@ run(function()
                                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[27], 1)
                             end
                             if workspace.MainGame.EndTower:GetChildren()[28].Transparency <= 0.1 and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[25], 1)
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.EndTower:GetChildren()[28], 1)
                             end
                         end
                     end
