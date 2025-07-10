@@ -239,7 +239,7 @@ run(function()
                     task.wait(2)
                     fireproximityprompt(workspace.MainGame.SecretDoor.OpSlap.ProximityPrompPart["???"], 2)
                     AutoGlove:Toggle()
-                else
+                elseif not fireproximityprompt then
                     notif('Vape', 'no fireproximityprompt', 3)
                     AutoGlove:Toggle()
                 end
