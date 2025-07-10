@@ -156,20 +156,48 @@ end)
 run(function()
     local AutoTroll
     local AntiWin
+    local Method
 
     AutoTroll = vape.Categories.Minigames:CreateModule({
         Name = 'AutoTroll',
         Function = function(callback)
             if callback then
                 repeat
-                    if firetouchinterest then
+                    if Method.Value == 'TouchInterest' then
+                        if firetouchinterest and not table.find({'Velocity'}, ({identifyexecutor()})[1]) then
+                            if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 1)
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
+                            end
+                            if workspace.MainGame:GetChildren()[9].Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
+                            end
+                            if AntiWin.Enabled then
+                                for i,v in workspace.MainGame.EndTower:GetChildren() do
+                                    if not v:IsA('Part') and not v:IsA('BasePart') then continue end
+                                    if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
+                                        continue
+                                    end
+                                    if not v:FindFirstChildOfClass("TouchTransmitter") then
+                                        continue
+                                    end
+                                    if v.Transparency <= 0.1 and entitylib.isAlive then
+                                        firetouchinterest(entitylib.character.RootPart, v, 1)
+                                        firetouchinterest(entitylib.character.RootPart, v, 2)
+                                    end
+                                end
+                            end
+                        else
+                            notif('Vape', 'no or broken firetouchinterest', 3)
+                            AutoTroll:Toggle()
+                        end
+                    elseif Method.Value == 'Teleport' then
                         if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
-                            firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 1)
-                            firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
+                            entitylib.character.RootPart.CFrame = workspace.MainGame.Button.Button.CFrame + Vector3.new(0, 1, 0)
                         end
                         if workspace.MainGame:GetChildren()[9].Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
-                            firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
-                            firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
+                            entitylib.character.RootPart.CFrame = workspace.MainGame:GetChildren()[9].Button.CFrame + Vector3.new(0, 1, 0)
                         end
                         if AntiWin.Enabled then
                             for i,v in workspace.MainGame.EndTower:GetChildren() do
@@ -181,19 +209,15 @@ run(function()
                                     continue
                                 end
                                 if v.Transparency <= 0.1 and entitylib.isAlive then
-                                    firetouchinterest(entitylib.character.RootPart, v, 1)
-                                    firetouchinterest(entitylib.character.RootPart, v, 2)
+                                    entitylib.character.RootPart.CFrame = v.CFrame + Vector3.new(0, 1, 0)
                                 end
                             end
                         end
-                    else
-                        notif('Vape', 'no firetouchinterest', 3)
-                        AutoTroll:Toggle()
                     end
 
                     task.wait()
                 until not AutoTroll.Enabled
-            elseif firetouchinterest and entitylib.isAlive then
+            elseif Method.Value == 'TouchInterest' and firetouchinterest and entitylib.isAlive then
                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
                 for i,v in workspace.MainGame.EndTower:GetChildren() do
@@ -208,8 +232,17 @@ run(function()
                 end
             end
         end,
-        Tooltip = 'Automatically trolls people'
+        Tooltip = 'Automatically trolls people',
+        ExtraText = function()
+            return Method.Value
+        end
     })
+    Method = AutoTroll:CreateDropdown({
+		Name = 'Method',
+		List = {'Teleport', 'TouchInterest'},
+        Tooltip = 'Teleport - Moves your character to all the parts\nTouchInterest - Manipulates the server into thinking you are touching the parts'
+        --Tooltip = 'Teleport - Moves you to all the parts\nTouchInterest - Manipulates the server into thinking you are touching the parts'
+	})
     AntiWin = AutoTroll:CreateToggle({
         Name = 'AntiWin',
         Function = function()
@@ -218,7 +251,7 @@ run(function()
                 AutoTroll:Toggle()
             end
         end,
-        Tooltip = 'Does not allow anyone to win at all'
+        Tooltip = 'Does not allow anyone to win at all\nCan be a bit unreliable on Teleport'
     })
 end)
 
@@ -255,17 +288,41 @@ end)
 
 run(function()
     local AutoWin
+    local Method
     AutoWin = vape.Categories.Minigames:CreateModule({
         Name = 'AutoWin',
         Function = function(callback)
             if callback then
-                if entitylib.isAlive then
+                if entitylib.isAlive and Method.Value == 'Teleport' then
                     entitylib.character.RootPart.CFrame = workspace.FunnelCheckpoints["13"].CFrame + Vector3.new(0, 1, 0)
                 end
+                repeat
+                    if entitylib.isAlive and fireproximityprompt and Method.Value == 'Automatic' then
+                        entitylib.character.RootPart.CFrame = workspace.MainGame.WinPart.CFrame + Vector3.new(0, 1, 0)
+                        task.wait(2)
+                        fireproximityprompt(workspace.MainGame.WinPart.WinPrompt, 2)
+                    elseif not fireproximityprompt then
+                        notif('Vape', 'no fireproximityprompt (change to teleport)', 3)
+                        AutoWin:Toggle()
+                    end
+                until Method.Value ~= 'Automatic' or not AutoWin.Enabled
             end
         end,
-        Tooltip = 'Teleports you to the winners area'
+        Tooltip = 'Automatically wins for you',
+        ExtraText = function()
+            return Method.Value
+        end
     })
+    Method = AutoWin:CreateDropdown({
+		Name = 'Method',
+		List = {'Teleport', 'Automatic'},
+        Function = function()
+            if AutoWin.Enabled then
+                AutoWin:Toggle()
+                AutoWin:Toggle()
+            end
+        end
+	})
 end) -- until i find a proper way, itll be like this.
 
 return notify('This version is a beta version, and should be used at your own risk. Detections may occur while using the product.', 20)
