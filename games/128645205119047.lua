@@ -280,5 +280,28 @@ run(function()
     })
 end)
 
+run(function()
+    local GodMode
+    GodMode = vape.Categories.World:CreateModule({
+        Name = 'Godmode',
+        Function = function(callback)
+            if callback then
+                pcall(function()
+                    for _, v in game:GetDescendants() do
+                        if v.Name == 'Kill' then
+                            if v.TouchInterest then
+                                v.TouchInterest:Destroy()
+                            end
+                        end
+                    end
+                end)
+            else
+                notif('Vape', 'Godmode will be disabled the next time you rejoin', 7)
+            end
+        end,
+        Tooltip = 'Prevents you from dying'
+    })
+end)
+
 notify('AutoTroll has lag issues on some executors (e.g. Velocity, etc). It might be best to use Teleport.')
 return notify('This version is a beta version, and should be used at your own risk. Detections may occur while using the product.', 20)
