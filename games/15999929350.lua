@@ -15,6 +15,31 @@ local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
 
+local function notif(...)
+	return vape:CreateNotification(...)
+end
+
+local firepart = firetouchinterest or function(plr: Instance, item: Instance, tog: number)
+    task.spawn(function()
+        if tog == 0 or tog > 1 then return end
+
+        local suc, res = pcall(function()
+            if not item:FindFirstChildOfClass('TouchTransmitter') then
+                return error('Item does not have a TouchTransmitter: '..item, 2)
+            end
+        end)
+
+        if suc then
+            local collision, cframe = item.CanCollide, item.CFrame
+            item.CanCollide = false
+            item.CFrame = plr.CFrame
+            task.wait()
+            item.CFrame = cframe
+            item.CanCollide = collision
+        end
+    end)
+end
+
 local function getTool()
 	return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
 end
@@ -38,10 +63,6 @@ local function getGlove()
     end
 
     return false
-end
-
-local function notif(...)
-	return vape:CreateNotification(...)
 end
 
 local function notify(txt, dur)
@@ -164,33 +185,28 @@ run(function()
             if callback then
                 repeat
                     if Method.Value == 'TouchInterest' then
-                        if firetouchinterest then
-                            if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 1)
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
-                            end
-                            if workspace.MainGame:GetChildren()[9].Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
-                            end
-                            if AntiWin.Enabled then
-                                for i,v in workspace.MainGame.EndTower:GetChildren() do
-                                    if not v:IsA('Part') and not v:IsA('BasePart') then continue end
-                                    if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
-                                        continue
-                                    end
-                                    if not v:FindFirstChildOfClass("TouchTransmitter") then
-                                        continue
-                                    end
-                                    if v.Transparency <= 0.1 and entitylib.isAlive then
-                                        firetouchinterest(entitylib.character.RootPart, v, 1)
-                                        firetouchinterest(entitylib.character.RootPart, v, 0)
-                                    end
+                        if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
+                            firepart(entitylib.character.RootPart, workspace.MainGame.Button.Button, 1)
+                            firepart(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
+                        end
+                        if workspace.MainGame:GetChildren()[9].Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
+                            firepart(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
+                            firepart(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
+                        end
+                        if AntiWin.Enabled then
+                            for i,v in workspace.MainGame.EndTower:GetChildren() do
+                                if not v:IsA('Part') and not v:IsA('BasePart') then continue end
+                                if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
+                                    continue
+                                end
+                                if not v:FindFirstChildOfClass("TouchTransmitter") then
+                                    continue
+                                end
+                                if v.Transparency <= 0.1 and entitylib.isAlive then
+                                    firepart(entitylib.character.RootPart, v, 1)
+                                    firepart(entitylib.character.RootPart, v, 0)
                                 end
                             end
-                        else
-                            notif('Vape', 'no or broken firetouchinterest', 3)
-                            AutoTroll:Toggle()
                         end
                     elseif Method.Value == 'Teleport' then
                         if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
@@ -217,9 +233,9 @@ run(function()
 
                     task.wait()
                 until not AutoTroll.Enabled
-            elseif Method.Value == 'TouchInterest' and firetouchinterest and entitylib.isAlive then
-                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
-                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
+            elseif Method.Value == 'TouchInterest' and entitylib.isAlive then
+                firepart(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
+                firepart(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
                 for i,v in workspace.MainGame.EndTower:GetChildren() do
                     if not v:IsA('Part') or not v:IsA('BasePart') then continue end
                     if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
@@ -228,7 +244,7 @@ run(function()
                     if not v:FindFirstChildOfClass("TouchTransmitter") then
                         continue
                     end
-                    firetouchinterest(entitylib.character.RootPart, v, 0)
+                    firepart(entitylib.character.RootPart, v, 0)
                 end
             end
         end,
