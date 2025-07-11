@@ -164,14 +164,14 @@ run(function()
             if callback then
                 repeat
                     if Method.Value == 'TouchInterest' then
-                        if firetouchinterest and not table.find({'Velocity'}, ({identifyexecutor()})[1]) then
+                        if firetouchinterest then
                             if workspace.MainGame.Button.Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
                                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 1)
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
                             end
                             if workspace.MainGame:GetChildren()[9].Button.Color == Color3.fromRGB(0, 255, 0) and entitylib.isAlive then
                                 firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 1)
-                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
+                                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
                             end
                             if AntiWin.Enabled then
                                 for i,v in workspace.MainGame.EndTower:GetChildren() do
@@ -184,7 +184,7 @@ run(function()
                                     end
                                     if v.Transparency <= 0.1 and entitylib.isAlive then
                                         firetouchinterest(entitylib.character.RootPart, v, 1)
-                                        firetouchinterest(entitylib.character.RootPart, v, 2)
+                                        firetouchinterest(entitylib.character.RootPart, v, 0)
                                     end
                                 end
                             end
@@ -218,8 +218,8 @@ run(function()
                     task.wait()
                 until not AutoTroll.Enabled
             elseif Method.Value == 'TouchInterest' and firetouchinterest and entitylib.isAlive then
-                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 2)
-                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 2)
+                firetouchinterest(entitylib.character.RootPart, workspace.MainGame.Button.Button, 0)
+                firetouchinterest(entitylib.character.RootPart, workspace.MainGame:GetChildren()[9].Button, 0)
                 for i,v in workspace.MainGame.EndTower:GetChildren() do
                     if not v:IsA('Part') or not v:IsA('BasePart') then continue end
                     if v.Color == Color3.fromRGB(196, 40, 28) or v.Color == Color3.fromRGB(218, 133, 65) then
@@ -228,7 +228,7 @@ run(function()
                     if not v:FindFirstChildOfClass("TouchTransmitter") then
                         continue
                     end
-                    firetouchinterest(entitylib.character.RootPart, v, 2)
+                    firetouchinterest(entitylib.character.RootPart, v, 0)
                 end
             end
         end,
