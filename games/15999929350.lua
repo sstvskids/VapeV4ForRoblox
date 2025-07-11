@@ -1,3 +1,10 @@
+--[[
+
+    kool.aid -->> Troll is a pinning tower 1 (Punch Tower)
+    by @stav
+
+]]
+
 local run = function(func) func() end
 local cloneref = cloneref or function(obj) return obj end
 

@@ -1,3 +1,10 @@
+--[[
+
+    kool.aid -->> Bridge Duels
+    by @stav and @7GrandDadPGN (xylex)
+
+]]
+
 local run = function(func) func() end
 local cloneref = cloneref or function(obj) return obj end
 
