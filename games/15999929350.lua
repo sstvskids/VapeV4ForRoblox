@@ -152,7 +152,7 @@ run(function()
 
                     old1, old2, old3 = nil, nil, nil
                 else
-                    notif('Vape', 'failed to find glove; unable to clear values', 7)
+                    notif('Vape', 'no glove; unable to clear values', 7)
                 end
             end
         end,
