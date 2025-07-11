@@ -348,4 +348,32 @@ run(function()
 	})
 end) -- until i find a proper way, itll be like this.
 
+run(function()
+    local GodMode
+    GodMode = vape.Categories.World:CreateModule({
+        Name = 'Godmode',
+        Function = function(callback)
+            if callback then
+                for _, v in game:GetDescendants() do
+                    pcall(function()
+                        if v.Name == 'Laser' then
+                            if v.TouchInterest then
+                                v.TouchInterest:Destroy()
+                            end
+                        end
+                        if v.Name == 'EndPart' and v.Color == Color3.fromRGB(196, 40, 28) then
+                            if v.TouchInterest then
+                                v.TouchInterest:Destroy()
+                            end
+                        end
+                    end)
+                end
+            else
+                notif('Vape', 'Godmode will be disabled the next time you rejoin', 7)
+            end
+        end,
+        Tooltip = 'Prevents you from dying'
+    })
+end)
+
 return notify('This version is a beta version, and should be used at your own risk. Detections may occur while using the product.', 20)

@@ -135,7 +135,7 @@ end)
 
 run(function()
     local InstantInteract
-    local old1, old2, old3
+    local old1, old2
     local FlightSpeed
     local Power
     local Cooldown
@@ -146,11 +146,9 @@ run(function()
             if callback then
                 repeat
                     if getGlove() == true then
-                        old1 = getTool().FlightSpeed.Value
-                        old2 = getTool().Power.Value
-                        old3 = getTool().Speed.Value
+                        old1 = getTool().Power.Value
+                        old2 = getTool().Speed.Value
 
-                        getTool().FlightSpeed.Value = FlightSpeed.Value
                         getTool().Power.Value = Power.Value
                         getTool().Speed.Value = Cooldown.Value
                     else
@@ -162,11 +160,10 @@ run(function()
                 until not InstantInteract.Enabled
             else
                 if getGlove() == true then
-                    getTool().FlightSpeed.Value = old1
-                    getTool().Power.Value = old2
-                    getTool().Speed.Value = old3
+                    getTool().Power.Value = old1
+                    getTool().Speed.Value = old2
 
-                    old1, old2, old3 = nil, nil, nil
+                    old1, old2, = nil, nil
                 else
                     notif('Vape', 'no glove; unable to clear values', 7)
                 end
@@ -286,15 +283,15 @@ run(function()
         Name = 'Godmode',
         Function = function(callback)
             if callback then
-                pcall(function()
-                    for _, v in game:GetDescendants() do
+                for _, v in game:GetDescendants() do
+                    pcall(function()
                         if v.Name == 'Kill' then
                             if v.TouchInterest then
                                 v.TouchInterest:Destroy()
                             end
                         end
-                    end
-                end)
+                    end)
+                end
             else
                 notif('Vape', 'Godmode will be disabled the next time you rejoin', 7)
             end
