@@ -26,7 +26,7 @@ local function notif(...)
 	return vape:CreateNotification(...)
 end
 
-local firepart = firetouchinterest or function(plr: Instance, item: Instance, tog: number)
+local firepart = firetouchinterest or function(plr: Instance, item: Instance, tog: number): Instance, number
     task.spawn(function()
         if tog == 0 or tog > 1 then return end
 
@@ -43,6 +43,14 @@ local firepart = firetouchinterest or function(plr: Instance, item: Instance, to
             task.wait()
             item.CFrame = cframe
             item.CanCollide = collision
+
+            -- checks to make sure they go somewhere (mhm!! soo good guys)
+            if item.CFrame ~= cframe then
+                item.CFrame = cframe
+            end
+            if item.CanCollide ~= collision then
+                item.CanCollide = collision
+            end
         end
     end)
 end
