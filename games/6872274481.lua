@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -1410,9 +1411,9 @@ run(function()
 	CPS = AutoClicker:CreateTwoSlider({
 		Name = 'CPS',
 		Min = 1,
-		Max = 9999999999999,
+		Max = 9999999999,
 		DefaultMin = 7,
-		DefaultMax = 99999999999
+		DefaultMax = 9999999999
 	})
 	AutoClicker:CreateToggle({
 		Name = 'Place Blocks',
@@ -1426,7 +1427,7 @@ run(function()
 	BlockCPS = AutoClicker:CreateTwoSlider({
 		Name = 'Block CPS',
 		Min = 1,
-		Max = 99999999999,
+		Max = 9999999999,
 		DefaultMin = 12,
 		DefaultMax = 9999999999,
 		Darker = true
@@ -1466,8 +1467,8 @@ run(function()
 	Value = Reach:CreateSlider({
 		Name = 'Range',
 		Min = 0,
-		Max = 18,
-		Default = 18,
+		Max = 23,
+		Default = 23,
 		Function = function(val)
 			if Reach.Enabled then
 				bedwars.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE = val + 2
@@ -1564,9 +1565,9 @@ run(function()
 	CPS = TriggerBot:CreateTwoSlider({
 		Name = 'CPS',
 		Min = 1,
-		Max = 9,
+		Max = 9999999999,
 		DefaultMin = 7,
-		DefaultMax = 7
+		DefaultMax = 999999999999
 	})
 end)
 	
@@ -2312,8 +2313,8 @@ run(function()
 	SwingRange = Killaura:CreateSlider({
 		Name = 'Swing range',
 		Min = 1,
-		Max = 18,
-		Default = 18,
+		Max = 23,
+		Default = 23,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -2321,8 +2322,8 @@ run(function()
 	AttackRange = Killaura:CreateSlider({
 		Name = 'Attack range',
 		Min = 1,
-		Max = 18,
-		Default = 18,
+		Max = 23,
+		Default = 23,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -2331,7 +2332,7 @@ run(function()
 		Name = 'Swing time',
 		Min = 0,
 		Max = 0.5,
-		Default = 0.42,
+		Default = 0.5,
 		Decimal = 100
 	})
 	AngleSlider = Killaura:CreateSlider({
@@ -2344,7 +2345,7 @@ run(function()
 		Name = 'Update rate',
 		Min = 1,
 		Max = 120,
-		Default = 60,
+		Default = 120,
 		Suffix = 'hz'
 	})
 	MaxTargets = Killaura:CreateSlider({
@@ -3096,8 +3097,8 @@ run(function()
 	Range = ProjectileAura:CreateSlider({
 		Name = 'Range',
 		Min = 1,
-		Max = 50,
-		Default = 50,
+		Max = 5000,
+		Default = 5000,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -8490,4 +8491,372 @@ run(function()
 		List = WinEffectName
 	})
 end)
-	
+run(function()
+    local ChatTag: table = {}
+    ChatTag = vape.Categories.Modules:CreateModule({
+        Name = "ChatTag",
+        Function = function(callback)
+            if callback then
+                textChatService.OnIncomingMessage = function(message: string?)
+                    local prop = Instance.new("TextChatMessageProperties");
+                    if message.TextSource and message.TextSource.UserId == lplr.UserId then
+                        prop.PrefixText = "<font color='#ff0000'>[CloudwareV2 VXPE☁️]</font> " .. (message.PrefixText or "");
+                    end;
+                    return prop;
+                end;
+            else
+                textChatService.OnIncomingMessage = nil;
+            end;
+        end,
+        Tooltip = "Adds a tag next to your name when you chat."
+    })
+end)
+
+run(function()
+	local Ambience1 = vape.Categories.Modules:CreateModule({
+		Name = "Ambience 1",
+		Function = function(callback)
+			local lighting = game:GetService("Lighting")
+			if callback then
+				local sky = Instance.new("Sky")
+				sky.Name = "Ambience1_Sky"
+				local id = "rbxassetid://122785120445164"
+				sky.SkyboxBk = id
+				sky.SkyboxDn = id
+				sky.SkyboxFt = id
+				sky.SkyboxLf = id
+				sky.SkyboxRt = id
+				sky.SkyboxUp = id
+				sky.Parent = lighting
+			else
+				local sky = lighting:FindFirstChild("Ambience1_Sky")
+				if sky then sky:Destroy() end
+			end
+		end,
+		Tooltip = "Ambience 1"
+	})
+end)
+
+run(function()
+	local Ambience2 = vape.Categories.Modules:CreateModule({
+		Name = "Ambience 2",
+		Function = function(callback)
+			local lighting = game:GetService("Lighting")
+			if callback then
+				local sky = Instance.new("Sky")
+				sky.Name = "Ambience2_Sky"
+				local id = "rbxassetid://121826915456627"
+				sky.SkyboxBk = id
+				sky.SkyboxDn = id
+				sky.SkyboxFt = id
+				sky.SkyboxLf = id
+				sky.SkyboxRt = id
+				sky.SkyboxUp = id
+				sky.Parent = lighting
+			else
+				local sky = lighting:FindFirstChild("Ambience2_Sky")
+				if sky then sky:Destroy() end
+			end
+		end,
+		Tooltip = "Ambience 2"
+	})
+end)
+
+run(function()
+    local ZoomUnlocker: table = {};
+    ZoomUnlocker = vape.Categories.Modules:CreateModule({
+        Name = "Zoom Unlocker",
+        Function = function(callback)
+	    if callback then
+            	lplr.CameraMaxZoomDistance = enabled and math.huge or 128
+	    end;
+        end,
+        Tooltip = "Makes it so you can zoom infinitely"
+    })
+end)
+
+run(function()
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+    local LocalPlayer = Players.LocalPlayer
+    local loopConn
+    local invisibilityEnabled = false
+
+    local function modifyHRP(onEnable)
+        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local hrp = character:WaitForChild("HumanoidRootPart")
+
+        if onEnable then
+            hrp.Transparency = 0.3
+            hrp.Color = Color3.new(1, 1, 1)
+            hrp.Material = Enum.Material.Plastic
+        else
+            hrp.Transparency = 1
+        end
+
+        hrp.CanCollide = true
+        hrp.Anchored = false
+    end
+
+    local function setCharacterVisibility(isVisible)
+        local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                part.LocalTransparencyModifier = isVisible and 0 or 1
+            elseif part:IsA("Decal") then
+                part.Transparency = isVisible and 0 or 1
+            elseif part:IsA("LayerCollector") then
+                part.Enabled = isVisible
+            end
+        end
+    end
+
+    local function startLoop(Character)
+        local Humanoid = Character:FindFirstChild("Humanoid")
+        if not Humanoid or Humanoid.RigType == Enum.HumanoidRigType.R6 then return end
+
+        local RootPart = Character:FindFirstChild("HumanoidRootPart")
+        if not RootPart then return end
+
+        if loopConn then loopConn:Disconnect() end
+
+        loopConn = RunService.Heartbeat:Connect(function()
+            if not invisibilityEnabled or not Character or not Humanoid or not RootPart then return end
+
+            -- 
+            for _, part in ipairs(Character:GetDescendants()) do
+                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                    part.LocalTransparencyModifier = 1
+                elseif part:IsA("Decal") then
+                    part.Transparency = 1
+                elseif part:IsA("LayerCollector") then
+                    part.Enabled = false
+                end
+            end
+
+            -- 
+            local oldcf = RootPart.CFrame
+            local oldcamoffset = Humanoid.CameraOffset
+            local newcf = RootPart.CFrame - Vector3.new(0, Humanoid.HipHeight + (RootPart.Size.Y / 2) - 1, 0)
+
+            RootPart.CFrame = newcf * CFrame.Angles(0, 0, math.rad(180))
+            Humanoid.CameraOffset = Vector3.new(0, -5, 0)
+
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "http://www.roblox.com/asset/?id=11360825341"
+            local loaded = Humanoid.Animator:LoadAnimation(anim)
+            loaded.Priority = Enum.AnimationPriority.Action4
+            loaded:Play()
+            loaded.TimePosition = 0.2
+            loaded:AdjustSpeed(0)
+
+            RunService.RenderStepped:Wait()
+            loaded:Stop()
+
+            Humanoid.CameraOffset = oldcamoffset
+            RootPart.CFrame = oldcf
+        end)
+    end
+
+    Invisibility = vape.Categories.Modules:CreateModule({
+        Name = 'Invisibility',
+        Function = function(callback)
+            invisibilityEnabled = callback
+            local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+
+            if callback then
+                vape:CreateNotification('Invisibilty', 'When You die turn it off and enable it again or you are visible ', 4)
+                modifyHRP(true)
+                setCharacterVisibility(false)
+                startLoop(character)
+            else
+                if loopConn then
+                    loopConn:Disconnect()
+                    loopConn = nil
+                end
+                modifyHRP(false)
+                setCharacterVisibility(true)
+            end
+        end,
+        Default = false,
+        Tooltip = ""
+    })
+
+    LocalPlayer.CharacterAdded:Connect(function()
+        if invisibilityEnabled then
+            task.wait(0.5)
+            Invisibility.Function(true)
+        end
+    end)
+end)
+
+run(function()
+    local MotionBlurConnection
+    local MotionBlurEffect
+
+    MotionBlur = vape.Categories.Modules:CreateModule({
+        Name = 'MotionBlur',
+        Function = function(callback)
+            local Lighting = game:GetService("Lighting")
+            local RunService = game:GetService("RunService")
+            local Players = game:GetService("Players")
+            local player = Players.LocalPlayer
+            local camera = workspace.CurrentCamera
+
+            if callback then
+                local blur = Instance.new("BlurEffect")
+                blur.Name = "MotionBlur"
+                blur.Size = 0
+                blur.Parent = Lighting
+                MotionBlurEffect = blur
+
+                local character = player.Character or player.CharacterAdded:Wait()
+                local root = character:WaitForChild("HumanoidRootPart")
+
+                local lastLook = camera.CFrame.LookVector
+                local lastPosition = root.Position
+                local currentBlur = 0
+
+                local function lerp(a, b, t)
+                    return a + (b - a) * t
+                end
+
+                MotionBlurConnection = RunService.RenderStepped:Connect(function()
+                    if not root or not root.Parent then return end
+                    local look = camera.CFrame.LookVector
+                    local pos = root.Position
+
+                    local rotDelta = math.acos(math.clamp(look:Dot(lastLook), -1, 1))
+                    local rotBlur = math.clamp(rotDelta * 120, 0, 15)
+                    lastLook = look
+
+                    local moveDelta = (pos - lastPosition).Magnitude
+                    local moveBlur = math.clamp(moveDelta * 2.2, 0, 15)
+                    lastPosition = pos
+
+                    local targetBlur = math.clamp(rotBlur + moveBlur, 0, 25)
+                    currentBlur = lerp(currentBlur, targetBlur, 0.2)
+                    blur.Size = currentBlur
+                end)
+            else
+                if MotionBlurEffect then
+                    MotionBlurEffect:Destroy()
+                    MotionBlurEffect = nil
+                end
+                if MotionBlurConnection then
+                    MotionBlurConnection:Disconnect()
+                    MotionBlurConnection = nil
+                end
+            end
+        end,
+        Default = false,
+        Tooltip = "Self Explanatory"
+    })
+end)
+
+run(function()
+        local BetterStrafe: table = {["Enabled"] = false};
+        local connection: RBXScriptConnection? = nil;
+        local findNearestPlayer: () -> Player? = function(): Player?
+                local closest: Player? = nil;
+                local closestDist: number? = nil;
+                local myhrp: BasePart? = lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") :: BasePart?;
+                if not myhrp then return nil; end;
+                for _: number, v: Player in next, playersService:GetPlayers() do
+                        if v ~= lplr and v.Character then
+                                local hrp: BasePart? = v.Character:FindFirstChild("HumanoidRootPart") :: BasePart?;
+                                if hrp then
+                                        local dist: number = (hrp.Position - myhrp.Position).Magnitude;
+                                        if not closestDist or dist < closestDist then
+                                                closest = v;
+                                                closestDist = dist;
+                                        end;
+                                end;
+                        end;
+                end;
+                return closest;
+        end;
+        BetterStrafe = vape.Categories.Combat:CreateModule({
+                ["Name"] = "BetterStrafe",
+                ["Function"] = function(callback: boolean): void
+                        if callback then
+                                connection = runService.Heartbeat:Connect(function()
+                                        local hum: Humanoid? = lplr.Character and lplr.Character:FindFirstChildOfClass("Humanoid") :: Humanoid?;
+                                        local hrp: BasePart? = lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") :: BasePart?;
+                                        if not (hum and hrp) then return; end;
+                                        local target: Player? = findNearestPlayer();
+                                        if target and target.Character then
+                                                local targetHum: Humanoid? = target.Character:FindFirstChildOfClass("Humanoid") :: Humanoid?;
+                                                local targetHRP: BasePart? = target.Character:FindFirstChild("HumanoidRootPart") :: BasePart?;
+                                                if targetHum and targetHum.Health > 0 and targetHRP then
+                                                        hum:MoveTo(targetHRP.Position);
+                                                end;
+                                        end;
+                                end);
+
+                                return function(): nil
+                                        if connection then
+                                                connection:Disconnect();
+                                        end;
+                                end;
+                        end;
+                        return nil;
+                end,
+		["Tooltip"] = "code still aids"
+        });
+end);
+																																																																			
+game:GetService("StarterGui"):SetCore("SendNotification", {
+	Title = "Cloudware VXPE☁️";
+	Text = "Loaded!";
+	Duration = 10;
+})
+run(function()
+    local InfiniteJump
+    local Velocity
+    InfiniteJump = vape.Categories.Modules:CreateModule({
+        Name = "InfiniteJump",
+        Function = function(callback)
+            if callback then
+				InfiniteJump:Clean(inputService.InputBegan:Connect(function(input, gameProcessed)
+					if gameProcessed then return end
+					if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Space then
+						while inputService:IsKeyDown(Enum.KeyCode.Space) do
+							local PrimaryPart = lplr.Character.PrimaryPart
+							if entitylib.isAlive and PrimaryPart then
+								PrimaryPart.Velocity = vector.create(PrimaryPart.Velocity.X, Velocity.Value, PrimaryPart.Velocity.Z)
+							end
+							wait()
+						end
+					end
+				end))
+				if inputService.TouchEnabled then
+					local Jumping = false
+					local JumpButton = lplr.PlayerGui:WaitForChild("TouchGui"):WaitForChild("TouchControlFrame"):WaitForChild("JumpButton")
+					
+					InfiniteJump:Clean(JumpButton.MouseButton1Down:Connect(function()
+						Jumping = true
+					end))
+
+					InfiniteJump:Clean(JumpButton.MouseButton1Up:Connect(function()
+						Jumping = false
+					end))
+
+					InfiniteJump:Clean(runService.RenderStepped:Connect(function()
+						if Jumping and entitylib.isAlive then
+							local PrimaryPart = lplr.Character.PrimaryPart
+							PrimaryPart.Velocity = vector.create(PrimaryPart.Velocity.X, Velocity.Value, PrimaryPart.Velocity.Z)
+						end
+					end))
+				end
+			end
+        end,
+        Tooltip = "Allows infinite jumping"
+    })
+    Velocity = InfiniteJump:CreateSlider({
+        Name = 'Velocity',
+        Min = 50,
+        Max = 300,
+        Default = 50
+    })
+end)
