@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local mainapi = {
 	Categories = {},
 	GUIColor = {
@@ -77,18 +78,16 @@ local getcustomassets = {
 	['newvape/assets/new/colorpreview.png'] = 'rbxassetid://14368311578',
 	['newvape/assets/new/combaticon.png'] = 'rbxassetid://14368312652',
 	['newvape/assets/new/customsettings.png'] = 'rbxassetid://14403726449',
-	['newvape/assets/new/discord.png'] = '',
 	['newvape/assets/new/dots.png'] = 'rbxassetid://14368314459',
 	['newvape/assets/new/edit.png'] = 'rbxassetid://14368315443',
-	['newvape/assets/new/expandicon.png'] = 'rbxassetid://14368353032',
 	['newvape/assets/new/expandright.png'] = 'rbxassetid://14368316544',
 	['newvape/assets/new/expandup.png'] = 'rbxassetid://14368317595',
 	['newvape/assets/new/friendstab.png'] = 'rbxassetid://14397462778',
 	['newvape/assets/new/guisettings.png'] = 'rbxassetid://14368318994',
 	['newvape/assets/new/guislider.png'] = 'rbxassetid://14368320020',
 	['newvape/assets/new/guisliderrain.png'] = 'rbxassetid://14368321228',
-	['newvape/assets/new/guiv4.png'] = 'rbxassetid://14368322199',
-	['newvape/assets/new/guivape.png'] = 'rbxassetid://14657521312',
+	['newvape/assets/new/guiv4.png'] = 'rbxassetid://101985420041504',
+	['newvape/assets/new/guivape.png'] = 'rbxassetid://108162951042790',
 	['newvape/assets/new/info.png'] = 'rbxassetid://14368324807',
 	['newvape/assets/new/inventoryicon.png'] = 'rbxassetid://14928011633',
 	['newvape/assets/new/legit.png'] = 'rbxassetid://14425650534',
@@ -109,6 +108,7 @@ local getcustomassets = {
 	['newvape/assets/new/rendericon.png'] = 'rbxassetid://14368350193',
 	['newvape/assets/new/rendertab.png'] = 'rbxassetid://14397373458',
 	['newvape/assets/new/search.png'] = 'rbxassetid://14425646684',
+	['newvape/assets/new/expandicon.png'] = 'rbxassetid://14368353032',
 	['newvape/assets/new/targetinfoicon.png'] = 'rbxassetid://14368354234',
 	['newvape/assets/new/targetnpc1.png'] = 'rbxassetid://14497400332',
 	['newvape/assets/new/targetnpc2.png'] = 'rbxassetid://14497402744',
@@ -116,8 +116,8 @@ local getcustomassets = {
 	['newvape/assets/new/targetplayers2.png'] = 'rbxassetid://14497397862',
 	['newvape/assets/new/targetstab.png'] = 'rbxassetid://14497393895',
 	['newvape/assets/new/textguiicon.png'] = 'rbxassetid://14368355456',
-	['newvape/assets/new/textv4.png'] = 'rbxassetid://14368357095',
-	['newvape/assets/new/textvape.png'] = 'rbxassetid://14368358200',
+	['newvape/assets/new/textv4.png'] = 'rbxassetid://101985420041504',
+	['newvape/assets/new/textvape.png'] = 'rbxassetid://89749442322552',
 	['newvape/assets/new/utilityicon.png'] = 'rbxassetid://14368359107',
 	['newvape/assets/new/vape.png'] = 'rbxassetid://14373395239',
 	['newvape/assets/new/warning.png'] = 'rbxassetid://14368361552',
@@ -314,7 +314,7 @@ local function downloadFile(path, func)
 	if not isfile(path) then
 		createDownloader(path)
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/CloudwareV2/CloudV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/QP-Offcial/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -371,8 +371,14 @@ local function makeDraggable(gui, window)
 				if input.UserInputType == (inputObj.UserInputType == Enum.UserInputType.MouseButton1 and Enum.UserInputType.MouseMovement or Enum.UserInputType.Touch) then
 					local position = input.Position
 					if inputService:IsKeyDown(Enum.KeyCode.LeftShift) then
-						dragPosition = (dragPosition // 3) * 3
-						position = (position // 3) * 3
+						dragPosition = Vector2.new(
+							math.floor(dragPosition.X / 3) * 3,
+							math.floor(dragPosition.Y / 3) * 3
+						)
+						position = Vector2.new(
+							math.floor(position.X / 3) * 3, 
+							math.floor(position.Y / 3) * 3
+						)
 					end
 					gui.Position = UDim2.fromOffset((position.X / scale.Scale) + dragPosition.X, (position.Y / scale.Scale) + dragPosition.Y)
 				end
@@ -2483,18 +2489,19 @@ function mainapi:CreateGUI()
 	makeDraggable(window)
 	local logo = Instance.new('ImageLabel')
 	logo.Name = 'VapeLogo'
-	logo.Size = UDim2.fromOffset(62, 18)
-	logo.Position = UDim2.fromOffset(11, 10)
+	logo.Size = UDim2.fromOffset(152, 22)
+	logo.Position = UDim2.fromOffset(11, 9)
 	logo.BackgroundTransparency = 1
-	logo.Image = getcustomasset('newvape/assets/new/guivape.png')
+	logo.Image = "rbxassetid://108162951042790"
+	--getcustomasset('newvape/assets/new/guivape.png')
 	logo.ImageColor3 = select(3, uipallet.Main:ToHSV()) > 0.5 and uipallet.Text or Color3.new(1, 1, 1)
 	logo.Parent = window
 	local logov4 = Instance.new('ImageLabel')
 	logov4.Name = 'V4Logo'
-	logov4.Size = UDim2.fromOffset(28, 16)
-	logov4.Position = UDim2.new(1, 1, 0, 1)
+	logov4.Size = UDim2.fromOffset(112, 64)
+	logov4.Position = UDim2.new(1, -42, 0, -19)
 	logov4.BackgroundTransparency = 1
-	logov4.Image = getcustomasset('newvape/assets/new/guiv4.png')
+	logov4.Image = 'rbxassetid://101985420041504' --getcustomasset('newvape/assets/new/guiv4.png')
 	logov4.Parent = logo
 	local children = Instance.new('Frame')
 	children.Name = 'Children'
@@ -2521,13 +2528,6 @@ function mainapi:CreateGUI()
 	settingsicon.Image = getcustomasset('newvape/assets/new/guisettings.png')
 	settingsicon.ImageColor3 = color.Light(uipallet.Main, 0.37)
 	settingsicon.Parent = settingsbutton
-	local discordbutton = Instance.new('ImageButton')
-	discordbutton.Size = UDim2.fromOffset(16, 16)
-	discordbutton.Position = UDim2.new(1, -56, 0, 11)
-	discordbutton.BackgroundTransparency = 1
-	discordbutton.Image = getcustomasset('newvape/assets/new/discord.png')
-	discordbutton.Parent = window
-	addTooltip(discordbutton, 'Join discord')
 	local settingspane = Instance.new('TextButton')
 	settingspane.Size = UDim2.fromScale(1, 1)
 	settingspane.BackgroundColor3 = color.Dark(uipallet.Main, 0.02)
@@ -3564,37 +3564,6 @@ function mainapi:CreateGUI()
 	close.MouseButton1Click:Connect(function()
 		settingspane.Visible = false
 	end)
-	discordbutton.MouseButton1Click:Connect(function()
-		task.spawn(function()
-			local body = httpService:JSONEncode({
-				nonce = httpService:GenerateGUID(false),
-				args = {
-					invite = {code = '5gJqhQmrdS'},
-					code = '5gJqhQmrdS'
-				},
-				cmd = 'INVITE_BROWSER'
-			})
-
-			for i = 1, 14 do
-				task.spawn(function()
-					request({
-						Method = 'POST',
-						Url = 'http://127.0.0.1:64'..(53 + i)..'/rpc?v=1',
-						Headers = {
-							['Content-Type'] = 'application/json',
-							Origin = 'https://discord.com'
-						},
-						Body = body
-					})
-				end)
-			end
-		end)
-
-		task.spawn(function()
-			tooltip.Text = 'Copied!'
-			setclipboard('https://discord.gg/5gJqhQmrdS')
-		end)
-	end)
 	settingsbutton.MouseEnter:Connect(function()
 		settingsicon.ImageColor3 = uipallet.Text
 	end)
@@ -3728,7 +3697,7 @@ function mainapi:CreateCategory(categorysettings)
 		gradient.Rotation = 90
 		gradient.Enabled = false
 		gradient.Parent = modulebutton
-		local modulechildren = Instance.new('Frame')
+		local modulechildren = Instance.new('CanvasGroup')
 		local bind = Instance.new('TextButton')
 		addTooltip(modulebutton, modulesettings.Tooltip)
 		addTooltip(bind, 'Click to bind')
@@ -3906,11 +3875,31 @@ function mainapi:CreateCategory(categorysettings)
 				dots.ImageColor3 = color.Light(uipallet.Main, 0.37)
 			end
 		end)
+		local moduleexpanded = false
+		local function moduleexpand()
+			moduleexpanded = not moduleexpanded
+			if moduleexpanded then
+				modulechildren.Visible = moduleexpanded
+				modulechildren.Size = UDim2.new(1, 0, 0, 0)
+				tween:Tween(modulechildren, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+					Size = UDim2.new(1, 0, 0, windowlist.AbsoluteContentSize.Y / scale.Scale)
+				})
+			else
+				modulechildrenTween = tween:Tween(modulechildren, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {
+					Size = UDim2.new(1, 0, 0, 0)
+				})
+				task.delay(0.5,function()
+					modulechildren.Visible = moduleexpanded
+				end)
+			end
+
+		end
 		dotsbutton.MouseButton1Click:Connect(function()
-			modulechildren.Visible = not modulechildren.Visible
+			moduleexpand()
 		end)
+
 		dotsbutton.MouseButton2Click:Connect(function()
-			modulechildren.Visible = not modulechildren.Visible
+			moduleexpand()
 		end)
 		modulebutton.MouseEnter:Connect(function()
 			hovered = true
@@ -3932,7 +3921,7 @@ function mainapi:CreateCategory(categorysettings)
 			moduleapi:Toggle()
 		end)
 		modulebutton.MouseButton2Click:Connect(function()
-			modulechildren.Visible = not modulechildren.Visible
+			moduleexpand()
 		end)
 		if inputService.TouchEnabled then
 			local heldbutton = false
@@ -4006,12 +3995,30 @@ function mainapi:CreateCategory(categorysettings)
 
 		return moduleapi
 	end
-
+	local childrenTween
 	function categoryapi:Expand()
 		self.Expanded = not self.Expanded
-		children.Visible = self.Expanded
+		if self.Expanded then
+			children.Visible = self.Expanded
+			children.Size = UDim2.new(1, 0, 0, -41)
+			childrenTween = tween:Tween(children, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+				Size = UDim2.new(1, 0, 1, -41)
+			})
+		else
+			childrenTween = tween:Tween(children, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {
+				Size = UDim2.new(1, 0, 0, -41)
+			})
+			divider.Visible = false
+			task.delay(0.3,function()
+				children.Visible = self.Expanded
+				divider.Visible = children.CanvasPosition.Y > 10 and children.Visible
+			end)
+		end
 		arrow.Rotation = self.Expanded and 0 or 180
-		window.Size = UDim2.fromOffset(220, self.Expanded and math.min(41 + windowlist.AbsoluteContentSize.Y / scale.Scale, 601) or 41)
+		-- window.Size = UDim2.fromOffset(220, self.Expanded and math.min(41 + windowlist.AbsoluteContentSize.Y / scale.Scale, 601) or 41)
+		tween:Tween(window, TweenInfo.new(0.4, Enum.EasingStyle.Exponential), {
+			Size = UDim2.fromOffset(220, self.Expanded and math.min(41 + windowlist.AbsoluteContentSize.Y / scale.Scale, 601) or 41)
+		})
 		divider.Visible = children.CanvasPosition.Y > 10 and children.Visible
 	end
 
@@ -5669,16 +5676,6 @@ clickgui.Size = UDim2.fromScale(1, 1)
 clickgui.BackgroundTransparency = 1
 clickgui.Visible = false
 clickgui.Parent = scaledgui
-local scarcitybanner = Instance.new('TextLabel')
-scarcitybanner.Size = UDim2.fromScale(1, 0.02)
-scarcitybanner.Position = UDim2.fromScale(0, 0.97)
-scarcitybanner.BackgroundTransparency = 1
-scarcitybanner.Text = 'A new discord has been created, click the discord icon to join.'
-scarcitybanner.TextScaled = true
-scarcitybanner.TextColor3 = Color3.new(1, 1, 1)
-scarcitybanner.TextStrokeTransparency = 0.5
-scarcitybanner.FontFace = uipallet.Font
-scarcitybanner.Parent = clickgui
 local modal = Instance.new('TextButton')
 modal.BackgroundTransparency = 1
 modal.Modal = true
@@ -5797,6 +5794,11 @@ mainapi:CreateCategory({
 	Icon = getcustomasset('newvape/assets/new/miniicon.png'),
 	Size = UDim2.fromOffset(19, 12)
 })
+mainapi:CreateCategory({
+	Name = 'Modules',
+	Icon = getcustomasset('newvape/assets/new/module.png'),
+	Size = UDim2.fromOffset(14, 14)
+})
 mainapi.Categories.Main:CreateDivider('misc')
 
 --[[
@@ -5911,7 +5913,7 @@ general:CreateButton({
 		if shared.VapeDeveloper then
 			loadstring(readfile('newvape/loader.lua'), 'loader')()
 		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/QP-Offcial/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
 		end
 	end,
 	Tooltip = 'This will set your profile to the default settings of Vape'
@@ -5930,7 +5932,7 @@ general:CreateButton({
 		if shared.VapeDeveloper then
 			loadstring(readfile('newvape/loader.lua'), 'loader')()
 		else
-			loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
+			loadstring(game:HttpGet('https://raw.githubusercontent.com/QP-Offcial/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
 		end
 	end,
 	Tooltip = 'Reloads vape for debugging purposes'
@@ -6038,7 +6040,7 @@ guipane:CreateDropdown({
 			if shared.VapeDeveloper then
 				loadstring(readfile('newvape/loader.lua'), 'loader')()
 			else
-				loadstring(game:HttpGet('https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
+				loadstring(game:HttpGet('https://raw.githubusercontent.com/QP-Offcial/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/loader.lua', true))()
 			end
 		end
 	end,
@@ -6087,7 +6089,8 @@ guipane:CreateButton({
 			InventoryCategory = 7,
 			MinigamesCategory = 8,
 			FriendsCategory = 9,
-			ProfilesCategory = 10
+			ProfilesCategory = 10,
+			ModulesCategory = 11
 		}
 		local categories = {}
 		for _, v in mainapi.Categories do
@@ -6352,13 +6355,14 @@ textguicolorcustom = textgui:CreateColorSlider({
 local VapeLabels = {}
 local VapeLogo = Instance.new('ImageLabel')
 VapeLogo.Name = 'Logo'
-VapeLogo.Size = UDim2.fromOffset(80, 21)
+VapeLogo.Size = UDim2.fromOffset(180, 31)
 VapeLogo.Position = UDim2.new(1, -142, 0, 3)
 VapeLogo.BackgroundTransparency = 1
 VapeLogo.BorderSizePixel = 0
 VapeLogo.Visible = false
 VapeLogo.BackgroundColor3 = Color3.new()
-VapeLogo.Image = getcustomasset('newvape/assets/new/textvape.png')
+VapeLogo.Image = "rbxassetid://89749442322552"
+--getcustomasset('newvape/assets/new/textvape.png')
 VapeLogo.Parent = textgui.Children
 
 local lastside = textgui.Children.AbsolutePosition.X > (gui.AbsoluteSize.X / 2)
@@ -6375,12 +6379,12 @@ end))
 
 local VapeLogoV4 = Instance.new('ImageLabel')
 VapeLogoV4.Name = 'Logo2'
-VapeLogoV4.Size = UDim2.fromOffset(33, 18)
-VapeLogoV4.Position = UDim2.new(1, 1, 0, 1)
+VapeLogoV4.Size = UDim2.fromOffset(99, 72) -- 33 18
+VapeLogoV4.Position = UDim2.new(1, -32, 0, -16)
 VapeLogoV4.BackgroundColor3 = Color3.new()
 VapeLogoV4.BackgroundTransparency = 1
 VapeLogoV4.BorderSizePixel = 0
-VapeLogoV4.Image = getcustomasset('newvape/assets/new/textv4.png')
+VapeLogoV4.Image = "rbxassetid://101985420041504" --getcustomasset('newvape/assets/new/textv4.png')
 VapeLogoV4.Parent = VapeLogo
 local VapeLogoShadow = VapeLogo:Clone()
 VapeLogoShadow.Position = UDim2.fromOffset(1, 1)
