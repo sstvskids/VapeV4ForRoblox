@@ -8492,7 +8492,7 @@ run(function()
 end)
 run(function()
     local ChatTag: table = {}
-    ChatTag = vape.Categories.Modules:CreateModule({
+    ChatTag = vape.Categories.Render:CreateModule({
         Name = "ChatTag",
         Function = function(callback)
             if callback then
@@ -8512,7 +8512,7 @@ run(function()
 end)
 
 run(function()
-	local Ambience1 = vape.Categories.Modules:CreateModule({
+	local Ambience1 = vape.Categories.World:CreateModule({
 		Name = "Ambience 1",
 		Function = function(callback)
 			local lighting = game:GetService("Lighting")
@@ -8537,7 +8537,7 @@ run(function()
 end)
 
 run(function()
-	local Ambience2 = vape.Categories.Modules:CreateModule({
+	local Ambience2 = vape.Categories.World:CreateModule({
 		Name = "Ambience 2",
 		Function = function(callback)
 			local lighting = game:GetService("Lighting")
@@ -8563,7 +8563,7 @@ end)
 
 run(function()
     local ZoomUnlocker: table = {};
-    ZoomUnlocker = vape.Categories.Modules:CreateModule({
+    ZoomUnlocker = vape.Categories.World:CreateModule({
         Name = "Zoom Unlocker",
         Function = function(callback)
 	    if callback then
@@ -8657,7 +8657,7 @@ run(function()
         end)
     end
 
-    Invisibility = vape.Categories.Modules:CreateModule({
+    Invisibility = vape.Categories.Blatant:CreateModule({
         Name = 'Invisibility',
         Function = function(callback)
             invisibilityEnabled = callback
@@ -8693,7 +8693,7 @@ run(function()
     local MotionBlurConnection
     local MotionBlurEffect
 
-    MotionBlur = vape.Categories.Modules:CreateModule({
+    MotionBlur = vape.Categories.Render:CreateModule({
         Name = 'MotionBlur',
         Function = function(callback)
             local Lighting = game:GetService("Lighting")
@@ -8813,7 +8813,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 run(function()
     local InfiniteJump
     local Velocity
-    InfiniteJump = vape.Categories.Modules:CreateModule({
+    InfiniteJump = vape.Categories.Blatant:CreateModule({
         Name = "InfiniteJump",
         Function = function(callback)
             if callback then
