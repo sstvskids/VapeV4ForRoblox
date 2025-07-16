@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -8491,28 +8492,7 @@ run(function()
 	})
 end)
 run(function()
-    local ChatTag: table = {}
-    ChatTag = vape.Categories.Render:CreateModule({
-        Name = "ChatTag",
-        Function = function(callback)
-            if callback then
-                textChatService.OnIncomingMessage = function(message: string?)
-                    local prop = Instance.new("TextChatMessageProperties");
-                    if message.TextSource and message.TextSource.UserId == lplr.UserId then
-                        prop.PrefixText = "<font color='#ff0000'>[CloudwareV2 VXPE☁️]</font> " .. (message.PrefixText or "");
-                    end;
-                    return prop;
-                end;
-            else
-                textChatService.OnIncomingMessage = nil;
-            end;
-        end,
-        Tooltip = "Adds a tag next to your name when you chat."
-    })
-end)
-
-run(function()
-	local Ambience1 = vape.Categories.World:CreateModule({
+	local Ambience1 = vape.Categories.CloudWare:CreateModule({
 		Name = "Ambience 1",
 		Function = function(callback)
 			local lighting = game:GetService("Lighting")
@@ -8537,7 +8517,7 @@ run(function()
 end)
 
 run(function()
-	local Ambience2 = vape.Categories.World:CreateModule({
+	local Ambience2 = vape.Categories.CloudWare:CreateModule({
 		Name = "Ambience 2",
 		Function = function(callback)
 			local lighting = game:GetService("Lighting")
@@ -8563,7 +8543,7 @@ end)
 
 run(function()
     local ZoomUnlocker: table = {};
-    ZoomUnlocker = vape.Categories.World:CreateModule({
+    ZoomUnlocker = vape.Categories.CloudWare:CreateModule({
         Name = "Zoom Unlocker",
         Function = function(callback)
 	    if callback then
@@ -8657,7 +8637,7 @@ run(function()
         end)
     end
 
-    Invisibility = vape.Categories.Blatant:CreateModule({
+    Invisibility = vape.Categories.CloudWare:CreateModule({
         Name = 'Invisibility',
         Function = function(callback)
             invisibilityEnabled = callback
@@ -8693,7 +8673,7 @@ run(function()
     local MotionBlurConnection
     local MotionBlurEffect
 
-    MotionBlur = vape.Categories.Render:CreateModule({
+    MotionBlur = vape.Categories.CloudWare:CreateModule({
         Name = 'MotionBlur',
         Function = function(callback)
             local Lighting = game:GetService("Lighting")
@@ -8813,7 +8793,7 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 run(function()
     local InfiniteJump
     local Velocity
-    InfiniteJump = vape.Categories.Blatant:CreateModule({
+    InfiniteJump = vape.Categories.CloudWare:CreateModule({
         Name = "InfiniteJump",
         Function = function(callback)
             if callback then
@@ -8857,5 +8837,26 @@ run(function()
         Min = 50,
         Max = 300,
         Default = 50
+    })
+end)
+run(function()
+    local p = game.Players.LocalPlayer
+    local d = nil
+    local id = 3624932055
+
+    vape.Categories.CloudWare:CreateModule({
+        Name = "Chase",
+        Tooltip = "",
+        Function = function(e)
+            local h = (p.Character or p.CharacterAdded:Wait()):FindFirstChildOfClass("Humanoid")
+            if not h then return end
+            if e then
+                if not d then d = h:GetAppliedDescription() end
+                local s, n = pcall(function() return game.Players:GetHumanoidDescriptionFromUserId(id) end)
+                if s and n then h:ApplyDescription(n) end
+            else
+                if d then h:ApplyDescription(d) end
+            end
+        end
     })
 end)
