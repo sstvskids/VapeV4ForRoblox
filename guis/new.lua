@@ -1,5 +1,6 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local mainapi = {
 	Categories = {},
 	GUIColor = {
@@ -5796,7 +5797,7 @@ mainapi:CreateCategory({
 	Size = UDim2.fromOffset(19, 12)
 })
 mainapi:CreateCategory({
-	Name = 'Modules',
+	Name = 'CloudWare',
 	Icon = getcustomasset('newvape/assets/new/module.png'),
 	Size = UDim2.fromOffset(14, 14)
 })
@@ -6091,7 +6092,7 @@ guipane:CreateButton({
 			MinigamesCategory = 8,
 			FriendsCategory = 9,
 			ProfilesCategory = 10,
-			ModulesCategory = 11
+			CloudWareCategory = 11
 		}
 		local categories = {}
 		for _, v in mainapi.Categories do
