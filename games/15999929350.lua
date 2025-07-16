@@ -81,6 +81,17 @@ local function getGlove()
     return false
 end
 
+local function isFriend(plr, recolor)
+	if vape.Categories.Friends.Options['Use friends'].Enabled then
+		local friend = table.find(vape.Categories.Friends.ListEnabled, plr.Name) and true
+		if recolor then
+			friend = friend and vape.Categories.Friends.Options['Recolor visuals'].Enabled
+		end
+		return friend
+	end
+	return nil
+end
+
 local function notify(txt, dur)
     local suc, res = pcall(function()
         return starterGui:SetCore('SendNotification', {
@@ -382,6 +393,59 @@ run(function()
             end
         end,
         Tooltip = 'Prevents you from dying'
+    })
+end)
+
+run(function()
+    local AutoSlap
+    local tool
+    local xval, yval, zval
+
+    AutoSlap = vape.Categories.Blatant:CreateModule({
+        Name = 'AutoSlap',
+    	Function = function(callback)
+        	if callback then
+        		if getGlove() == true then
+                    task.spawn(function()
+                        for i,v in entitylib.List do
+                            if isFriend(v.Player) then continue end
+                            if v ~= v.Player and v.Character then
+                                tool = getTool()
+                                tool.Event:FireServer('slash', v.Character, Vector3.new(xval.Value, yval.Value, zval.Value))
+                            end
+                        end
+                    end)
+
+                    notif('Vape', 'Slapped all players', 3)
+                    AutoSlap:Toggle()
+                else
+                    notif('Vape', 'no glove found', 3)
+                    return AutoSlap:Toggle()
+                end
+    	    end
+        end,
+	    Tooltip = 'Automatically slaps everyone for you'
+    })
+    xval = AutoSlap:CreateSlider({
+        Name = 'X',
+        Min = 0,
+        Max = 10,
+        Default = 0,
+        Tooltip = 'Represents the horizontal position or displacement along the x-axis.'
+    })
+    yval = AutoSlap:CreateSlider({
+        Name = 'Y',
+        Min = 0,
+        Max = 10,
+        Default = 0,
+        Tooltip = 'Represents the vertical position or displacement along the y-axis.'
+    })
+    zval = AutoSlap:CreateSlider({
+        Name = 'Z',
+        Min = 0,
+        Max = 10,
+        Default = 0,
+        Tooltip = 'Represents the depth position or displacement along the z-axis.'
     })
 end)
 
