@@ -449,4 +449,29 @@ run(function()
     })
 end)
 
+run(function()
+    local Velocity
+    local bv, bav
+    
+    Velocity = vape.Categories.Combat:CreateModule({
+        Name = 'Velocity',
+        Function = function(callback)
+            if callback then
+                repeat
+                    bv, bav = entitylib.character.RootPart:FindFirstChild('BodyVelocity'), entitylib.character.RootPart:FindFirstChild('BodyAngularVelocity')
+                    if entitylib.isAlive then
+                        if bv then
+                            bv:Destroy()
+                        end
+                        if bav then
+                            bav:Destroy()
+                        end
+                    end
+                    task.wait()
+                until not Velocity.Enabled
+            end
+        end
+    })
+end)
+
 return notify('This version is a beta version, and should be used at your own risk. Detections may occur while using the product.', 20)
