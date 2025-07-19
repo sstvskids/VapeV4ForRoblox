@@ -8860,3 +8860,237 @@ run(function()
         end
     })
 end)
+run(function()
+    local AdetundeExploit
+    local AdetundeExploit_List
+
+    local adetunde_remotes = {
+        ["Shield"] = function()
+            local args = { [1] = "shield" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end,
+
+        ["Speed"] = function()
+            local args = { [1] = "speed" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end,
+
+        ["Strength"] = function()
+            local args = { [1] = "strength" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end
+    }
+
+    local current_upgrador = "Shield"
+    local hasnt_upgraded_everything = true
+    local testing = 1
+
+    AdetundeExploit = vape.Categories.CloudWare:CreateModule({
+        Name = 'AdetundeExploit',
+        Function = function(calling)
+            if calling then 
+                -- Check if in testing mode or equipped kit
+                -- if tostring(shared.store.queueType) == "training_room" or shared.store.equippedKit == "adetunde" then
+                --     AdetundeExploit["ToggleButton"](false) 
+                --     current_upgrador = AdetundeExploit_List.Value
+                task.spawn(function()
+                    repeat
+                        local returning_table = adetunde_remotes[current_upgrador]()
+                        
+                        if type(returning_table) == "table" then
+                            local Speed = returning_table["speed"]
+                            local Strength = returning_table["strength"]
+                            local Shield = returning_table["shield"]
+
+                            print("Speed: " .. tostring(Speed))
+                            print("Strength: " .. tostring(Strength))
+                            print("Shield: " .. tostring(Shield))
+                            print("Current Upgrador: " .. tostring(current_upgrador))
+
+                            if returning_table[string.lower(current_upgrador)] == 3 then
+                                if Strength and Shield and Speed then
+                                    if Strength == 3 or Speed == 3 or Shield == 3 then
+                                        if (Strength == 3 and Speed == 2 and Shield == 2) or
+                                           (Strength == 2 and Speed == 3 and Shield == 2) or
+                                           (Strength == 2 and Speed == 2 and Shield == 3) then
+                                            -- warningNotification("AdetundeExploit", "Fully upgraded everything possible!", 7)
+                                            hasnt_upgraded_everything = false
+                                        else
+                                            local things = {}
+                                            for i, v in pairs(adetunde_remotes) do
+                                                table.insert(things, i)
+                                            end
+                                            for i, v in pairs(things) do
+                                                if things[i] == current_upgrador then
+                                                    table.remove(things, i)
+                                                end
+                                            end
+                                            local random = things[math.random(1, #things)]
+                                            current_upgrador = random
+                                        end
+                                    end
+                                end
+                            end
+                        else
+                            local things = {}
+                            for i, v in pairs(adetunde_remotes) do
+                                table.insert(things, i)
+                            end
+                            for i, v in pairs(things) do
+                                if things[i] == current_upgrador then
+                                    table.remove(things, i)
+                                end
+                            end
+                            local random = things[math.random(1, #things)]
+                            current_upgrador = random
+                        end
+                        task.wait(0.1)
+                    until not AdetundeExploit.Enabled or not hasnt_upgraded_everything
+                end)
+                -- else
+                --     AdetundeExploit["ToggleButton"](false)
+                --     warningNotification("AdetundeExploit", "Kit required or you need to be in testing mode", 5)
+                -- end
+            end
+        end
+    })
+
+    local real_list = {}
+    for i, v in pairs(adetunde_remotes) do
+        table.insert(real_list, i)
+    end
+
+    AdetundeExploit_List = AdetundeExploit:CreateDropdown({
+        Name = 'Preferred Upgrade',
+        List = real_list,
+        Function = function() end,
+        Default = "Shield"
+    })
+end)
+run(function()
+    local chatConnections = {}
+    local TextChatService = game:GetService("TextChatService")
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local LocalPlayer = Players.LocalPlayer
+Autocorrect= vape.Categories.CloudWare:CreateModule({
+		Name = 'Autocorrect',
+		Function = function(callback)
+			if callback then
+    local keywords = {
+        "hacker",
+        "hax",
+        "hack",
+        "cheater"
+    }
+
+    local function containsKeyword(msg)
+        msg = msg:lower()
+        for _, word in ipairs(keywords) do
+            if msg:find(word) then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function sendChatMessage(msg)
+        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local channel = TextChatService:FindFirstChild("TextChannels") and TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+            if channel then
+                channel:SendAsync(msg)
+            elseif TextChatService.ChatInputBarConfiguration then
+                TextChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(msg)
+            end
+        else
+            local chatEvent = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+            if chatEvent and chatEvent:FindFirstChild("SayMessageRequest") then
+                chatEvent.SayMessageRequest:FireServer(msg, "All")
+            end
+        end
+    end
+
+    local function connectNewChatSystem()
+        table.insert(chatConnections, TextChatService.MessageReceived:Connect(function(textChatMessage)
+            local speaker = textChatMessage.TextSource
+            if speaker and speaker.UserId ~= LocalPlayer.UserId then
+                local player = Players:GetPlayerByUserId(speaker.UserId)
+                if player and containsKeyword(textChatMessage.Text) then
+                    sendChatMessage("actually " .. player.Name .. " its called Exploits")
+                end
+            end
+        end))
+    end
+
+    local function connectLegacyChatSystem()
+        local function connectPlayerChat(player)
+            if player ~= LocalPlayer then
+                local conn = player.Chatted:Connect(function(msg)
+                    if containsKeyword(msg) then
+                        sendChatMessage("actually " .. player.Name .. " its called Exploits")
+                    end
+                end)
+                table.insert(chatConnections, conn)
+            end
+        end
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            connectPlayerChat(player)
+        end
+
+        table.insert(chatConnections, Players.PlayerAdded:Connect(connectPlayerChat))
+    end
+
+    local function disconnectAll()
+        for _, conn in ipairs(chatConnections) do
+            if typeof(conn) == "RBXScriptConnection" then
+                conn:Disconnect()
+            end
+        end
+        table.clear(chatConnections)
+    end
+
+    AutoCorrect = vape.Categories.CloudWare:CreateModule({
+        Name = 'AutoCorrect',
+        Function = function(callback)
+            if callback then
+                if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                    connectNewChatSystem()
+                else
+                    connectLegacyChatSystem()
+                end
+            else
+                disconnectAll()
+            end
+        end,
+        Default = false,
+        Tooltip = "Corrects someone when they say hack🔥"
+    })
+end)																																																																																																																																																															
