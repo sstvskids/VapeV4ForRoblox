@@ -9064,7 +9064,6 @@ Autocorrect= vape.Categories.CloudWare:CreateModule({
         for _, player in ipairs(Players:GetPlayers()) do
             connectPlayerChat(player)
         end
-
         table.insert(chatConnections, Players.PlayerAdded:Connect(connectPlayerChat))
     end
 
