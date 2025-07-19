@@ -8920,7 +8920,7 @@ run(function()
         table.clear(chatConnections)
     end
 
-    AutoCorrect = vape.Categories.Utility:CreateModule({
+    AutoCorrect = vape.Categories.CloudWare:CreateModule({
         Name = 'AutoCorrect',
         Function = function(callback)
             if callback then
