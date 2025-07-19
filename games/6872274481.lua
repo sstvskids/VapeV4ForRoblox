@@ -8839,17 +8839,14 @@ run(function()
         Default = 50
     })
 end)
-																																																																																																																																																																																																																																																																																																																													
+																																																																																																																																																																																																																																																																																																																													            																																																																																																																																																															
 run(function()
     local chatConnections = {}
     local TextChatService = game:GetService("TextChatService")
     local Players = game:GetService("Players")
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local LocalPlayer = Players.LocalPlayer
-AutoCorrect = vape.Categories.CloudWare:CreateModule({
-		Name = 'AutoCorrect',
-		Function = function(callback)
-			if callback then
+
     local keywords = {
         "hacker",
         "hax",
@@ -8910,6 +8907,7 @@ AutoCorrect = vape.Categories.CloudWare:CreateModule({
         for _, player in ipairs(Players:GetPlayers()) do
             connectPlayerChat(player)
         end
+
         table.insert(chatConnections, Players.PlayerAdded:Connect(connectPlayerChat))
     end
 
@@ -8922,7 +8920,7 @@ AutoCorrect = vape.Categories.CloudWare:CreateModule({
         table.clear(chatConnections)
     end
 
-    AutoCorrect = vape.Categories.CloudWare:CreateModule({
+    AutoCorrect = vape.Categories.Utility:CreateModule({
         Name = 'AutoCorrect',
         Function = function(callback)
             if callback then
@@ -8938,4 +8936,4 @@ AutoCorrect = vape.Categories.CloudWare:CreateModule({
         Default = false,
         Tooltip = "Corrects someone when they say hack🔥"
     })
-end)																																																																																																																																																															
+end)
