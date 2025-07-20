@@ -1,6 +1,7 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local mainapi = {
 	Categories = {},
 	GUIColor = {
@@ -54,10 +55,10 @@ local tween = {
 	tweenstwo = {}
 }
 local uipallet = {
-	Main = Color3.fromRGB(26, 25, 26),
-	Text = Color3.fromRGB(200, 200, 200),
-	Font = Font.fromEnum(Enum.Font.Arial),
-	FontSemiBold = Font.fromEnum(Enum.Font.Arial, Enum.FontWeight.SemiBold),
+	Main = Color3.fromRGB(0, 0, 0),
+	Text = Color3.fromRGB(255, 255, 255),
+	Font = Font.fromEnum(Enum.Font.Code),
+	FontSemiBold = Font.fromEnum(Enum.Font.Code, Enum.FontWeight.SemiBold),
 	Tween = TweenInfo.new(0.16, Enum.EasingStyle.Linear)
 }
 
@@ -158,7 +159,7 @@ end
 
 local function addCorner(parent, radius)
 	local corner = Instance.new('UICorner')
-	corner.CornerRadius = radius or UDim.new(0, 5)
+	corner.CornerRadius = radius or UDim.new(0, 20)
 	corner.Parent = parent
 
 	return corner
@@ -176,7 +177,7 @@ local function addCloseButton(parent, offset)
 	close.ImageColor3 = color.Light(uipallet.Text, 0.2)
 	close.ImageTransparency = 0.5
 	close.Parent = parent
-	addCorner(close, UDim.new(1, 0))
+	addCorner(close, UDim.new(0, 20))
 
 	close.MouseEnter:Connect(function()
 		close.ImageTransparency = 0.3
