@@ -8976,7 +8976,7 @@ run(function()
                 })
 
                 addEffect("ColorCorrectionEffect", {
-                    Brightness = -0.01,
+                    Brightness = 0.3,
                     Contrast = 0.35,
                     Saturation = 0.15,
                     TintColor = Color3.fromRGB(200, 200, 230)
