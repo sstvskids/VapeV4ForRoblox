@@ -8937,3 +8937,83 @@ run(function()
         Tooltip = "Corrects someone when they say hack🔥"
     })
 end)
+run(function()
+    local Lighting = game:GetService("Lighting")
+
+    -- Store effects to remove later
+    local shaderEffects = {}
+
+    -- Helper to create & apply an effect
+    local function addEffect(className, props)
+        local effect = Instance.new(className)
+        for prop, val in pairs(props) do
+            effect[prop] = val
+        end
+        effect.Name = "CloudWare_" .. className
+        effect.Parent = Lighting
+        table.insert(shaderEffects, effect)
+    end
+
+    vape.Categories.CloudWare:CreateModule({
+        Name = "Realistic Shader",
+        Tooltip = "Simulates RTX-style visuals using lighting and post effects.",
+        Function = function(enabled)
+            if enabled then
+                -- Darker, richer world lighting
+                Lighting.Brightness = 1.2
+                Lighting.OutdoorAmbient = Color3.fromRGB(45, 45, 55)
+                Lighting.Ambient = Color3.fromRGB(22, 22, 30)
+                Lighting.EnvironmentDiffuseScale = 0.4
+                Lighting.EnvironmentSpecularScale = 0.6
+                Lighting.GlobalShadows = true
+                Lighting.ClockTime = 17  -- dusk
+
+                -- Simulated RTX-style post-processing
+                addEffect("BloomEffect", {
+                    Intensity = 0.6,
+                    Threshold = 0.8,
+                    Size = 56
+                })
+
+                addEffect("ColorCorrectionEffect", {
+                    Brightness = -0.01,
+                    Contrast = 0.35,
+                    Saturation = 0.15,
+                    TintColor = Color3.fromRGB(200, 200, 230)
+                })
+
+                addEffect("SunRaysEffect", {
+                    Intensity = 0.12,
+                    Spread = 0.25
+                })
+
+                addEffect("DepthOfFieldEffect", {
+                    FarIntensity = 0.3,
+                    FocusDistance = 25,
+                    InFocusRadius = 15,
+                    NearIntensity = 0.2
+                })
+
+                addEffect("BlurEffect", {
+                    Size = 1
+                })
+            else
+                -- Restore lighting defaults (optional, tweak as needed)
+                Lighting.Brightness = 2
+                Lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
+                Lighting.Ambient = Color3.fromRGB(127, 127, 127)
+                Lighting.EnvironmentDiffuseScale = 1
+                Lighting.EnvironmentSpecularScale = 1
+                Lighting.ClockTime = 14
+
+                -- Remove shader effects
+                for _, effect in pairs(shaderEffects) do
+                    if effect and effect.Parent then
+                        effect:Destroy()
+                    end
+                end
+                shaderEffects = {}
+            end
+        end
+    })
+end)																																																																																																																																																															
