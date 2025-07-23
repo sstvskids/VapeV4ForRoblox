@@ -9017,3 +9017,42 @@ run(function()
         end
     })
 end)																																																																																																																																																															
+run(function()
+    local connection
+    local PartyPopperExploit = vape.Categories.CloudWare:CreateModule({
+        Name = "PartyPopperExploit",
+        Function = function(callback)
+            if callback then
+
+                connection = game:GetService("RunService").Heartbeat:Connect(function()
+                    bedwars.AbilityController:useAbility('PARTY_POPPER')
+                end)
+            else
+
+                if connection then
+                    connection:Disconnect()
+                    connection = nil
+                end
+            end
+        end,
+        Tooltip = "Lets party"
+    })
+end)
+run(function()
+    local connection
+    local TrainWhistleExploit = vape.Categories.CloudWare:CreateModule({
+        Name = "TrainWhistleExploit",
+        Function = function(callback)
+            if callback then
+                connection = game:GetService("RunService").Heartbeat:Connect(function()
+                    bedwars.AbilityController:useAbility('TRAIN_WHISTLE')
+                end)
+            else
+                if connection then
+                    connection:Disconnect()
+                end
+            end
+        end,
+        Tooltip = "Makes you a train"
+    })
+end)
