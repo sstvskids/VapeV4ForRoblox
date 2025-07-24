@@ -1919,7 +1919,7 @@ function mainapi:CreateCategory(categorysettings)
 	iconshadow.Size = UDim2.fromOffset(26, 26)
 	iconshadow.Position = UDim2.fromOffset(7, 7)
 	iconshadow.BackgroundTransparency = 1
-	iconshadow.Image = categorysettings.Icon
+	iconshadow.Image = categorysettings.Icon or ''
 	iconshadow.ImageColor3 = Color3.new()
 	iconshadow.ImageTransparency = 0.5
 	iconshadow.Parent = window
@@ -3496,6 +3496,9 @@ mainapi:CreateCategory({
 mainapi:CreateCategory({
 	Name = 'Minigames',
 	Icon = getcustomasset('newvape/assets/old/worldicon.png')
+})
+mainapi:CreateCategory({
+	Name = 'Cloudware'
 })
 mainapi.Legit = mainapi:CreateLegit({
 	Name = 'Legit'
