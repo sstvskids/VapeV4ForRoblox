@@ -2674,6 +2674,10 @@ mainapi:CreateCategory({
 	RiseIcon = 'a'
 })
 mainapi:CreateCategory({
+	Name = 'Cloudware',
+	RealName = 'Cloudware'
+})
+mainapi:CreateCategory({
 	Name = 'Ghost',
 	RealName = 'Legit',
 	RiseIcon = 'f'
