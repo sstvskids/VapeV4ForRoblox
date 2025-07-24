@@ -3616,7 +3616,7 @@ function mainapi:CreateCategory(categorysettings)
 	icon.Size = categorysettings.Size
 	icon.Position = UDim2.fromOffset(12, (icon.Size.X.Offset > 20 and 14 or 13))
 	icon.BackgroundTransparency = 1
-	icon.Image = categorysettings.Icon
+	icon.Image = categorysettings.Icon or ''
 	icon.ImageColor3 = uipallet.Text
 	icon.Parent = window
 	local title = Instance.new('TextLabel')
@@ -5799,7 +5799,6 @@ mainapi:CreateCategory({
 })
 mainapi:CreateCategory({
 	Name = 'CloudWare',
-	Icon = getcustomasset('newvape/assets/new/module.png'),
 	Size = UDim2.fromOffset(14, 14)
 })
 mainapi.Categories.Main:CreateDivider('misc')
