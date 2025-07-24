@@ -1,4 +1,5 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -2045,7 +2046,6 @@ run(function()
 		Tooltip = 'Lets you sprint with a speed potion.'
 	})
 end)
-	
 local Attacking
 run(function()
 	local Killaura
@@ -2103,7 +2103,9 @@ run(function()
 
 		return sword, meta
 	end
-
+    local killaurarangecirclepart: Instance? = nil;
+    local killaurarangecircle: table = {};
+    local killauracolor: table = {};
 	Killaura = vape.Categories.Blatant:CreateModule({
 		Name = 'Killaura',
 		Function = function(callback)
@@ -2113,7 +2115,17 @@ run(function()
 						lplr.PlayerGui.MobileUI['2'].Visible = Limit.Enabled
 					end)
 				end
-
+                if killaurarangecircle["Enabled"] and killaurarangecirclepart == nil and Killaura["Enabled"] then
+                    killaurarangecirclepart = Instance.new("MeshPart");
+                    killaurarangecirclepart.MeshId = "rbxassetid://3726303797";
+                    killaurarangecirclepart.Color = Color3.fromHSV(killauracolor["Hue"], killauracolor["Sat"], killauracolor.Value)
+                    killaurarangecirclepart.CanCollide = false;
+                    killaurarangecirclepart.Anchored = true;
+                    killaurarangecirclepart.Material = Enum.Material.Neon;
+                    killaurarangecirclepart.Size = Vector3.new(AttackRange.Value * 0.7, 0.01, AttackRange.Value * 0.7);
+                    killaurarangecirclepart.Parent = gameCamera;
+                    bedwars.QueryUtil:setQueryIgnored(killaurarangecirclepart, true);
+                end;
 				if Animation.Enabled and not (identifyexecutor and table.find({'Argon', 'Delta'}, ({identifyexecutor()})[1])) then
 					local fake = {
 						Controllers = {
@@ -2172,6 +2184,11 @@ run(function()
 
 				local swingCooldown = 0
 				repeat
+                    if killaurarangecircle["Enabled"] and killaurarangecirclepart then
+                        if entitylib.isAlive and entitylib.character.HumanoidRootPart then
+                            killaurarangecirclepart.Position = entitylib.character.HumanoidRootPart.Position - Vector3.new(0, entitylib.character.Humanoid.HipHeight, 0)
+                        end
+                    end
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
 					store.KillauraTarget = nil
@@ -2275,6 +2292,10 @@ run(function()
 					task.wait(1 / UpdateRate.Value)
 				until not Killaura.Enabled
 			else
+                if killaurarangecirclepart then 
+                    killaurarangecirclepart:Destroy()
+                    killaurarangecirclepart = nil
+                end
 				store.KillauraTarget = nil
 				for _, v in Boxes do
 					v.Adornee = nil
@@ -2357,6 +2378,36 @@ run(function()
 	Sort = Killaura:CreateDropdown({
 		Name = 'Target Mode',
 		List = methods
+	})
+killaurarangecircle = Killaura:CreateToggle({
+        Name = "Range Visualizer",
+        Function = function(callback: boolean): void
+            if callback then 
+                killaurarangecirclepart = Instance.new("MeshPart")
+                killaurarangecirclepart.MeshId = "rbxassetid://3726303797"
+                killaurarangecirclepart.Color = Color3.fromHSV(killauracolor["Hue"], killauracolor["Sat"], killauracolor.Value)
+                killaurarangecirclepart.CanCollide = false
+                killaurarangecirclepart.Anchored = true
+                killaurarangecirclepart.Material = Enum.Material.Neon
+                killaurarangecirclepart.Size = Vector3.new(AttackRange.Value * 0.7, 0.01, AttackRange.Value * 0.7)
+                if Killaura.Enabled then 
+                    killaurarangecirclepart.Parent = gameCamera
+                end
+                bedwars.QueryUtil:setQueryIgnored(killaurarangecirclepart, true)
+            else
+                if killaurarangecirclepart then 
+                    killaurarangecirclepart:Destroy()
+                    killaurarangecirclepart = nil
+                end
+            end
+        end
+    })
+    killauracolor = Killaura:CreateColorSlider({
+         Name = 'colour',
+         Darker = true,
+		 DefaultHue = 0.6,
+		 DefaultOpacity = 0.5,
+		 Visible = false
 	})
 	Mouse = Killaura:CreateToggle({Name = 'Require mouse down'})
 	Swing = Killaura:CreateToggle({Name = 'No Swing'})
@@ -2544,7 +2595,6 @@ run(function()
 		Tooltip = 'Only attacks while swinging manually'
 	})]]
 end)
-	
 run(function()
 	local Value
 	local CameraDir
@@ -7324,7 +7374,7 @@ run(function()
 		Tooltip = 'Break blocks around you automatically'
 	})
 	Range = Breaker:CreateSlider({
-		Name = 'Break range',
+		Name = '',
 		Min = 1,
 		Max = 30,
 		Default = 30,
