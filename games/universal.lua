@@ -6847,6 +6847,171 @@ run(function()
 		Tooltip = 'Automatic murder mystery teaming based on equipped roblox tools.'
 	})
 end)
+
+run(function()
+    local AnimeImages
+    local AnimeSelection
+    local anime_imageids = {
+        ['Waifu1'] = 'rbxassetid://14417732284',
+        ['Waifu2'] = 'rbxassetid://14665237598'
+    }
+	
+    local animefunctions = {
+        Waifu1 = function() 
+            task.spawn(function()
+				local scale
+				local scaledUI = Instance.new('UIScale')
+				local Anime = Instance.new('ScreenGui')
+				local ImageLabel = Instance.new('ImageLabel')
+				local scalebla = Instance.new('Frame')
+				Anime.Name = 'Anime'
+				Anime.Parent = coreGui
+				Anime.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+				scalebla.Name = 'ScaledGui'
+				scalebla.Size = UDim2.fromScale(1, 1)
+				scalebla.BackgroundTransparency = 1
+				scalebla.Parent = gui
+				ImageLabel.Parent = Anime
+				ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+				ImageLabel.BackgroundTransparency = 1
+				ImageLabel.BorderColor3 = Color3.new(0, 0, 0)
+				ImageLabel.BorderSizePixel = 0
+				ImageLabel.AnchorPoint = Vector2.new(1, 0)
+				ImageLabel.Position = UDim2.new(1, -1, 0, -3)
+				ImageLabel.Size = UDim2.new(0, 244, 0, 410)
+				ImageLabel.Image = tostring(anime_imageids[tostring(AnimeSelection.Value)])
+				ImageLabel.ScaleType = Enum.ScaleType.Fit
+				scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scaledUI.Parent = ImageLabel
+				scalebla.Size = UDim2.fromScale(1 / scale, 1 / scale)
+
+				AnimeImages:Clean(ImageLabel:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
+					scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				end))
+            end)
+        end,
+        
+        Waifu2 = function() 
+            task.spawn(function()
+				local scale
+				local scaledUI = Instance.new('UIScale')
+				local Anime = Instance.new('ScreenGui')
+				local ImageLabel = Instance.new('ImageLabel')
+				local scalebla = Instance.new('Frame')
+				Anime.Name = 'Anime'
+				Anime.Parent = coreGui
+				Anime.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+				scalebla.Name = 'ScaledGui'
+				scalebla.Size = UDim2.fromScale(1, 1)
+				scalebla.BackgroundTransparency = 1
+				scalebla.Parent = Anime
+				ImageLabel.Parent = Anime
+				ImageLabel.BackgroundColor3 = Color3.new(1, 1, 1)
+				ImageLabel.BackgroundTransparency = 1
+				ImageLabel.BorderColor3 = Color3.new(0, 0, 0)
+				ImageLabel.BorderSizePixel = 0
+				ImageLabel.AnchorPoint = Vector2.new(1, 0)
+				ImageLabel.Position = UDim2.new(1, -1, 0, -25)
+				ImageLabel.Size = UDim2.new(0, 244, 0, 410)
+				ImageLabel.Image = tostring(anime_imageids[tostring(AnimeSelection.Value)])
+				ImageLabel.ScaleType = Enum.ScaleType.Fit
+				scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				scaledUI.Parent = ImageLabel
+				scalebla.Size = UDim2.fromScale(1 / scale, 1 / scale)
+
+				AnimeImages:Clean(ImageLabel:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
+					scaledUI.Scale = math.max(ImageLabel.AbsoluteSize.X / 1920, 0.6)
+				end))
+            end)
+        end
+    }
+
+    AnimeImages = vape.Categories.Render:CreateModule({
+        Name = 'AnimeImages',
+        Function = function(callback) 
+            if callback then
+				for i,v in coreGui:GetChildren() do
+                    if v.Name == 'Anime' then
+                        v:Destroy()
+                    end
+                end
+
+                animefunctions[AnimeSelection.Value]()
+            else
+                for i,v in coreGui:GetChildren() do
+                    if v.Name == 'Anime' then
+                        v:Destroy()
+                    end
+                end
+            end
+        end,
+        Tooltip = 'Displays your desired image of Anime girls.',
+        ExtraText = function()
+            return AnimeSelection.Value
+        end
+    })
+	AnimeSelection = AnimeImages:CreateDropdown({
+		Name = 'Selection',
+		Function = function(val)
+			for i,v in coreGui:GetChildren() do
+                if v.Name == 'Anime' then
+                    v:Destroy()
+                end
+            end
+
+            animefunctions[val]()
+		end,
+		List = {'Waifu1', 'Waifu2'}
+	})
+end)
+
+run(function()
+    local AutoCorrect
+    local blacklistedwords = {
+        'hack',
+        'hax',
+        'cheat'
+    }
+
+    local function getWord(msg)
+		msg = string.lower(tostring(msg))
+        for i,v in blacklistedwords do
+            if string.find(tostring(msg), v) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    local function sendmsg(msg)
+        if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(msg)
+        else
+            replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, 'All')
+        end
+    end
+
+    AutoCorrect = vape.Categories.World:CreateModule({
+        Name = 'AutoCorrect',
+        Function = function(callback)
+            if callback then
+                for i,v in playersService:GetPlayers() do
+                    if v ~= lplr then
+                        AutoCorrect:Clean(v.Chatted:Connect(function(msg)
+                            if getWord(msg) then
+                                sendmsg('Actually, '..v.Name..' it\'s called "Exploiters/Exploits".')
+                            end
+                        end))
+                    end
+                end
+            end
+        end,
+        Tooltip = 'Automatically corrects someone for using the incorrect terminology.'
+    })
+end)
 	
 run(function()
 	local Atmosphere
