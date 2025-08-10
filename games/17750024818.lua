@@ -97,7 +97,7 @@ local function getItem(type)
     return false
 end
 
-for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'TriggerBot', 'AutoClicker'} do
+for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'TriggerBot', 'AutoClicker', 'ProfileInstaller'} do
 	vape:Remove(v)
 end
 
