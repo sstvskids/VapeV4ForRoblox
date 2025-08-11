@@ -6974,7 +6974,7 @@ run(function()
         'hack',
 		'hacks',
         'cheat',
-		'hackers',
+		'hackers'
     }
 
     local function getWord(msg)

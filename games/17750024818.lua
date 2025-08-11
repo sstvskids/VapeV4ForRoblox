@@ -6,8 +6,12 @@
     Forever will, forever always undetected
 ]]
 
-local run = function(func) func() end
-local cloneref = cloneref or function(obj) return obj end
+local run = function(func)
+    func()
+end
+local cloneref = cloneref or function(obj)
+    return obj
+end
 
 local playersService = cloneref(game:GetService('Players'))
 local starterPlayer = cloneref(game:GetService('StarterPlayer'))
@@ -267,10 +271,15 @@ run(function()
         Name = 'Velocity',
         Function = function(callback)
             if callback then
-                lplr.PlayerScripts.Knockback:Destroy()
-                starterPlayer.StarterPlayerScripts.Knockback:Destroy()
+                lplr.PlayerScripts:WaitForChild('Knockback'):Destroy()
+                Velocity:Clean(lplr.CharacterAdded:Connect(function()
+                    lplr.PlayerScripts:WaitForChild('Knockback'):Destroy()
+                end))
             else
-                notif('Vape', 'Velocity can\'t be turned off until you rejoin.', 3)
+                if entitylib.isAlive then
+                    entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
+                    entitylib.character.Humanoid.Health = 0
+                end
             end
         end,
         Tooltip = 'Reduces knockback taken'
@@ -298,9 +307,11 @@ run(function()
                                         for _, i in getPickaxe() do
                                             if not getItem('Pickaxes') then continue end
                                             replicatedStorage.Remotes.DamageBlock:InvokeServer(v, i)
+
+                                            break
                                         end
                                     end)
-                                    
+
                                     break
                                 end
                             end
@@ -328,21 +339,26 @@ run(function()
     local TimeDown
     local Range
 
+    local function defend(pos)
+        entitylib.character.RootPart.CFrame = CFrame.new(entitylib.character.RootPart.Position + Vector3.new(0, 40, 0))
+        task.wait(TimeUp.Value)
+        entitylib.character.RootPart.CFrame = CFrame.new(pos)
+    end
+
+    local function getPart(plr)
+        return plr.Character and (plr.Character.PrimaryPart or plr.Character:FindFirstChild('HumanoidRootPart'))
+    end
+
     AntiHit = vape.Categories.Blatant:CreateModule({
         Name = 'AntiHit',
         Function = function(callback)
             if callback then
                 repeat
                     if entitylib.isAlive then
-                        local function defend(pos)
-                            entitylib.character.RootPart.CFrame = CFrame.new(entitylib.character.RootPart.Position + Vector3.new(0, 40, 0))
-                            task.wait(TimeUp.Value)
-                            entitylib.character.RootPart.CFrame = CFrame.new(pos)
-                        end
-
                         for _, v in entitylib.List do
                             if v.Targetable then
-                                if v.Health > 0 and (entitylib.character.RootPart.Position - v.Character.PrimaryPart.Position).Magnitude <= Range.Value then
+                                local part = getPart(v)
+                                if v.Health > 0 and part and (entitylib.character.RootPart.Position - part.Position).Magnitude <= Range.Value then
                                     defend(v.Character.PrimaryPart.Position)
                                     break
                                 end
