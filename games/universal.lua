@@ -7000,7 +7000,7 @@ run(function()
         Name = 'AutoCorrect',
         Function = function(callback)
             if callback then
-                for i,v in playersService:GetPlayers() do
+				for i,v in playersService:GetPlayers() do
                     if v ~= lplr then
                         AutoCorrect:Clean(v.Chatted:Connect(function(msg)
                             if getWord(msg) then
@@ -7009,6 +7009,14 @@ run(function()
                         end))
                     end
                 end
+
+				AutoCorrect:Clean(playersService.PlayerAdded:Connect(function(plr)
+                    AutoCorrect:Clean(plr.Chatted:Connect(function(msg)
+						if getWord(msg) then
+							sendmsg('Actually, '..plr.Name..' it\'s called "Exploiters/Exploits".')
+						end
+					end))
+                end))
             end
         end,
         Tooltip = 'Automatically corrects someone for using the incorrect terminology.'
