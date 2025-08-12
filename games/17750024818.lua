@@ -166,17 +166,17 @@ run(function()
 
                                     if getItem('Swords') then
                                         local tool = getTool()
+                                        if vape.ThreadFix then
+                                            setthreadidentity(2)
+                                        end
                                         local viewmodel
                                         local suc, res = pcall(require, tool.ViewModelModule)
                                         if suc == true and res then
                                             res = viewmodel
-                                            if vape.ThreadFix then
-                                                setthreadidentity(2)
-                                            end
                                             viewmodel.PlayAnimation()
-                                            if vape.ThreadFix then
-                                                setthreadidentity(8)
-                                            end
+                                        end
+                                        if vape.ThreadFix then
+                                            setthreadidentity(8)
                                         end
 
                                         tool.HandlePart.Swing:Play()
