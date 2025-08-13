@@ -58,6 +58,8 @@ end
 koolwl:check()
 for i,v in playersService:GetPlayers() do
     if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
+        repeat task.wait() until shared.vape ~= nil
+
         vape.Uninject = function()
             vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
         end
@@ -69,6 +71,8 @@ end
 
 vape:Clean(playersService.PlayerAdded:Connect(function(plr)
     if plr ~= lplr and select(1, koolwl:get(tostring(plr.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
+        repeat task.wait() until shared.vape ~= nil
+        
         vape.Uninject = function()
             vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
         end
