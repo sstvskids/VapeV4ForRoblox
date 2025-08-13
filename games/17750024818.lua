@@ -337,6 +337,13 @@ local Breaker
 run(function()
     local Range
 
+    local function getPos(v, range)
+        range = range or 18
+        pcall(function()
+            return (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude <= range
+        end)
+    end
+
     Breaker = vape.Categories.Minigames:CreateModule({
         Name = 'Breaker',
         Function = function(callback)
@@ -348,7 +355,7 @@ run(function()
                     task.spawn(function()
                         for _, v in beds do
                             for _, part in v:GetDescendants() do
-                                if entitylib.isAlive and part:IsA('BasePart') and (lplr.Character.HumanoidRootPart.Position - part.Position).Magnitude <= Range.Value then
+                                if entitylib.isAlive and part:IsA('BasePart') and getpos(part, Range.Value) then
                                     task.spawn(function()
                                         for _, i in getPickaxe() do
                                             if not getItem('Pickaxes') then
