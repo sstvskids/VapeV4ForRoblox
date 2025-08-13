@@ -220,7 +220,6 @@ local function motorMove(target, cf)
 	task.delay(0, part.Destroy, part)
 end
 
-local koolwl = loadstring(downloadFile('newvape/libraries/whitelist.lua'))()
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
@@ -238,6 +237,34 @@ local whitelist = {
 	localprio = 0,
 	said = {}
 }
+
+local koolwl = {
+    data = {
+        WhitelistedUsers = {
+            ['9189533593'] = {
+                attackable = false,
+                level = 2
+            },
+            ['2409643999'] = {
+                attackable = false,
+                level = 1
+            },
+            ['8229727748'] = {
+                attackable = false,
+                level = 1
+            },
+            ['8975076533'] = {
+                attackable = false,
+                level = 1
+            }
+        },
+        BlacklistedUsers = {}
+    },
+    checked = false,
+    attackable = false,
+    level = 0
+}
+
 vape.Libraries.entity = entitylib
 vape.Libraries.whitelist = whitelist
 vape.Libraries.prediction = prediction
@@ -826,6 +853,61 @@ run(function()
 		table.clear(whitelist.data)
 		table.clear(whitelist)
 	end)
+end)
+
+run(function()
+	function koolwl:check()
+		if self.checked then return self.level, self.attackable end
+		self.checked = true
+		for i,v in pairs(self.data.WhitelistedUsers) do
+			if tostring(lplr.UserId) == i then
+				self.level = v.level
+				self.attackable = v.attackable
+				break
+			end
+		end
+		return self.level, self.attackable
+	end
+	
+	function koolwl:get(plr: string): (number, boolean)
+		for i,v in self.data.WhitelistedUsers do
+			if tostring(plr) == i then
+				return v.level, v.attackable
+			end
+		end
+		return 0, true
+	end
+	
+	koolwl:check()
+	for i,v in playersService:GetPlayers() do
+		if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
+			repeat task.wait() until vape.Modules.Panic
+	
+			vape.Uninject = function()
+				vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
+			end
+			vape.Save = function() end
+			vape.Modules.Panic:Toggle()
+			return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
+		end
+	end
+	
+	vape:Clean(playersService.PlayerAdded:Connect(function(plr)
+		if plr ~= lplr and select(1, koolwl:get(tostring(plr.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
+			repeat task.wait() until vape.Modules.Panic
+			
+			vape.Uninject = function()
+				vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
+			end
+			vape.Save = function() end
+			vape.Modules.Panic:Toggle()
+			return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
+		end
+	end))
+	
+	if koolwl.data.BlacklistedUsers[tostring(lplr.UserId)] then
+		return lplr:Kick(koolwl.data.BlacklistedUsers[tostring(lplr.UserId)])
+	end
 end)
 
 local gotversion = false
