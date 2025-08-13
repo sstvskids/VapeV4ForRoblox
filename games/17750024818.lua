@@ -355,7 +355,7 @@ run(function()
                     task.spawn(function()
                         for _, v in beds do
                             for _, part in v:GetDescendants() do
-                                if entitylib.isAlive and part:IsA('BasePart') and getpos(part, Range.Value) then
+                                if entitylib.isAlive and part:IsA('BasePart') and getPos(part, Range.Value) then
                                     task.spawn(function()
                                         for _, i in getPickaxe() do
                                             if not getItem('Pickaxes') then
