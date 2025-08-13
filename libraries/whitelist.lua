@@ -1,21 +1,23 @@
 local cloneref = cloneref or function(v)
     return v
 end
-local HttpService: HttpService = cloneref(game:GetService("HttpService"))
-local Players: Players = cloneref(game:GetService('Players'))
-local lplr = Players.LocalPlayer
+
+local vape = shared.vape
+
+local playersService = cloneref(game:GetService('Players'))
+local lplr = playersService.LocalPlayer
 local koolwl: table = {
     data = {
         WhitelistedUsers = {
-            9189533593 = {
+            ['9189533593'] = {
                 attackable = false,
                 level = 2
             },
-            2409643999 = {
+            ['2409643999'] = {
                 attackable = false,
                 level = 1
             },
-            8229727748 = {
+            ['8229727748'] = {
                 attackable = false,
                 level = 1
             }
@@ -26,8 +28,6 @@ local koolwl: table = {
     attackable = false,
     level = 0
 }
-
-local vape = shared.vape
 
 function koolwl:check()
     if self.checked then return self.level, self.attackable end
@@ -52,7 +52,7 @@ function koolwl:get(plr: string): (number, boolean)
 end
 
 koolwl:check()
-for i,v in Players:GetPlayers() do
+for i,v in playersService:GetPlayers() do
     if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
         vape.Uninject = function()
             vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
@@ -63,7 +63,7 @@ for i,v in Players:GetPlayers() do
     end
 end
 
-vape:Clean(Players.PlayerAdded:Connect(function(plr)
+vape:Clean(playersService.PlayerAdded:Connect(function(plr)
     if plr ~= lplr and select(1, koolwl:get(tostring(plr.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
         vape.Uninject = function()
             vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
