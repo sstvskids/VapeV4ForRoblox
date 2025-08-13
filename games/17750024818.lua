@@ -172,7 +172,7 @@ run(function()
                                         local viewmodel
                                         local suc, res = pcall(require, tool.ViewModelModule)
                                         if suc == true and res then
-                                            res = viewmodel
+                                            viewmodel = res
                                             viewmodel.PlayAnimation()
                                         end
                                         if vape.ThreadFix then
