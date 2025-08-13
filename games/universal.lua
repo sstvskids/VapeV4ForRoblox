@@ -303,7 +303,6 @@ vape.Libraries.auraanims = {
 		{CFrame = CFrame.new(0.63, -0.1, 1.37) * CFrame.Angles(math.rad(-84), math.rad(50), math.rad(-38)), Time = 0.15}
 	}
 }
-koolwl:check()
 
 local SpeedMethods
 local SpeedMethodList = {'Velocity'}
