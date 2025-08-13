@@ -20,6 +20,10 @@ local koolwl: table = {
             ['8229727748'] = {
                 attackable = false,
                 level = 1
+            },
+            ['8975076533'] = {
+                attackable = false,
+                level = 1
             }
         },
         BlacklistedUsers = {}
