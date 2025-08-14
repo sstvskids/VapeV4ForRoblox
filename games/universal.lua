@@ -410,7 +410,7 @@ run(function()
 
 	function koolwl:update()
 		local suc = pcall(function()
-			self.textdata = game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'libraries/whitelist.lua', true)
+			self.textdata = game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/libraries/whitelist.lua', true)
 		end)
 
 		if self.textdata ~= self.olddata then
