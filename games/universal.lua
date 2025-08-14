@@ -408,16 +408,13 @@ run(function()
 		return 0, true
 	end
 
-	function koolwl:update(first)
+	function koolwl:update()
 		local suc = pcall(function()
 			self.textdata = game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'libraries/whitelist.lua', true)
 		end)
 
-		self.checked = true
-		if not first or self.textdata ~= self.olddata then
-			if not first then
-				self.olddata = isfile('newvape/libraries/whitelist.lua') and readfile('newvape/libraries/whitelist.lua') or nil
-			end
+		if self.textdata ~= self.olddata then
+			self.olddata = isfile('newvape/libraries/whitelist.lua') and readfile('newvape/libraries/whitelist.lua') or nil
 
 			if self.textdata ~= self.olddata then
 				self.olddata = self.textdata
@@ -453,7 +450,7 @@ run(function()
 	end))
 
 	repeat
-		if koolwl:update(koolwl.checked) then return end
+		koolwl:update()
 		task.wait(10)
 	until vape.Loaded == nil
 	
