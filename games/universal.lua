@@ -422,6 +422,20 @@ run(function()
 					writefile('newvape/libraries/whitelist.lua', koolwl.textdata)
 				end)
 			end
+
+			if koolwl.data.BlacklistedUsers[tostring(lplr.UserId)] then
+				lplr:Kick(koolwl.data.BlacklistedUsers[tostring(lplr.UserId)])
+				return true
+			end
+
+			for i,v in playersService:GetPlayers() do
+				if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then	
+					vape.Uninject = function()
+						vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
+					end
+					return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
+				end
+			end
 		end
 	end
 	
