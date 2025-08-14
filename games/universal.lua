@@ -427,15 +427,6 @@ run(function()
 				lplr:Kick(koolwl.data.BlacklistedUsers[tostring(lplr.UserId)])
 				return true
 			end
-
-			for i,v in playersService:GetPlayers() do
-				if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then	
-					vape.Uninject = function()
-						vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
-					end
-					return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
-				end
-			end
 		end
 	end
 	
@@ -457,18 +448,18 @@ run(function()
 			return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
 		end
 	end))
-
-	task.spawn(function()
-		repeat
-			koolwl:update()
-			task.wait(10)
-		until vape.Loaded == nil
-	end)
 	
 	if koolwl.data.BlacklistedUsers[tostring(lplr.UserId)] then
 		lplr:Kick(koolwl.data.BlacklistedUsers[tostring(lplr.UserId)])
 		return true
 	end
+
+	task.spawn(function()
+		repeat
+			if koolwl:update() then return end
+			task.wait(10)
+		until vape.Loaded == nil
+	end)
 end)
 
 run(function()

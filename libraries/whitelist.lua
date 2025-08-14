@@ -1,7 +1,7 @@
 return {
     data = {
         WhitelistedUsers = {
-            ['9189533593'] = {
+            ['9198179754'] = {
                 attackable = false,
                 level = 2
             },
