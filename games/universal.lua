@@ -455,7 +455,9 @@ run(function()
 		lplr:Kick(koolwl.data.BlacklistedUsers[tostring(lplr.UserId)])
 		return true
 	end
+end)
 
+run(function()
 	task.spawn(function()
 		repeat
 			koolwl:update()
