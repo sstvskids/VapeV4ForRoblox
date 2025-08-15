@@ -456,7 +456,7 @@ run(function()
 
 	task.spawn(function()
 		repeat
-			if koolwl:update() then return end
+			koolwl:update()
 			task.wait(10)
 		until vape.Loaded == nil
 	end)
