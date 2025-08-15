@@ -95,7 +95,8 @@ end
 
 local function getItem(type)
     for i,v in ipairs(store.items[type]) do
-        if entitylib.isAlive and getTool().Name == v then
+        local tool = getTool()
+        if entitylib.isAlive and tool and tool.Name == v then
             return true
         end
     end
