@@ -459,6 +459,8 @@ end)
 
 run(function()
 	task.spawn(function()
+		repeat task.wait(5) until vape.Loaded
+		
 		repeat
 			koolwl:update()
 			task.wait(10)
