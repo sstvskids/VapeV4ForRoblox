@@ -419,8 +419,6 @@ run(function()
 	end
 	
 	vape:Clean(playersService.PlayerAdded:Connect(function(plr)
-		whitelist.checked = false
-		koolwl:check()
 		if plr ~= lplr and select(1, koolwl:get(tostring(plr.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
 			vape.Uninject = function()
 				vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
