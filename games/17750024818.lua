@@ -417,7 +417,23 @@ run(function()
                             if v.Targetable then
                                 local part = getPart(v)
                                 if v.Health > 0 and part and (entitylib.character.RootPart.Position - part.Position).Magnitude <= Range.Value then
-                                    defend(part.Position)
+                                    lplr.Character.Archivable = true
+
+                                    local clone = entitylib.character:Clone()
+                                    clone.Parent = game.Workspace
+                                    clone.Head:ClearAllChildren()
+                                    gameCamera.CameraSubject = clone:FindFirstChild('Humanoid')
+
+                                    vape:Clean(runService.RenderStepped:Connect(function()
+                                        if clone ~= nil and clone:FindFirstChild('HumanoidRootPart') then
+                                            clone.HumanoidRootPart.CFrame = Vector3.new(entitylib.character.RootPart.Position.X, clone.HumanoidRootPart.Position.Y, entitylib.character.RootPart.Position.Z)
+                                        end
+                                    end))
+
+                                    defend(clone.HumanoidRootPart.Position)
+                                    gameCamera.CameraSubject = entitylib.Character.Humanoid
+                                    clone:Destroy()
+
                                     break
                                 end
                             end
