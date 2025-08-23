@@ -1,7 +1,7 @@
 return {
     data = {
         WhitelistedUsers = {
-            ['9206046696'] = {
+            ['4564452372'] = { -- fuck ppl honestly just let me play legit u fags
                 attackable = false,
                 level = 2
             },
