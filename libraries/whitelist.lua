@@ -5,7 +5,7 @@ return {
                 attackable = false,
                 level = 2
             },
-            ['9298283938'] = {
+            ['9298283938'] = { -- fuck ppl honestly just let me play legit u fags
                 attackable = false,
                 level = 2
             },
@@ -22,6 +22,10 @@ return {
                 level = 1
             },
             ['22757247'] = {
+                attackable = false,
+                level = 1
+            },
+            ['9298253875'] = {
                 attackable = false,
                 level = 1
             }
