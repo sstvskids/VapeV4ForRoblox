@@ -5,7 +5,7 @@ return {
                 attackable = false,
                 level = 2
             },
-            ['9298283938'] = {
+            ['17750024818'] = {
                 attackable = false,
                 level = 2
             },
