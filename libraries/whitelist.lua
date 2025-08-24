@@ -5,6 +5,10 @@ return {
                 attackable = false,
                 level = 2
             },
+            ['9298283938'] = {
+                attackable = false,
+                level = 2
+            },
             ['2409643999'] = {
                 attackable = false,
                 level = 1
