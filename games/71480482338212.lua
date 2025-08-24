@@ -31,14 +31,7 @@ local store = {
             [2] = 'Stone Sword',
             [3] = 'Iron Sword',
             [4] = 'Diamond Sword',
-            [5] = 'Emerald Sword',
-            [6] = 'Rake',
-            [7] = 'Metal',
-            [8] = 'Spear',
-            [9] = 'Giant Hammer',
-            [10] = 'Boxing Gloves',
-            [11] = 'Unwooden Sword',
-            [12] = 'Breakable Sword'
+            [5] = 'Emerald Sword'
         },
         ['Pickaxes'] = {
             [1] = 'Wooden Pickaxe',
@@ -159,14 +152,12 @@ run(function()
                                     entitylib.character.RootPart.CFrame = CFrame.lookAt(entitylib.character.RootPart.Position, Vector3.new(vec.X, entitylib.character.RootPart.Position.Y + 0.001, vec.Z))
                                 end
 
-                                --[[task.spawn(function()
+                                task.spawn(function()
                                     for _, i in getSword() do
                                         if AliveItemCheck.Enabled and getItem('Swords') == false then continue end
                                         replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
                                     end
-                                end)]]
-
-                                replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
+                                end)
                             end
                         end)
                     end
