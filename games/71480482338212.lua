@@ -131,7 +131,7 @@ run(function()
         Function = function(callback)
             if callback then
                 repeat
-                    if AliveItemCheck.Enabled and not entitylib.isAlive then continue end
+                    if (AliveItemCheck.Enabled and not entitylib.isAlive) then continue end
 
                     local plrs = entitylib.AllPosition({
                         Range = SwingRange.Value,
@@ -159,12 +159,14 @@ run(function()
                                     entitylib.character.RootPart.CFrame = CFrame.lookAt(entitylib.character.RootPart.Position, Vector3.new(vec.X, entitylib.character.RootPart.Position.Y + 0.001, vec.Z))
                                 end
 
-                                task.spawn(function()
+                                --[[task.spawn(function()
                                     for _, i in getSword() do
                                         if AliveItemCheck.Enabled and getItem('Swords') == false then continue end
-                                        replicatedStorage.Remotes.ItemRemotes.SwordHit:FireServer(i, v.Character)
+                                        replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
                                     end
-                                end)
+                                end)]]
+
+                                replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
                             end
                         end)
                     end
