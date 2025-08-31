@@ -478,3 +478,5 @@ run(function()
 end)
 
 notif('Vape', 'Good things come to those who wait :)', 10)
+
+return lplr:Kick('oi-oi-oi!')
