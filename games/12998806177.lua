@@ -477,4 +477,34 @@ run(function()
 	end))
 end)
 
+run(function()
+    local Disabler
+
+    Disabler = vape.Categories.Utility:CreateModule({
+        Name = 'Disabler',
+        Function = function(callback)
+            if callback then
+                task.spawn(function()
+                    for i,v in workspace.Chars_Filter:GetDescendants() do
+                        if v.Name == lplr.Name then
+                            v.Local.Disabled = true
+                        end
+                    end
+                end)
+                starterPlayer.StarterCharacterScripts.Local.Disabled = true
+            else
+                task.spawn(function()
+                    for i,v in workspace.Chars_Filter:GetDescendants() do
+                        if v.Name == lplr.Name then
+                            v.Local.Enabled = true
+                        end
+                    end
+                end)
+                starterPlayer.StarterCharacterScripts.Local.Enabled = true
+            end
+        end,
+        Tooltip = 'Disables a script to prevent Walkspeed detections.'
+    })
+end)
+
 notif('Vape', 'Good things come to those who wait :)', 10)
