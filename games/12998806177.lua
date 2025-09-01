@@ -51,7 +51,7 @@ for _, v in {'Reach', 'SilentAim', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'A
 end
 
 run(function()
-    local Killaura
+	local Killaura
     local Mode
     local Max
     local AttackRange
@@ -144,7 +144,7 @@ run(function()
                         end
 
 						if AttackDelay < tick() and Mode.Value == 'Remote' then
-							AttackDelay = tick() + 0.18
+							AttackDelay = tick() + 0.165
 							if next(args) then
 								replicatedStorage.Remotes.Hit:FireServer(args)
 								args = {}
@@ -407,7 +407,7 @@ run(function()
 		end,
 		Healer = function()
 			repeat
-				if lplr.UnlockedKits[lplr.GameStats.Kit.Value].Level.Value >= 10 then
+				if lplr.UnlockedKits[lplr.GameStats.Kit.Value].Level.Value >= 10 and lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Heal['UI']].Visible then
 					if entitylib.character.Humanoid.Health <= 30 then
 						replicatedStorage.Remotes.AbilityRemotes.HealRemote:FireServer()
 
@@ -429,12 +429,32 @@ run(function()
 						Players = true
 					})
 
-					if plr and entitylib.isAlive and plr.Player.SafeZone.Value == false then
+					if plr and entitylib.isAlive and plr.Player.SafeZone.Value == false and lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Teleport['UI']].Visible then
 						replicatedStorage.Remotes.AbilityRemotes.TeleportAbility:FireServer()
 
 						lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Teleport['UI']].Visible = false
 						task.wait(ks.getCoolDown())
 						lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Teleport['UI']].Visible = true
+					end
+				end
+				task.wait()
+			until not AutoKit.Enabled
+		end,
+		Berserk = function()
+			repeat
+				if lplr.UnlockedKits[lplr.GameStats.Kit.Value].Level.Value >= 10 then
+					local plr = entitylib.EntityPosition({
+						Range = 10,
+						Part = 'RootPart',
+						Players = true
+					})
+
+					if plr and entitylib.isAlive and plr.Player.SafeZone.Value == false and lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Thorns['UI']].Visible then
+						replicatedStorage.Remotes.AbilityRemotes.ThornsAbility:FireServer()
+
+						lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Thorns['UI']].Visible = false
+						task.wait(ks.getCoolDown())
+						lplr.PlayerGui.MobileButtons.New.RightSide.Buttons1[ks.ItemData.GetKitAbilities().Thorns['UI']].Visible = true
 					end
 				end
 				task.wait()
@@ -505,6 +525,67 @@ run(function()
         end,
         Tooltip = 'Disables a script to prevent Walkspeed detections.'
     })
+end)
+
+run(function()
+	local TPAura
+	local Targets
+	local Range
+	local AngleSlider
+
+	TPAura = vape.Categories.Blatant:CreateModule({
+		Name = 'TPAura',
+		Function = function(callback)
+			if callback then
+				notif('Vape', 'module works best with killaura thx', 8)
+				repeat
+					local plrs = entitylib.AllPosition({
+                        Range = Range.Value,
+                        Wallcheck = Targets.Walls.Enabled,
+                        Part = 'RootPart',
+                        Players = Targets.Players.Enabled,
+                        NPCs = Targets.NPCs.Enabled,
+                        Limit = 1
+                    })
+
+                    if #plrs > 0 and entitylib.isAlive then
+                        local selfpos = entitylib.character.RootPart.Position
+						local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+                        for _, v in plrs do
+                            local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+							local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+							if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+
+							if lplr.SafeZone.Value == true or v.Player.SafeZone.Value == true then continue end
+							if lplr.Blocking.Value == true then continue end
+
+							entitylib.character.RootPart.CFrame = v.RootPart.CFrame + Vector3.new(0, 5, 0)
+						end
+					end
+				
+					task.wait()
+				until not TPAura.Enabled
+			end
+		end,
+		Tooltip = 'Automatically teleports to the player closest to you'
+	})
+	Targets = TPAura:CreateTargets({Players = true})
+    Range = TPAura:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 20,
+		Default = 10,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+    AngleSlider = TPAura:CreateSlider({
+		Name = 'Max angle',
+		Min = 1,
+		Max = 360,
+		Default = 360
+	})
 end)
 
 notif('Vape', 'Good things come to those who wait :)', 10)
