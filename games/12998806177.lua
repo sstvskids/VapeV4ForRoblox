@@ -137,14 +137,15 @@ run(function()
 
 									args[v.Player.Name] = {
 										Victim = v.Player,
-										Vector = Vector3.new(0, 0, -1)
+										Vector = entitylib.character.RootPart.CFrame.LookVector
+										--Vector = Vector3.new(0, 0, -1)
 									}
 								end
 							end
                         end
 
 						if AttackDelay < tick() and Mode.Value == 'Remote' then
-							AttackDelay = tick() + 0.165
+							AttackDelay = tick() + 0.17
 							if next(args) then
 								replicatedStorage.Remotes.Hit:FireServer(args)
 								args = {}
@@ -585,6 +586,22 @@ run(function()
 		Min = 1,
 		Max = 360,
 		Default = 360
+	})
+end)
+
+run(function()
+	local Velocity
+	Velocity = vape.Categories.Combat:CreateModule({
+		Name = 'Velocity',
+		Function = function(callback)
+			if callback then
+				pcall(function()
+					replicatedStorage.Remotes.ApplyImpulse:Destroy()
+				end)
+			else
+				notif('Vape', 'Velocity will be disabled next time you rejoin.', 7)
+			end
+		end
 	})
 end)
 
