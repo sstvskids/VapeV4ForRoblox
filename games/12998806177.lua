@@ -601,7 +601,8 @@ run(function()
 			else
 				notif('Vape', 'Velocity will be disabled next time you rejoin.', 7)
 			end
-		end
+		end,
+		Tooltip = 'Reduces knockback taken'
 	})
 end)
 
