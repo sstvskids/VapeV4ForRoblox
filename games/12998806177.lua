@@ -560,6 +560,7 @@ run(function()
 
 							if lplr.SafeZone.Value == true or v.Player.SafeZone.Value == true then continue end
 							if lplr.Blocking.Value == true then continue end
+							if not Killaura.Enabled then continue end
 
 							entitylib.character.RootPart.CFrame = v.RootPart.CFrame + Vector3.new(0, 5, 0)
 						end
@@ -590,20 +591,85 @@ run(function()
 end)
 
 run(function()
-	local Velocity
+	local Velocity = {Enabled = false}
+	local VelocityHorizontal = {Value = 100}
+	local VelocityVertical = {Value = 100}
+	local VelocityChance = {Value = 100}
+	local VelocityTargeting = {Enabled = false}
+	local applyKnockback
+	local connection
+	
+	local function velocityFunction(velo, ...)
+		if Random.new():NextNumber(0, 100) > VelocityChance.Value then return end
+		local check = (not VelocityTargeting.Enabled) or entitylib.EntityPosition({
+			Range = 50,
+			Part = 'RootPart',
+			Players = true
+		})
+		if check then
+			local hort, vert = (VelocityHorizontal.Value / 100), (VelocityVertical.Value / 100)
+			if hort == 0 and vert == 0 then return end
+			velo = Vector3.new(velo.X * hort, velo.Y * vert, velo.Z * hort)
+		end
+		return applyKnockback(velo, ...)
+	end
+
+	local function realFunction(type, conn, knockback)
+		if type == 'connect' then
+			conn = getconnections(replicatedStorage.Remotes.ApplyImpulse.OnClientEvent)[1].Function
+
+			if not conn then return end
+			knockback = hookfunction(conn, function(...)
+				return velocityFunction(...)
+			end)
+		elseif type == 'disconnect' then
+			if knockback then hookfunction(conn, knockback) end
+			conn = nil
+		end
+	end
+	
 	Velocity = vape.Categories.Combat:CreateModule({
 		Name = 'Velocity',
 		Function = function(callback)
 			if callback then
-				pcall(function()
-					replicatedStorage.Remotes.ApplyImpulse:Destroy()
-				end)
+				repeat task.wait() until getconnections(replicatedStorage.Remotes.ApplyImpulse.OnClientEvent)[1] ~= nil
+
+				realFunction('connect', connection, applyKnockback)
+				
+				Velocity:Clean(lplr.CharacterAdded:Connect(function()
+					task.wait(1)
+
+					realFunction('disconnect', connection, applyKnockback)
+					realFunction('connect', connection, applyKnockback)
+				end))
 			else
-				notif('Vape', 'Velocity will be disabled next time you rejoin.', 7)
+				realFunction('disconnect', connection, applyKnockback)
 			end
 		end,
 		Tooltip = 'Reduces knockback taken'
 	})
+	VelocityHorizontal = Velocity:CreateSlider({
+		Name = 'Horizontal',
+		Min = 0,
+		Max = 100,
+		Default = 0,
+		Suffix = '%'
+	})
+	VelocityVertical = Velocity:CreateSlider({
+		Name = 'Vertical',
+		Min = 0,
+		Max = 100,
+		Default = 0,
+		Suffix = '%'
+	})
+	VelocityChance = Velocity:CreateSlider({
+		Name = 'Chance',
+		Min = 0,
+		Max = 100,
+		Default = 100,
+		Suffix = '%'
+	})
+	VelocityTargeting = Velocity:CreateToggle({Name = 'Only when targeting'})
 end)
 
 notif('Vape', 'Good things come to those who wait :)', 10)
