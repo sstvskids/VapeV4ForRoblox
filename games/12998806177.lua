@@ -640,7 +640,7 @@ run(function()
 					task.wait(1)
 
 					realFunction('disconnect', connection, applyKnockback)
-					realFunction('connect', connection, applyKnockback)
+					task.delay(0.2, realFunction('connect', connection, applyKnockback))
 				end))
 			else
 				realFunction('disconnect', connection, applyKnockback)
