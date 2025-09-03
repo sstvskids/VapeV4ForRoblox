@@ -634,14 +634,12 @@ run(function()
 			if callback then
 				repeat task.wait() until getconnections(replicatedStorage.Remotes.ApplyImpulse.OnClientEvent)[1] ~= nil
 
-				realFunction('connect', connection, applyKnockback)
-				
-				Velocity:Clean(lplr.CharacterAdded:Connect(function()
-					task.wait(1)
-
+				Velocity:Clean(entitylib.Events.LocalAdded:Connect(function()
 					realFunction('disconnect', connection, applyKnockback)
-					task.delay(0.2, realFunction('connect', connection, applyKnockback))
+					realFunction('connect', connection, applyKnockback)
 				end))
+				
+				realFunction('connect', connection, applyKnockback)
 			else
 				realFunction('disconnect', connection, applyKnockback)
 			end
