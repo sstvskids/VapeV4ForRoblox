@@ -50,8 +50,8 @@ for _, v in {'Reach', 'SilentAim', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'A
 	vape:Remove(v)
 end
 
+local Killaura
 run(function()
-	local Killaura
     local Mode
     local Max
     local AttackRange
