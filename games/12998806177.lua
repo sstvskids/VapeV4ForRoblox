@@ -580,6 +580,7 @@ run(function()
 							if lplr.Blocking.Value == true then continue end
 							if not Killaura.Enabled then continue end
 
+							targetinfo.Targets[v] = tick() + 1
 							entitylib.character.RootPart.CFrame = v.RootPart.CFrame + Vector3.new(0, 5, 0)
 						end
 					end
@@ -731,7 +732,7 @@ run(function()
 
 				AutoToxic:Clean(entitylib.Events.LocalRemoved:Connect(function()
 					if not Killaura.Enabled then return end
-					
+
 					sendMessage('Death', AutoToxicNme, 'kool.aid ALWAYS comes back stronger <obj>')
 					task.delay(0.05, function()
 						AutoToxicNme = 'self'
@@ -760,4 +761,71 @@ run(function()
 	end
 end)
 
-notif('Vape', 'Good things come to those who wait :)', 10)
+run(function()
+    local AntiHit
+	local Targets
+    local Range
+    local TimeUp, TimeDown
+
+    local function defend(pos)
+        entitylib.character.RootPart.CFrame = CFrame.new(entitylib.character.RootPart.Position + Vector3.new(0, 40, 0))
+        task.wait(TimeUp.Value)
+
+        entitylib.character.RootPart.CFrame = CFrame.new(pos) + Vector3.new(0, 5, 0)
+    end
+
+    AntiHit = vape.Categories.Blatant:CreateModule({
+        Name = 'AntiHit',
+        Function = function(callback)
+            if callback then
+                repeat
+					local plrs = entitylib.AllPosition({
+                        Range = Range.Value,
+                        Wallcheck = Targets.Walls.Enabled,
+                        Part = 'RootPart',
+                        Players = Targets.Players.Enabled,
+                        NPCs = Targets.NPCs.Enabled,
+                        Limit = 1
+                    })
+
+                    if #plrs > 0 and entitylib.isAlive then
+                        for _, v in plrs do
+							if lplr.SafeZone.Value == true or v.Player.SafeZone.Value == true then continue end
+							if lplr.Blocking.Value == true then continue end
+							if not Killaura.Enabled then continue end
+
+							targetinfo.Targets[v] = tick() + 1
+							defend(v.RootPart.Position)
+						end
+					end
+
+                    task.wait(TimeDown.Value)
+                until not AntiHit.Enabled
+            end
+        end
+    })
+	Targets = AntiHit:CreateTargets({Players = true})
+	Range = AntiHit:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 10,
+		Default = 10,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+    TimeUp = AntiHit:CreateSlider({
+		Name = 'Time up',
+		Min = 0,
+		Max = 1,
+		Default = 0.4
+	})
+    TimeDown = AntiHit:CreateSlider({
+		Name = 'Time down',
+		Min = 0,
+		Max = 1,
+		Default = 0.1
+	})
+end)
+
+notif('Vape', 'The monster is lurking :)', 10)
