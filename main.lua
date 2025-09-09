@@ -4,13 +4,9 @@ if shared.badexecs then return end
 
 -- why do exploits fail to implement anything correctly? Is it really that hard?
 if identifyexecutor then
-	if table.find({'Argon', 'Wave', 'Velocity', 'Volcano'}, ({identifyexecutor()})[1]) then
+	-- With the state of executors, it's not worth the risk of crashing across multiple exploits.
+	if not table.find({'AWP', 'Zenith', 'Seliware', 'Nucleus'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = function(val)
-			return val
-		end
-	end
-	if table.find({'Volcano'}, ({identifyexecutor()})[1]) then
-		getgenv().getthreadidentity = function(val)
 			return val
 		end
 	end
