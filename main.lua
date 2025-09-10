@@ -6,7 +6,9 @@ if shared.badexecs then return end
 if identifyexecutor then
 	-- With the state of executors, it's not worth the risk of crashing across multiple exploits.
 	if not table.find({'AWP', 'Zenith', 'Nihon', 'Seliware', 'Nucleus'}, ({identifyexecutor()})[1]) then
-		getgenv().setthreadidentity = nil
+		getgenv().setthreadidentity = function(val)
+			return val
+		end
 	end
 end
 
