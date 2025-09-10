@@ -407,23 +407,35 @@ run(function()
 		end
 		return 0, true
 	end
+
+	function koolwl:haswl()
+		for i,v in self.data.WhitelistedUsers do
+			if tostring(lplr.UserId) == i then
+				return true
+			end
+		end
+
+		return false
+	end
 	
 	koolwl:check()
 	for i,v in playersService:GetPlayers() do
 		if v ~= lplr and select(1, koolwl:get(tostring(v.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then	
-			vape.Uninject = function()
-				vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
-			end
-			return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
+			vape:CreateNotification('Vape', 'No more gaming for you ;)', 5)
+
+			task.delay(5, function()
+				vape:Uninject()
+			end)
 		end
 	end
 	
 	vape:Clean(playersService.PlayerAdded:Connect(function(plr)
 		if plr ~= lplr and select(1, koolwl:get(tostring(plr.UserId))) > select(1, koolwl:get(tostring(lplr.UserId))) then
-			vape.Uninject = function()
-				vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 10)
-			end
-			return vape:CreateNotification('Vape', 'can\'t run from the whitelisted users :)', 5)
+			vape:CreateNotification('Vape', 'No more gaming for you ;)', 5)
+
+			task.delay(5, function()
+				vape:Uninject()
+			end)
 		end
 	end))
 	
