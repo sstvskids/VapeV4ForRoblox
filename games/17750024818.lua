@@ -733,6 +733,70 @@ run(function()
 end)
 
 run(function()
+    local TPAura
+    local Targets
+    local Range
+    local AngleSlider
+
+    TPAura = vape.Categories.Blatant:CreateModule({
+        Name = 'TPAura',
+        Function = function(callback)
+            if callback then
+                --notif('Vape', 'module works best with killaura thx', 8)
+                repeat
+                    local plrs = entitylib.AllPosition({
+                        Range = Range.Value,
+                        Wallcheck = Targets.Walls.Enabled,
+                        Part = 'RootPart',
+                        Players = Targets.Players.Enabled,
+                        NPCs = Targets.NPCs.Enabled,
+                        Limit = 1
+                    })
+
+                    if #plrs > 0 and entitylib.isAlive then
+                        local selfpos = entitylib.character.RootPart.Position
+                        local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+                        for _, v in plrs do
+                            local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+                            local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+                            if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+
+                            if not vape.Modules.Killaura.Enabled then continue end
+
+                            targetinfo.Targets[v] = tick() + 1
+
+                            if isnetworkowner(lplr.Character.PrimaryPart) == true then
+                                entitylib.character.RootPart.CFrame = v.RootPart.CFrame + Vector3.new(0, math.random(5, 13), 0)
+                            end
+                        end
+                    end
+                
+                    task.wait()
+                until not TPAura.Enabled
+            end
+        end,
+        Tooltip = 'Automatically teleports to the player closest to you'
+    })
+    Targets = TPAura:CreateTargets({Players = true})
+    Range = TPAura:CreateSlider({
+        Name = 'Range',
+        Min = 1,
+        Max = 70,
+        Default = 70,
+        Suffix = function(val)
+            return val == 1 and 'stud' or 'studs'
+        end
+    })
+    AngleSlider = TPAura:CreateSlider({
+        Name = 'Max angle',
+        Min = 1,
+        Max = 360,
+        Default = 360
+    })
+end)
+
+run(function()
     local PartialDisabler
     local Mode
 
@@ -742,8 +806,18 @@ run(function()
             if callback then
                 PartialDisabler:Clean(runService.RenderStepped:Connect(function()
                     if entitylib.isAlive then
-                        lplr.Character.Humanoid.HipHeight = math.random(6, 8)
-                        lplr.Character.Humanoid.HipHeight = 2
+                        if Mode.Value == 'Hip' then
+                            lplr.Character.Humanoid.HipHeight = math.random(6, 8)
+                            lplr.Character.Humanoid.HipHeight = 2
+                        elseif Mode.Value == 'CFrame' and isnetworkowner(lplr.Character.PrimaryPart) == true then
+                            local old = entitylib.character.RootPart.CFrame
+                            entitylib.character.RootPart.CFrame = entitylib.character.RootPart.CFrame + Vector3.new(0, math.random(6, 8), 0)
+                            entitylib.character.RootPart.CFrame = old
+                        elseif Mode.Value == 'Root' and isnetworkowner(lplr.Character.PrimaryPart) == true then
+                            lplr.Character.HumanoidRootPart.Size = lplr.Character.HumanoidRootPart.Size + Vector3.new(0, math.random(2, 4), 0)
+                            lplr.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                            lplr.Character.HumanoidRootPart.Anchored = false
+                        end
                     end
                 end))
             else
@@ -752,20 +826,10 @@ run(function()
         end,
         Tooltip = 'Partially disables the anticheat\nCredits to cqrzy (@notcqrzy) on Discord for providing the HipMethod'
     })
+    Mode = PartialDisabler:CreateDropdown({
+        Name = 'Mode',
+        List = {'Hip', 'CFrame', 'Root'}
+    })
 end)
-
-local function haswl()
-	for i, v in koolwl.data.WhitelistedUsers do
-		if tostring(lplr.UserId) == i then
-            return true
-        end
-	end
-
-	return false
-end
-
-if haswl() then
-    loadstring(downloadFile('newvape/games/Protected_'..game.PlaceId..'.lua'))()
-end
 
 notif('Vape', 'Thanks for using this bbg :)', 6)
