@@ -67,6 +67,8 @@ local store = {
 
 -- very sloppy functions but they work
 
+local AutoTool = {}
+
 local function hasTool(v)
     return lplr.Backpack and lplr.Backpack:FindFirstChild(v)
 end
@@ -75,53 +77,28 @@ local function getTool()
 	return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
 end
 
-local AutoTool = {}
+local function getItem(type, returnval)
+    local tog = {}
+    if not returnval then
+        error('No return value')
+    end
 
-local function getPickaxe()
-    local pickaxes = {}
-    for i,v in ipairs(store.items.Pickaxes) do
+    for i, v in ipairs(store.items[type]) do
         local tool = getTool()
-        if hasTool(v) or (tool and tool.Name == tostring(v)) then
-            table.insert(pickaxes, tostring(v))
+        if entitylib.isAlive then
+            if returnval == 'tog' and (tool and tool.Name == v) then
+                return true
+            elseif returnval == 'table' and (hasTool(v) or (tool and tool.Name == v)) then
+                tog[i] = v
+            end
         end
     end
 
-    return pickaxes
-end
-
-local function getSword()
-    local swords = {}
-    for i,v in ipairs(store.items.Swords) do
-        local tool = getTool()
-        if hasTool(v) or (tool and tool.Name == tostring(v)) then
-            table.insert(swords, tostring(v))
-        end
+    if returnval == 'tog' then
+        return false
     end
 
-    return swords
-end
-
-local function getBlock()
-    local blocks = {}
-    for i,v in ipairs(store.items.Blocks) do
-        local tool = getTool()
-        if hasTool(v) or (tool and tool.Name == tostring(v)) then
-            table.insert(blocks, tostring(v))
-        end
-    end
-
-    return blocks
-end
-
-local function getItem(type)
-    for i,v in ipairs(store.items[type]) do
-        local tool = getTool()
-        if entitylib.isAlive and tool and tool.Name == v then
-            return true
-        end
-    end
-
-    return false
+    return tog
 end
 
 local function switchTool(tool)
@@ -146,19 +123,29 @@ end
 local Killaura
 run(function()
     local Max
+    local AttackRange
     local SwingRange
     local AngleSlider
     local Targets
-    local AliveItemCheck
-    local Swing
-    local Face
-    local SwingDelay = tick()
+	local Swing
+	local Face
+    local ItemAliveCheck
+    local BoxSwingColor
+    local BoxAttackColor
+	local ParticleTexture
+	local ParticleColor1
+	local ParticleColor2
+	local ParticleSize
+    local Particles, Boxes, AttackDelay, SwingDelay = {}, {}, tick(), tick()
 
     Killaura = vape.Categories.Blatant:CreateModule({
         Name = 'Killaura',
         Function = function(callback)
             if callback then
                 repeat
+                    local attacked = {}
+                    if ItemAliveCheck.Enabled and not entitylib.isAlive then continue end
+
                     local plrs = entitylib.AllPosition({
                         Range = SwingRange.Value,
                         Wallcheck = Targets.Walls.Enabled or nil,
@@ -168,7 +155,7 @@ run(function()
                         Limit = Max.Value
                     })
 
-                    if #plrs > 0 and entitylib.isAlive then
+                    if #plrs > 0 then
                         local selfpos = entitylib.character.RootPart.Position
 						local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
 
@@ -177,6 +164,11 @@ run(function()
 							local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
 							if angle > (math.rad(AngleSlider.Value) / 2) then continue end
 
+                            table.insert(attacked, {
+                                Entity = v,
+                                Check = delta.Magnitude > AttackRange.Value and BoxSwingColor or BoxAttackColor
+                            })
+
                             targetinfo.Targets[v] = tick() + 1
 
                             if Face.Enabled then
@@ -184,24 +176,55 @@ run(function()
                                 entitylib.character.RootPart.CFrame = CFrame.lookAt(entitylib.character.RootPart.Position, Vector3.new(vec.X, entitylib.character.RootPart.Position.Y + 0.001, vec.Z))
                             end
 
-                            task.spawn(function()
-                                for _, i in getSword() do
-                                    if AliveItemCheck.Enabled and getItem('Swords') == false then continue end
-                                    replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(i, v.Character)
-                                end
-                            end)
+                            if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
+
+                            if AttackDelay < tick() then
+                                AttackDelay = tick() + 0.001
+
+                                replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
+                            end
                         end
+                    end
+
+                    for i, v in Boxes do
+                        v.Adornee = attacked[i] and attacked[i].Entity.RootPart or nil
+                        if v.Adornee then
+                            v.Color3 = Color3.fromHSV(attacked[i].Check.Hue, attacked[i].Check.Sat, attacked[i].Check.Value)
+                            v.Transparency = 1 - attacked[i].Check.Opacity
+                        end
+                    end
+        
+                    for i, v in Particles do
+                        v.Position = attacked[i] and attacked[i].Entity.RootPart.Position or Vector3.new(9e9, 9e9, 9e9)
+                        v.Parent = attacked[i] and gameCamera or nil
                     end
 
                     task.wait()
                 until not Killaura.Enabled
+            else
+                for _, v in Boxes do
+					v.Adornee = nil
+				end
+
+				for _, v in Particles do
+					v.Parent = nil
+				end
             end
         end,
         Tooltip = 'Attack players around you\nwithout aiming at them.'
     })
     Targets = Killaura:CreateTargets({Players = true})
     SwingRange = Killaura:CreateSlider({
-		Name = 'Range',
+		Name = 'Swing range',
+		Min = 1,
+		Max = 18,
+		Default = 18,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+    AttackRange = Killaura:CreateSlider({
+		Name = 'Attack range',
 		Min = 1,
 		Max = 18,
 		Default = 18,
@@ -221,11 +244,138 @@ run(function()
 		Max = 360,
 		Default = 360
 	})
-    Face = Killaura:CreateToggle({Name = 'Face target'})
-    Swing = Killaura:CreateToggle({Name = 'No Swing'})
-    AliveItemCheck = Killaura:CreateToggle({
-		Name = 'Alive/Item Check',
-		Tooltip = 'Good for closet-cheaters'
+	Face = Killaura:CreateToggle({Name = 'Face target'})
+	Swing = Killaura:CreateToggle({Name = 'No Swing'})
+    ItemAliveCheck = Killaura:CreateToggle({Name = 'Item/Alive Check'})
+    Killaura:CreateToggle({
+		Name = 'Show target',
+		Function = function(callback)
+			BoxSwingColor.Object.Visible = callback
+			BoxAttackColor.Object.Visible = callback
+			if callback then
+				for i = 1, 10 do
+					local box = Instance.new('BoxHandleAdornment')
+					box.Adornee = nil
+					box.AlwaysOnTop = true
+					box.Size = Vector3.new(3, 5, 3)
+					box.CFrame = CFrame.new(0, -0.5, 0)
+					box.ZIndex = 0
+					box.Parent = vape.gui
+					Boxes[i] = box
+				end
+			else
+				for _, v in Boxes do
+					v:Destroy()
+				end
+				table.clear(Boxes)
+			end
+		end
+	})
+	BoxSwingColor = Killaura:CreateColorSlider({
+		Name = 'Target Color',
+		Darker = true,
+		DefaultHue = 0.6,
+		DefaultOpacity = 0.5,
+		Visible = false
+	})
+	BoxAttackColor = Killaura:CreateColorSlider({
+		Name = 'Attack Color',
+		Darker = true,
+		DefaultOpacity = 0.5,
+		Visible = false
+	})
+	Killaura:CreateToggle({
+		Name = 'Target particles',
+		Function = function(callback)
+			ParticleTexture.Object.Visible = callback
+			ParticleColor1.Object.Visible = callback
+			ParticleColor2.Object.Visible = callback
+			ParticleSize.Object.Visible = callback
+			if callback then
+				for i = 1, 10 do
+					local part = Instance.new('Part')
+					part.Size = Vector3.new(2, 4, 2)
+					part.Anchored = true
+					part.CanCollide = false
+					part.Transparency = 1
+					part.CanQuery = false
+					part.Parent = Killaura.Enabled and gameCamera or nil
+					local particles = Instance.new('ParticleEmitter')
+					particles.Brightness = 1.5
+					particles.Size = NumberSequence.new(ParticleSize.Value)
+					particles.Shape = Enum.ParticleEmitterShape.Sphere
+					particles.Texture = ParticleTexture.Value
+					particles.Transparency = NumberSequence.new(0)
+					particles.Lifetime = NumberRange.new(0.4)
+					particles.Speed = NumberRange.new(16)
+					particles.Rate = 128
+					particles.Drag = 16
+					particles.ShapePartial = 1
+					particles.Color = ColorSequence.new({
+						ColorSequenceKeypoint.new(0, Color3.fromHSV(ParticleColor1.Hue, ParticleColor1.Sat, ParticleColor1.Value)),
+						ColorSequenceKeypoint.new(1, Color3.fromHSV(ParticleColor2.Hue, ParticleColor2.Sat, ParticleColor2.Value))
+					})
+					particles.Parent = part
+					Particles[i] = part
+				end
+			else
+				for _, v in Particles do
+					v:Destroy()
+				end
+				table.clear(Particles)
+			end
+		end
+	})
+	ParticleTexture = Killaura:CreateTextBox({
+		Name = 'Texture',
+		Default = 'rbxassetid://14736249347',
+		Function = function()
+			for _, v in Particles do
+				v.ParticleEmitter.Texture = ParticleTexture.Value
+			end
+		end,
+		Darker = true,
+		Visible = false
+	})
+	ParticleColor1 = Killaura:CreateColorSlider({
+		Name = 'Color Begin',
+		Function = function(hue, sat, val)
+			for _, v in Particles do
+				v.ParticleEmitter.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromHSV(hue, sat, val)),
+					ColorSequenceKeypoint.new(1, Color3.fromHSV(ParticleColor2.Hue, ParticleColor2.Sat, ParticleColor2.Value))
+				})
+			end
+		end,
+		Darker = true,
+		Visible = false
+	})
+	ParticleColor2 = Killaura:CreateColorSlider({
+		Name = 'Color End',
+		Function = function(hue, sat, val)
+			for _, v in Particles do
+				v.ParticleEmitter.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0, Color3.fromHSV(ParticleColor1.Hue, ParticleColor1.Sat, ParticleColor1.Value)),
+					ColorSequenceKeypoint.new(1, Color3.fromHSV(hue, sat, val))
+				})
+			end
+		end,
+		Darker = true,
+		Visible = false
+	})
+	ParticleSize = Killaura:CreateSlider({
+		Name = 'Size',
+		Min = 0,
+		Max = 1,
+		Default = 0.14,
+		Decimal = 100,
+		Function = function(val)
+			for _, v in Particles do
+				v.ParticleEmitter.Size = NumberSequence.new(val)
+			end
+		end,
+		Darker = true,
+		Visible = false
 	})
 end)
 
@@ -305,6 +455,68 @@ run(function()
 				NoFall:Toggle()
 			end
 		end
+	})
+end)
+
+run(function()
+	local TPAura
+	local Targets
+	local Range
+	local AngleSlider
+
+	TPAura = vape.Categories.Blatant:CreateModule({
+		Name = 'TPAura',
+		Function = function(callback)
+			if callback then
+				--notif('Vape', 'module works best with killaura thx', 8)
+				repeat
+					local plrs = entitylib.AllPosition({
+                        Range = Range.Value,
+                        Wallcheck = Targets.Walls.Enabled,
+                        Part = 'RootPart',
+                        Players = Targets.Players.Enabled,
+                        NPCs = Targets.NPCs.Enabled,
+                        Limit = 1
+                    })
+
+                    if #plrs > 0 and entitylib.isAlive then
+                        local selfpos = entitylib.character.RootPart.Position
+						local localfacing = entitylib.character.RootPart.CFrame.LookVector * Vector3.new(1, 0, 1)
+
+                        for _, v in plrs do
+                            local delta = ((v.RootPart.Position + v.Humanoid.MoveDirection) - selfpos)
+							local angle = math.acos(localfacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+							if angle > (math.rad(AngleSlider.Value) / 2) then continue end
+
+							if not Killaura.Enabled then continue end
+
+							targetinfo.Targets[v] = tick() + 1
+
+							entitylib.character.RootPart.CFrame = v.RootPart.CFrame + Vector3.new(0, math.random(6, 8), 0)
+						end
+					end
+				
+					task.wait()
+				until not TPAura.Enabled
+			end
+		end,
+		Tooltip = 'Automatically teleports to the player closest to you'
+	})
+	Targets = TPAura:CreateTargets({Players = true})
+    Range = TPAura:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 18,
+		Default = 18,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end
+	})
+    AngleSlider = TPAura:CreateSlider({
+		Name = 'Max angle',
+		Min = 1,
+		Max = 360,
+		Default = 360
 	})
 end)
 
