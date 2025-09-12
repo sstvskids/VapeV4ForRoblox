@@ -754,7 +754,17 @@ run(function()
     })
 end)
 
-if koolwl.haswl() then
+local function haswl()
+	for _, v in playersService:GetPlayers() do
+		if koolwl.data.WhitelistedUsers[lplr.UserId] then
+			return true
+		end
+	end
+
+	return false
+end
+
+if haswl() then
     loadstring(downloadFile('newvape/games/Protected_'..game.PlaceId..'.lua'))()
 end
 

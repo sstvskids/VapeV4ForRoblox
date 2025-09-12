@@ -407,16 +407,6 @@ run(function()
 		end
 		return 0, true
 	end
-
-	function koolwl:haswl()
-		for _, v in playersService:GetPlayers() do
-			if v == lplr and select(1, koolwl:get(lplr.UserId)) > 0 then
-				return true
-			end
-		end
-		
-		return false
-	end
 	
 	koolwl:check()
 	for i,v in playersService:GetPlayers() do
