@@ -28,15 +28,6 @@ local vape = shared.vape
 local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
-local koolwl = {
-    haswl = function()
-        return false
-    end
-}
-
-if vape.Libraries.koolwl then
-    koolwl = vape.Libraries.koolwl
-end
 
 local function notif(...)
 	return vape:CreateNotification(...)
