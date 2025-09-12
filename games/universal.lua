@@ -408,8 +408,8 @@ run(function()
 		return 0, true
 	end
 
-	function koolwl:haswl()
-		for i,v in self.data.WhitelistedUsers do
+	koolwl.haswl = function()
+		for i,v in koolwl.data.WhitelistedUsers do
 			if tostring(lplr.UserId) == i then
 				return true
 			end

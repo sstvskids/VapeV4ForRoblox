@@ -754,7 +754,7 @@ run(function()
     })
 end)
 
-if koolwl:haswl() then
+if koolwl.haswl() then
     loadstring(downloadFile('newvape/games/Protected_'..game.PlaceId..'.lua'))()
 end
 
