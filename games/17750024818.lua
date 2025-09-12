@@ -742,10 +742,8 @@ run(function()
             if callback then
                 PartialDisabler:Clean(runService.RenderStepped:Connect(function()
                     if entitylib.isAlive then
-                        if Mode.Value == 'Hip' then
-                            lplr.Character.Humanoid.HipHeight = math.random(6, 8)
-                            lplr.Character.Humanoid.HipHeight = 2
-                        end
+                        lplr.Character.Humanoid.HipHeight = math.random(6, 8)
+                        lplr.Character.Humanoid.HipHeight = 2
                     end
                 end))
             else
