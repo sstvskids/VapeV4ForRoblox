@@ -171,7 +171,7 @@ run(function()
                     getTool().Power.Value = old1
                     getTool().Speed.Value = old2
 
-                    old1, old2, = nil, nil
+                    old1, old2 = nil, nil
                 else
                     notif('Vape', 'no glove; unable to clear values', 7)
                 end
