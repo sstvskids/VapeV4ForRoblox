@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 --[[
 
     kool.aid --> BedwarZ
@@ -73,8 +74,9 @@ local function hasTool(v)
     return lplr.Backpack and lplr.Backpack:FindFirstChild(v)
 end
 
-local function getTool()
-	return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
+local function getTool(tool: string): string?
+	return workspace.PlayersContainer[lplr.Name]:FindFirstChild(tool)
+	--return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
 end
 
 local function getItem(type, returnval)
@@ -84,11 +86,11 @@ local function getItem(type, returnval)
     end
 
     for i, v in ipairs(store.items[type]) do
-        local tool = getTool()
+        local tool = getTool(v)
         if entitylib.isAlive then
-            if returnval == 'tog' and (tool and tool.Name == v) then
+            if returnval == 'tog' and tool then
                 return true
-            elseif returnval == 'table' and (hasTool(v) or (tool and tool.Name == v)) then
+            elseif returnval == 'table' and (hasTool(v) or tool) then
                 tog[i] = v
             end
         end
@@ -105,7 +107,7 @@ local function switchTool(tool)
     if not AutoTool.Enabled then return end
 
     local tools = typeof(tool) == 'Instance' and tool or hasTool(tool)
-    local oldtool = getTool()
+    local oldtool = getTool(tool)
 
     if oldtool and tools and oldtool.Name ~= tools.Name then
         oldtool.Parent = lplr.Backpack
@@ -144,7 +146,6 @@ run(function()
             if callback then
                 repeat
                     local attacked = {}
-                    if ItemAliveCheck.Enabled and not entitylib.isAlive then continue end
 
                     local plrs = entitylib.AllPosition({
                         Range = SwingRange.Value,
@@ -176,13 +177,14 @@ run(function()
                                 entitylib.character.RootPart.CFrame = CFrame.lookAt(entitylib.character.RootPart.Position, Vector3.new(vec.X, entitylib.character.RootPart.Position.Y + 0.001, vec.Z))
                             end
 
-                            if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
+							for _, i in getItem('Swords', 'table') do
+								if AttackDelay < tick() then
+									AttackDelay = tick() + 0.001
 
-                            if AttackDelay < tick() then
-                                AttackDelay = tick() + 0.001
-
-                                replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer('Wooden Sword', v.Character)
-                            end
+									if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
+									replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(i, v.Character)
+								end
+							end
                         end
                     end
 
@@ -390,8 +392,7 @@ run(function()
 			if callback then
 				local tracked = 0
 				if Mode.Value == 'Gravity' then
-                    notif('Vape', 'nofall method crashes with aura; disabled :)', 5)
-					--[[local extraGravity = 0
+					local extraGravity = 0
 					NoFall:Clean(runService.PreSimulation:Connect(function(dt)
 						if entitylib.isAlive then
 							local root = entitylib.character.RootPart
@@ -410,7 +411,7 @@ run(function()
 								extraGravity = 0
 							end
 						end
-					end))]]
+					end))
 				else
 					repeat
 						if entitylib.isAlive then
@@ -519,6 +520,46 @@ run(function()
 		Default = 360
 	})
 end)
+
+--[[run(function()
+	local Disabler
+	local old
+
+	Disabler = vape.Categories.Utility:CreateModule({
+		Name = 'Disabler',
+		Function = function(callback)
+			if callback then
+				Disabler:Clean(runService.RenderStepped:Connect(function()
+					local rando = math.random(2, 4)
+					entitylib.character.RootPart.AssemblyLinearVelocity = entitylib.character.RootPart.AssemblyLinearVelocity + Vector3.new(0, rando, 0)
+					task.delay(0.00000000000000000000000000000000001, function()
+						entitylib.character.RootPart.AssemblyLinearVelocity = entitylib.character.RootPart.AssemblyLinearVelocity - Vector3.new(0, rando, 0)
+					end)
+				end))
+			else
+				lplr.Character.Humanoid.HipHeight = 2
+			end
+		end
+	})
+end)
+
+run(function()
+	local Velocity
+
+	Velocity = vape.Categories.Combat:CreateModule({
+		Name = 'Velocity',
+		Function = function(callback)
+			if callback then
+				Velocity:Clean(runService.PreSimulation:Connect(function()
+					local gravAttach = workspace.PlayersContainer[lplr.Name].Hitbox:FindFirstChild('GravityAttachment')
+					if entitylib.isAlive and gravAttach then
+						gravAttach:Destroy()
+					end
+				end))
+			end
+		end
+	})
+end)]]
 
 --[[run(function()
     local Breaker
