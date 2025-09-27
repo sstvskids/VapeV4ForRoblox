@@ -61,7 +61,7 @@ run(function()
 	end
 end)
 
-for _, v in {'Reach', 'SilentAim', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'AutoClicker', 'ProfileInstaller'} do
+for _, v in {'Reach', 'SilentAim', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'AutoClicker', 'ProfileInstaller', 'AntiFall'} do
 	vape:Remove(v)
 end
 
@@ -143,21 +143,25 @@ run(function()
 							end
 
                             if delta.Magnitude > AttackRange.Value then continue end
-							if AttackDelay < tick() then
-								AutoToxicNme = v.Player.Name
+							if v.Character.PrimaryPart then
+								local dir = CFrame.lookAt(selfpos, v.RootPart.Position).LookVector
+								local pos = selfpos + dir * math.max(delta.Magnitude - 10, 0)
 
-								if Mode.Value == 'Mouse' then
-									AttackDelay = tick() + 0.11
-									virtualinputService:SendMouseButtonEvent(gameCamera.ViewportSize.X / 2, gameCamera.ViewportSize.Y / 2, 0, true, game, 0)
-									virtualinputService:SendMouseButtonEvent(gameCamera.ViewportSize.X / 2, gameCamera.ViewportSize.Y / 2, 0, false, game, 0)
-								elseif Mode.Value == 'Remote' then
-									if args[v.Player.Name] then continue end
+								if AttackDelay < tick() then
+									AutoToxicNme = v.Player.Name
 
-									args[v.Player.Name] = {
-										Victim = v.Player,
-										Vector = entitylib.character.RootPart.CFrame.LookVector
-										--Vector = Vector3.new(0, 0, -1)
-									}
+									if Mode.Value == 'Mouse' then
+										AttackDelay = tick() + 0.11
+										virtualinputService:SendMouseButtonEvent(gameCamera.ViewportSize.X / 2, gameCamera.ViewportSize.Y / 2, 0, true, game, 0)
+										virtualinputService:SendMouseButtonEvent(gameCamera.ViewportSize.X / 2, gameCamera.ViewportSize.Y / 2, 0, false, game, 0)
+									elseif Mode.Value == 'Remote' then
+										if args[v.Player.Name] then continue end
+
+										args[v.Player.Name] = {
+											Victim = v.Player,
+											Vector = CFrame.new(pos).LookVector
+										}
+									end
 								end
 							end
                         end
