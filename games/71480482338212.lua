@@ -148,8 +148,8 @@ run(function()
 	local Beds = sessioninfo:AddItem('Beds')
 	local Wins = sessioninfo:AddItem('Wins')
 
-	vape:Clean(lplr.leaderstats.Kills:GetPropertyChangedSignal('Value'):Connect(function()
-		if lplr.leaderstats.Kills.Value ~= 0 then
+	vape:Clean(replicatedStorage.Remotes.KillLog.OnClientEvent:Connect(function(killer, killed)
+		if killer == lplr.Name and killed ~= lplr.Name then
 			Kills:Increment()
 		end
 	end))
