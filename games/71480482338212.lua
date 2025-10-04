@@ -19,13 +19,16 @@ local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local collectionService = cloneref(game:GetService('CollectionService'))
 local runService = cloneref(game:GetService('RunService'))
 local starterGui = cloneref(game:GetService('StarterGui'))
+local textChatService = cloneref(game:GetService('TextChatService'))
 
 local gameCamera = workspace.CurrentCamera
 local lplr = playersService.LocalPlayer
 local vape = shared.vape
 local entitylib = vape.Libraries.entity
 local targetinfo = vape.Libraries.targetinfo
-local prediction = vape.Libraries.prediction
+local sessioninfo = vape.Libraries.sessioninfo
+local whitelist = vape.Libraries.whitelist
+local koolwl = vape.Libraries.koolwl
 
 local function notif(...)
 	return vape:CreateNotification(...)
@@ -59,7 +62,8 @@ local store = {
             [10] = 'Stone Brick',
             [11] = 'Wood Plank',
             [12] = 'Wool',
-            [13] = 'Yellow Wool'
+            [13] = 'Yellow Wool',
+			[14] = 'Fake Block'
         }
     }
 }
@@ -73,7 +77,7 @@ local function hasTool(v)
 end
 
 local function getTool(tool: string): string?
-	return workspace.PlayersContainer[lplr.Name]:FindFirstChild(tool)
+	return workspace.PlayersContainer:FindFirstChild(lplr.Name):FindFirstChild(tool)
 	--return lplr.Character and lplr.Character:FindFirstChildWhichIsA('Tool', true) or nil
 end
 
@@ -101,24 +105,63 @@ local function getItem(type, returnval)
     return tog
 end
 
-local function switchTool(tool)
-    if not AutoTool.Enabled then return end
-
-    local tools = typeof(tool) == 'Instance' and tool or hasTool(tool)
-    local oldtool = getTool(tool)
-
-    if oldtool and tools and oldtool.Name ~= tools.Name then
-        oldtool.Parent = lplr.Backpack
-    end
-
-    if tools then
-        tools.Parent = lplr.Character
-    end
+local function isFriend(plr, recolor)
+	if vape.Categories.Friends.Options['Use friends'].Enabled then
+		local friend = table.find(vape.Categories.Friends.ListEnabled, plr.Name) and true
+		if recolor then
+			friend = friend and vape.Categories.Friends.Options['Recolor visuals'].Enabled
+		end
+		return friend
+	end
+	return nil
 end
 
 for _, v in {'Reach', 'SilentAim', 'Disabler', 'HitBoxes', 'MurderMystery', 'AutoRejoin', 'AutoClicker', 'ProfileInstaller'} do
 	vape:Remove(v)
 end
+
+run(function()
+	entitylib.targetCheck = function(ent)
+		if ent.TeamCheck then
+			return ent:TeamCheck()
+		end
+		if ent.NPC then return true end
+		if isFriend(ent.Player) then return false end
+		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(ent.Player.UserId))) then return false end
+
+		if vape.Categories.Main.Options['Teams by server'].Enabled then
+			if not lplr.Team then return true end
+			if not ent.Player.Team then return true end
+			if (ent.Player.Team and lplr.Team) == 'Spectators' then return true end
+			if ent.Player.Team ~= lplr.Team then return true end
+			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
+		end
+
+		return true
+	end
+end)
+
+entitylib.start()
+
+run(function()
+	local Kills = sessioninfo:AddItem('Kills')
+	local Beds = sessioninfo:AddItem('Beds')
+	local Wins = sessioninfo:AddItem('Wins')
+
+	vape:Clean(lplr.leaderstats.Kills:GetPropertyChangedSignal('Value'):Connect(function()
+		if lplr.leaderstats.Kills.Value ~= 0 then
+			Kills:Increment()
+		end
+	end))
+
+	vape:Clean(lplr.Stats['Total Beds Broken']:GetPropertyChangedSignal('Value'):Connect(function()
+		Beds:Increment()
+	end))
+
+	vape:Clean(lplr.Stats.Wins:GetPropertyChangedSignal('Value'):Connect(function()
+        Wins:Increment()
+	end))
+end)
 
 local Killaura
 run(function()
@@ -177,7 +220,7 @@ run(function()
 
 							for _, i in getItem('Swords', 'table') do
 								if AttackDelay < tick() then
-									AttackDelay = tick() + 0.001
+									AttackDelay = tick() + 0.2
 
 									if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
 									replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(i, v.Character)
@@ -505,8 +548,8 @@ run(function()
     Range = TPAura:CreateSlider({
 		Name = 'Range',
 		Min = 1,
-		Max = 18,
-		Default = 18,
+		Max = 32,
+		Default = 32,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
 		end
@@ -519,26 +562,122 @@ run(function()
 	})
 end)
 
---[[run(function()
-	local Disabler
-	local old
+run(function()
+    local Scaffold
+	local Expand
+	local Tower
+	local Downwards
+	local Diagonal
+	local lastpos = Vector3.zero
+	
+	local function roundPos(vec)
+		return Vector3.new(math.round(vec.X / 3) * 3, math.round(vec.Y / 3) * 3, math.round(vec.Z / 3) * 3)
+	end
 
-	Disabler = vape.Categories.Utility:CreateModule({
-		Name = 'Disabler',
+    Scaffold = vape.Categories.Utility:CreateModule({
+        Name = 'Scaffold',
+        Function = function(callback)
+            if callback then
+                Scaffold:Clean(runService.Stepped:Connect(function()
+                    if entitylib.isAlive then
+                        task.spawn(function()
+                            for _, v in getItem('Blocks', 'table') do
+								local root = entitylib.character.RootPart
+								if Tower.Enabled and inputService:IsKeyDown(Enum.KeyCode.Space) and (not inputService:GetFocusedTextBox()) then
+									root.Velocity = Vector3.new(root.Velocity.X, 28, root.Velocity.Z)
+								end
+
+								for i = Expand.Value, 1, -1 do
+									local currentpos = roundPos(root.Position - Vector3.new(0, entitylib.character.HipHeight + (Downwards.Enabled and inputService:IsKeyDown(Enum.KeyCode.LeftShift) and 4.5 or 1.5), 0) + entitylib.character.Humanoid.MoveDirection * (i * 3))
+									if Diagonal.Enabled then
+										if math.abs(math.round(math.deg(math.atan2(-entitylib.character.Humanoid.MoveDirection.X, -entitylib.character.Humanoid.MoveDirection.Z)) / 45) * 45) % 90 == 45 then
+											local dt = (lastpos - currentpos)
+											if ((dt.X == 0 and dt.Z ~= 0) or (dt.X ~= 0 and dt.Z == 0)) and ((lastpos - root.Position) * Vector3.new(1, 0, 1)).Magnitude < 2.5 then
+												currentpos = lastpos
+											end
+										end
+									end
+
+									lastpos = currentpos
+
+									if not getItem('Blocks', 'tog') then continue end
+									local fakeblock = replicatedStorage.Blocks[v]:Clone()
+									fakeblock.Name = v
+									fakeblock.Position = currentpos
+									fakeblock.Parent = string.find(v, 'Wool') and workspace.PlayersBlocksContainer.Wool or workspace.PlayersBlocksContainer[v]
+											
+									replicatedStorage.Remotes.ItemsRemotes.PlaceBlock:FireServer(v, 1, currentpos)
+
+									task.delay(0.3, function()
+										fakeblock:Destroy()
+										fakeblock = nil
+									end)
+								end
+							end
+                        end)
+                    end
+                    
+                    task.wait()
+				end))
+            end
+        end
+    })
+	Expand = Scaffold:CreateSlider({
+		Name = 'Expand',
+		Min = 1,
+		Max = 6
+	})
+	Tower = Scaffold:CreateToggle({
+		Name = 'Tower',
+		Default = true
+	})
+	Downwards = Scaffold:CreateToggle({
+		Name = 'Downwards',
+		Default = true
+	})
+	Diagonal = Scaffold:CreateToggle({
+		Name = 'Diagonal',
+		Default = true
+	})
+end)
+
+run(function()
+	local PickupRange
+	local Range
+	local Lower
+
+	PickupRange = vape.Categories.Utility:CreateModule({
+		Name = 'PickupRange',
 		Function = function(callback)
 			if callback then
-				Disabler:Clean(runService.RenderStepped:Connect(function()
-					local rando = math.random(2, 4)
-					entitylib.character.RootPart.AssemblyLinearVelocity = entitylib.character.RootPart.AssemblyLinearVelocity + Vector3.new(0, rando, 0)
-					task.delay(0.00000000000000000000000000000000001, function()
-						entitylib.character.RootPart.AssemblyLinearVelocity = entitylib.character.RootPart.AssemblyLinearVelocity - Vector3.new(0, rando, 0)
-					end)
-				end))
-			else
-				lplr.Character.Humanoid.HipHeight = 2
+				repeat
+					if entitylib.isAlive then
+						local localPosition = entitylib.character.RootPart.Position
+						for _, v in workspace.DroppedItemsContainer:GetChildren() do
+							if (localPosition - v.PrimaryPart.Position).Magnitude <= Range.Value then
+								if Lower.Enabled and (localPosition.Y - v.Position.Y) < (entitylib.character.HipHeight - 1) then continue end
+								if entitylib.character.Humanoid.Health > 0 then 
+									v.PrimaryPart.CFrame = CFrame.new(localPosition - Vector3.new(0, 3, 0)) 
+								end
+							end
+						end
+					end
+
+					task.wait()
+				until not PickupRange.Enabled
 			end
 		end
 	})
+	Range = PickupRange:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 6,
+		Default = 6,
+		Suffix = function(val) 
+			return val == 1 and 'stud' or 'studs' 
+		end
+	})
+	Lower = PickupRange:CreateToggle({Name = 'Feet Check'})
 end)
 
 run(function()
@@ -548,81 +687,96 @@ run(function()
 		Name = 'Velocity',
 		Function = function(callback)
 			if callback then
-				Velocity:Clean(runService.PreSimulation:Connect(function()
-					local gravAttach = workspace.PlayersContainer[lplr.Name].Hitbox:FindFirstChild('GravityAttachment')
-					if entitylib.isAlive and gravAttach then
-						gravAttach:Destroy()
-					end
+				for i,v in replicatedStorage.Modules.VelocityUtils:GetChildren() do
+					v:Destroy()
+				end
+
+				Velocity:Clean(replicatedStorage.Modules.VelocityUtils.ChildAdded:Connect(function(obj)
+					obj:Destroy()
 				end))
 			end
-		end
-	})
-end)]]
-
---[[run(function()
-    local Breaker
-    local Range
-
-    Breaker = vape.Categories.Minigames:CreateModule({
-        Name = 'Breaker',
-        Function = function(callback)
-            if callback then
-                repeat
-                    for _, v in workspace.BedsContainer:GetChildren() do
-                        local part = v.BedHitbox
-                        if entitylib.isAlive and (part:IsA('BasePart') or part:IsA('Part')) and (lplr.Character.HumanoidRootPart.Position - part.Position).Magnitude <= Range.Value then
-                            task.spawn(function()
-                                for _, i in getPickaxe() do
-                                    if not getItem('Pickaxes') then continue end
-
-                                    print('breaking')
-                                    replicatedStorage.Remotes.ItemsRemotes.MineBlock:FireServer(i, part, part.Position, gameCamera.CFrame.Position, (part.Position - gameCamera.CFrame.Position).Unit * 100)
-
-                                    break
-                                end
-                            end)
-                        end
-                    end
-                    task.wait()
-                until not Breaker.Enabled
-            end
-        end
-    })
-    Range = Breaker:CreateSlider({
-		Name = 'Break range',
-		Min = 1,
-		Max = 18,
-		Default = 18
+		end,
+		Tooltip = 'Prevents knockback\nCredits to @springs67 (Autumn Client) owner for method'
 	})
 end)
 
 run(function()
-    local Scaffold
+	local AutoToxic
+	local GG
+	local Toggles, Lists, said = {}, {}, {}
+	
+	local function sendMessage(name, obj, default)
+		local tab = Lists[name].ListEnabled
+		local custommsg = #tab > 0 and tab[math.random(1, #tab)] or default
+		if not custommsg then return end
+		if #tab > 1 and custommsg == said[name] then
+			repeat 
+				task.wait() 
+				custommsg = tab[math.random(1, #tab)] 
+			until custommsg ~= said[name]
+		end
+		said[name] = custommsg
+	
+		custommsg = custommsg and custommsg:gsub('<obj>', obj or '') or ''
+		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+			textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync(custommsg)
+		else
+			replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(custommsg, 'All')
+		end
+	end
 
-    local function placeBlock(block, pos: Vector3)
-        return replicatedStorage.Remotes.ItemsRemotes.PlaceBlock:InvokeServer(block, Vector3.new(pos.X / 3, pos.Y / 3, pos.Z / 3))
-    end
+	AutoToxic = vape.Categories.Utility:CreateModule({
+		Name = 'AutoToxic',
+		Function = function(callback)
+			if callback then
+				AutoToxic:Clean(replicatedStorage.Remotes.KillLog.OnClientEvent:Connect(function(killer, killed)
+					if (killer == lplr.Name and killed ~= lplr.Name) and Toggles.Kill.Enabled then
+						sendMessage('Kill', killed, 'kool.aid solos <obj>')
+					elseif (killer ~= lplr.Name and killed == lplr.Name) and Toggles.Death.Enabled then
+						sendMessage('Death', killer, 'kool.aid ALWAYS comes back stronger <obj>')
+					end
+				end))
 
-    Scaffold = vape.Categories.Utility:CreateModule({
-        Name = 'Scaffold',
-        Function = function(callback)
-            if callback then
-                repeat
-                    if entitylib.isAlive then
-                        task.spawn(function()
-                            for _, i in getBlock() do
-                                if not getItem('Blocks') then continue end
+				AutoToxic:Clean(lplr.Stats['Total Beds Broken']:GetPropertyChangedSignal('Value'):Connect(function()
+					sendMessage('Bed', nil, 'nice bed broo')
+				end))
 
-                                placeBlock(i, (entitylib.character.RootPart.CFrame + entitylib.character.RootPart.CFrame.LookVector * 0.5) - Vector3.new(0, 4.5, 0))
-                            end
-                        end)
-                    end
-                    
-                    task.wait(0.01)
-                until not Scaffold.Enabled
-            end
-        end
-    })
-end)]]
+				AutoToxic:Clean(replicatedStorage.Remotes.GameRemotes.OnWinningTeam.OnClientEvent:Connect(function(table)
+					if GG.Enabled then
+						if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+							textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('gg')
+						else
+							replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('gg', 'All')
+						end
+					end
+
+					--[[if lplr.Team == teamsService:FindFirstChild(tostring(table.WinningTeam)) and Toggles.Win.Enabled then
+						sendMessage('Win', nil, 'yall garbage')
+					end]]
+				end))
+			end
+		end,
+		Tooltip = 'Says a message after a certain action'
+	})
+	GG = AutoToxic:CreateToggle({
+		Name = 'AutoGG',
+		Default = true
+	})
+	for _, v in {'Kill', 'Death', 'Bed'} do
+		Toggles[v] = AutoToxic:CreateToggle({
+			Name = v..' ',
+			Function = function(callback)
+				if Lists[v] then
+					Lists[v].Object.Visible = callback
+				end
+			end
+		})
+		Lists[v] = AutoToxic:CreateTextList({
+			Name = v,
+			Darker = true,
+			Visible = false
+		})
+	end
+end)
 
 notif('Vape', 'let the kool.aid begin', 5)
