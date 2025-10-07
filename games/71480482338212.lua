@@ -132,7 +132,7 @@ run(function()
 		if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
-			if (ent.Player.Team and lplr.Team) == 'Spectators' then return true end
+			if (tostring(ent.Player.Team) and tostring(lplr.Team)) == 'Spectators' then return true end
 			if ent.Player.Team ~= lplr.Team then return true end
 			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
 		end
@@ -180,11 +180,15 @@ run(function()
 	local ParticleColor2
 	local ParticleSize
     local Particles, Boxes, AttackDelay, SwingDelay = {}, {}, tick(), tick()
+	local Anim
 
     Killaura = vape.Categories.Blatant:CreateModule({
         Name = 'Killaura',
         Function = function(callback)
             if callback then
+				Anim = Instance.new('Animation')
+                Anim.AnimationId = 'rbxassetid://123800159244236'
+
                 repeat
                     local attacked = {}
 
@@ -212,6 +216,12 @@ run(function()
                             })
 
                             targetinfo.Targets[v] = tick() + 1
+
+							if SwingDelay < tick() then
+								SwingDelay = tick() + 0.2
+								entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Stop()
+                                entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Play()
+							end
 
                             if Face.Enabled then
                                 local vec = v.RootPart.Position * Vector3.new(1, 0, 1)
