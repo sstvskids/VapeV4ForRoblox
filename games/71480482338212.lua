@@ -137,6 +137,7 @@ run(function()
 			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
 		end
 
+		if lplr:GetAttribute('PVP') then return true end
 		return true
 	end
 end)
