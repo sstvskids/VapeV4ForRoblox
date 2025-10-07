@@ -137,8 +137,8 @@ run(function()
 			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
 		end
 
-		if lplr:GetAttribute('PVP') then return true end
-		return true
+		if lplr:GetAttribute('PVP') and ent.Player:GetAttribute('PVP') then return true end
+		return false
 	end
 end)
 
@@ -715,7 +715,8 @@ run(function()
 	local AutoToxic
 	local GG
 	local Toggles, Lists, said = {}, {}, {}
-	
+	local cancel = false
+
 	local function sendMessage(name, obj, default)
 		local tab = Lists[name].ListEnabled
 		local custommsg = #tab > 0 and tab[math.random(1, #tab)] or default
@@ -749,10 +750,15 @@ run(function()
 				end))
 
 				AutoToxic:Clean(lplr.Stats['Total Beds Broken']:GetPropertyChangedSignal('Value'):Connect(function()
-					sendMessage('Bed', nil, 'nice bed broo')
+					if Toggles.Bed.Enabled then
+						sendMessage('Bed', nil, 'nice bed broo')
+					end
 				end))
 
 				AutoToxic:Clean(replicatedStorage.Remotes.GameRemotes.OnWinningTeam.OnClientEvent:Connect(function(table)
+					if cancel == false then return end
+					cancel = true
+					
 					if GG.Enabled then
 						if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 							textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('gg')
@@ -761,9 +767,11 @@ run(function()
 						end
 					end
 
-					--[[if lplr.Team == teamsService:FindFirstChild(tostring(table.WinningTeam)) and Toggles.Win.Enabled then
+					if tostring(lplr.Team) == tostring(table.WinningTeam) and Toggles.Win.Enabled then
 						sendMessage('Win', nil, 'yall garbage')
-					end]]
+					end
+
+					cancel = false
 				end))
 			end
 		end,
@@ -773,7 +781,7 @@ run(function()
 		Name = 'AutoGG',
 		Default = true
 	})
-	for _, v in {'Kill', 'Death', 'Bed'} do
+	for _, v in {'Kill', 'Death', 'Bed', 'Win'} do
 		Toggles[v] = AutoToxic:CreateToggle({
 			Name = v..' ',
 			Function = function(callback)
