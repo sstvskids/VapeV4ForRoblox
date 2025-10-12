@@ -218,7 +218,7 @@ run(function()
 
                             targetinfo.Targets[v] = tick() + 1
 
-							if SwingDelay < tick() then
+							if not Swing.Enabled and SwingDelay < tick() then
 								SwingDelay = tick() + 0.35
 								entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Stop()
                                 entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Play()
