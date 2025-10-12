@@ -219,7 +219,7 @@ run(function()
                             targetinfo.Targets[v] = tick() + 1
 
 							if SwingDelay < tick() then
-								SwingDelay = tick() + 0.2
+								SwingDelay = tick() + 0.35
 								entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Stop()
                                 entitylib.character.Humanoid.Animator:LoadAnimation(Anim):Play()
 							end
@@ -231,7 +231,7 @@ run(function()
 
 							for _, i in getItem('Swords', 'table') do
 								if AttackDelay < tick() then
-									AttackDelay = tick() + 0.2
+									AttackDelay = tick() + 0.35
 
 									if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
 									replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(i, v.Character)
