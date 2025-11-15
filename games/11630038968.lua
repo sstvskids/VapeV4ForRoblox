@@ -456,8 +456,6 @@ run(function()
 														}
 													})
 												end
-
-												bd.ToolService:AttackPlayerWithSword(v.Character, (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0, tool.Name)
 											end)
 										end
 									end
