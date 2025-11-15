@@ -6508,65 +6508,6 @@ run(function()
 		Placeholder = 'Role Rank'
 	})
 end)
-
-run(function()
-	local InstallProfiles
-	local ProfileValue
-	local cfg
-	local url
-	local folder = 'newvape/profiles/'
-	
-	InstallProfiles = vape.Categories.Utility:CreateModule({
-		Name = 'ProfileInstaller',
-		Function = function(callback)
-			if callback then
-				if ProfileValue.Value == 'Blood' then
-					shared.cfg = 'bloodvape'
-				else
-					shared.cfg = 'darkrise'
-				end
-				
-				cfg = shared.cfg
-				url = 'https://api.github.com/repos/skidvape/koolCore/contents/configs/'..cfg
-				InstallProfiles:Toggle()
-				vape:Uninject()
-
-				if isfolder('newvape/profiles') then
-					delfolder('newvape/profiles')
-					makefolder('newvape/profiles')
-				end
-
-				local suc, res = pcall(function()
-					return httpService:JSONDecode(game:HttpGet(url))
-				end)
-
-				if suc and type(res) == 'table' then
-					local suc, result = pcall(function()
-						for i,v in pairs(res) do
-							writefile(folder..v.name, game:HttpGet(v.download_url))
-						end
-					end)
-					if suc and isfile('default'..game.PlaceId..'.txt') then
-						shared.vapereload = true
-						return loadstring(game:HttpGet('https://raw.githubusercontent.com/sstvskids/VapeV4ForRoblox/main/loader.lua', true))()
-					end
-				end
-			end
-		end,
-		Tooltip = 'Installs all profiles'
-	})
-	ProfileValue = InstallProfiles:CreateDropdown({
-		Name = 'Profile',
-		List = {'Blood', 'Moon'},
-		Function = function(v)
-			if v == 'Blood' then
-				shared.cfg = 'bloodvape'
-			else
-				shared.cfg = 'darkrise'
-			end
-		end
-	})
-end)
 	
 run(function()
 	local connections = {}
