@@ -1185,6 +1185,7 @@ end)
 	
 run(function()
 	local Breaker
+	local Range
 	local Value
 	local OnlyPlayer
 	
@@ -1230,15 +1231,20 @@ run(function()
 							local rvec = Vector3.new(3, 3, 3) * Range.Value
 	
 							for blockpos, block in getBlocksInPoints(pos - rvec, pos + rvec) do
-								if block and block.Name == 'Block' and (block.Parent.Name == 'Bed' and lplr.Team and block.Parent:GetAttribute('Team') ~= lplr.Team.Name) then
+								if (block and block:IsA('Part') and block.Name == 'Block') and (block.Parent.Name == 'Bed' and lplr.Team and block.Parent:GetAttribute('Team') ~= lplr.Team.Name) then
 									breakBlock = block
 									break
 								end
 							end
-	
+
+							if breakBlock then
+								gameCamera.CFrame = CFrame.new(gameCamera.CFrame.Position, breakBlock.Position)
+							end
+
 							if breakBlock ~= lastBreak then
 								if breakBlock then
 									breakTime = os.clock() + bd.BreakTimes[breakBlock:GetAttribute('block_type') or 'Clay']
+
 									bd.Blink.item_action.start_break_block.fire({
 										position = breakBlock.Position,
 										pickaxe_name = pickaxe,
@@ -1254,6 +1260,7 @@ run(function()
 							end
 						end
 					end
+
 					task.wait(1 / 60)
 				until not Breaker.Enabled
 			end
