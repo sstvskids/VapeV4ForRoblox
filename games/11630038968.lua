@@ -225,6 +225,12 @@ run(function()
 		Decimal = 10,
 		Suffix = function(val) 
 			return val == 1 and 'stud' or 'studs' 
+		end,
+		Function = function(val)
+			if Reach.Enabled and val then
+				rawset(bd.CombatConstants, 'REACH_IN_STUDS', val)
+				rawset(bd.Entity.LocalEntity, 'Reach', val)
+			end
 		end
 	})
 end)
