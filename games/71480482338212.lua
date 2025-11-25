@@ -128,8 +128,9 @@ run(function()
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
 		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(ent.Player.UserId))) then return false end
+        if not ent.Player:GetAttribute('PVP') then return false end
 
-		if vape.Categories.Main.Options['Teams by server'].Enabled then
+        if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
 			if (tostring(ent.Player.Team) and tostring(lplr.Team)) == 'Spectators' then return true end
@@ -137,7 +138,6 @@ run(function()
 			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
 		end
 
-		if lplr:GetAttribute('PVP') then return true end
 		return false
 	end
 end)
