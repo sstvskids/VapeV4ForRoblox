@@ -93,7 +93,11 @@ end
 
 entitylib.isVulnerable = function(ent)
 	local force = ent.Character.FindFirstChildWhichIsA(ent.Character, 'ForceField')
-	return ent.Health > 0 and not force and force.Visible
+	if force and force.Visible then
+		return false
+	end
+
+	return ent.Health > 0
 end
 
 entitylib.getEntityColor = function(ent)
