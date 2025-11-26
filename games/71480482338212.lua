@@ -124,7 +124,7 @@ run(function()
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
 		if not (select(2, whitelist:get(ent.Player)) or select(2, koolwl:get(ent.Player.UserId))) then return false end
-        if not ent.Player:GetAttribute('PVP') or not lplr:GetAttribute('PVP') then return false end
+        if ent.Player:GetAttribute('PVP') == false then return false end
 
         if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
