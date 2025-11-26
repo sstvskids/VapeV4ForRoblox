@@ -129,7 +129,7 @@ run(function()
         if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
-			if (ent.Player.Team and lplr.Team) == 'Spectators' then return true end
+			if (ent.Player.Team.Name and lplr.Team.Name) == 'Spectators' then return true end
 			if ent.Player.Team ~= lplr.Team then return true end
 			return #ent.Player.Team:GetPlayers() == #playersService:GetPlayers()
 		end
