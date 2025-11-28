@@ -136,6 +136,14 @@ run(function()
 
 		return false
 	end
+
+	entitylib.isVulnerable = function(ent)
+		if ent.Character.FindFirstChildWhichIsA(ent.Character, 'ForceField') and ent.Character.FindFirstChildWhichIsA(ent.Character, 'ForceField').Visible then
+			return false
+		end
+		
+		return ent.Health > 0
+	end
 end)
 
 entitylib.start()
