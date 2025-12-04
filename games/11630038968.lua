@@ -67,6 +67,7 @@ run(function()
 		CombatService = Knit.GetService('CombatService'),
 		CombatConstants = require(replicatedStorage.Constants.Melee),
 		Communication = require(replicatedStorage.Client.Communication),
+		ChatReplacementList = require(replicatedStorage.Client.Controllers.All.ChatController.ChatReplacementList),
 		Knit = Knit,
 		Entity = require(replicatedStorage.Modules.Entity),
 		ServerData = require(replicatedStorage.Modules.ServerData),
@@ -193,7 +194,7 @@ run(function()
 				old = nil
 			end
 		end,
-		Tooltip = 'Remove the CPS cap'
+		Tooltip = 'Removes the CPS cap'
 	})
 end)
 	
@@ -1278,6 +1279,28 @@ run(function()
 		Default = 5,
 		Suffix = function(val)
 			return val == 1 and 'stud' or 'studs'
+		end
+	})
+end)
+
+run(function()
+	local ChatBypass
+	local restore = {}
+
+	ChatBypass = vape.Categories.Utility:CreateModule({
+		Name = 'ChatBypass',
+		Function = function(callback)
+			if callback then
+				for i,v in bd.ChatReplacementList do
+					restore[i] = v.toBeReplaced
+					v.toBeReplaced = {}
+				end
+			else
+				for i,v in bd.ChatReplacementList do
+					v.toBeReplaced = restore[i]
+					restore[i] = nil
+				end
+			end
 		end
 	})
 end)
