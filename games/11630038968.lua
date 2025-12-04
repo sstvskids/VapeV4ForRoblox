@@ -455,8 +455,8 @@ run(function()
 														is_crit = (Criticals.Enabled and true) or entitylib.character.RootPart.AssemblyLinearVelocity.Y < 0,
 														weapon_name = tool.Name,
 														extra = {
-															rizz = 'No.',
-															sigma = 'The...',
+															rizz = 'Bro.',
+															sigma = 'What\'s this? OwO',
 															those = workspace.Name == 'Ok'
 														}
 													})
