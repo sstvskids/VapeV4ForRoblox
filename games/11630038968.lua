@@ -1301,7 +1301,8 @@ run(function()
 					restore[i] = nil
 				end
 			end
-		end
+		end,
+		Tooltip = 'Allows you to say \'ez\' and \'67\' in chat'
 	})
 end)
 
