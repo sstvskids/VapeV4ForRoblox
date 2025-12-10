@@ -456,7 +456,7 @@ run(function()
 														weapon_name = tool.Name,
 														extra = {
 															rizz = 'Bro.',
-															sigma = 'What\'s this? OwO',
+															owo = 'What\'s this? OwO',
 															those = workspace.Name == 'Ok'
 														}
 													})
@@ -972,8 +972,8 @@ run(function()
 												position = blockpos,
 												block_type = btype,
 												extra = {
-													rizz = 'No.',
-													sigma = 'The...',
+													rizz = 'Bro.',
+													owo = 'What\'s this? OwO',
 													those = workspace.Name == 'Ok'
 												}
 											})
