@@ -10,11 +10,13 @@ if identifyexecutor then
 	end
 end
 
-if require and (game.PlaceId == 11630038968 or game.PlaceId == 12011959048 or game.PlaceId == 14191889582 or game.PlaceId == 14662411059) then
+if require then
 	local cloneref = cloneref or function(val) return val end
-	local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
-	local suc, res = pcall(require, replicatedStorage.Blink.Client)
-	if suc == false then
+	
+	local lplr = cloneref(game:GetService('Players')).LocalPlayer
+	local suc = pcall(function() require(lplr.PlayerScripts.PlayerModule).controls end)
+
+	if not suc then
 		shared.badexecs = true
 		return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 	end
