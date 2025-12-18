@@ -14,7 +14,7 @@ if require then
 	local cloneref = cloneref or function(val) return val end
 	
 	local lplr = cloneref(game:GetService('Players')).LocalPlayer
-	local suc = pcall(function() require(lplr.PlayerScripts.PlayerModule).controls end)
+	local suc = pcall(function() return require(lplr.PlayerScripts.PlayerModule).controls end)
 
 	if not suc then
 		shared.badexecs = true
