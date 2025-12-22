@@ -1,10 +1,10 @@
 if identifyexecutor then
-	if string.find(({identifyexecutor()})[1], 'JJSploit') then
+	if string.find(string.lower(({identifyexecutor()})[1]), 'jjsploit') or string.find(string.lower(({identifyexecutor()})[1]), 'bytebreaker') then
 		getgenv().identifyexecutor = function()
 			return 'Xeno'
 		end
 	end
-	if table.find({'Xeno', '5.0'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants or hookfunction or hookmetamethod or getconnections) then
+	if table.find({'Xeno', '5.0'}, ({identifyexecutor()})[1]) or not (debug.getupvalue or debug.getconstants or hookfunction or hookmetamethod or getconnections or require) then
 		shared.badexecs = true
 		return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 	end
@@ -20,9 +20,6 @@ if require then
 		shared.badexecs = true
 		return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 	end
-elseif not require then
-	shared.badexecs = true
-	return loadstring(game:HttpGet("https://raw.githubusercontent.com/skidvape/KoolForRoblox/main/NewMainScript.lua", true))()
 end
 
 local isfile = isfile or function(file)
