@@ -17,7 +17,7 @@ local module = {
 module.setToken = function(token)
     if not token then
         if setclipboard then
-            setclipboard('')
+            setclipboard('https://youtu.be/XoKfh4DBM9I')
         end
         
         return false, 'Read the documentation on how to setup'
