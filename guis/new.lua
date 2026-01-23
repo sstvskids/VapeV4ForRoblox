@@ -6706,6 +6706,165 @@ targetinfo = {
 }
 mainapi.Libraries.targetinfo = targetinfo
 
+--[[
+	Spotify HUD
+]]
+
+local spotifylib, spotify, token = loadstring(downloadFile('newvape/libraries/spotify.lua', 'spotify'))(), nil, nil
+local frame, icon, artistnme, songnme
+spotify = mainapi:CreateOverlay({
+	Name = 'Spotify',
+	Icon = 'rbxassetid://132459323665838',
+	Size = UDim2.fromOffset(14, 14),
+	Position = UDim2.fromOffset(12, 14),
+	CategorySize = 240,
+	Function = function(callback)
+		if callback then
+			repeat task.wait() until token and token.Value ~= ''
+
+			local tokenres = spotifylib.setToken(token.Value)
+			if not tokenres then
+				return
+			end
+
+			repeat
+				if frame and icon and artistnme and songnme then
+					local res = spotifylib.getTrackInfo()
+
+					if res then
+						if res.expired then
+							return
+						end
+						
+						if not isfile('newvape/cache/'..res.title..'_'..res.artists..'_cover') then
+							writefile('newvape/cache/'..res.title..'_'..res.artists..'_cover', game:HttpGet(res.cover))
+						end
+
+						artistnme.Text = res.artists
+						songnme.Text = res.title
+						icon.Image = assetfunction and assetfunction('newvape/cache/'..res.title..'_'..res.artists..'_cover') or ''
+					end
+				end
+
+				task.wait(4)
+			until not spotify.Button or not spotify.Button.Enabled
+		end
+	end
+})
+token = spotify:CreateTextBox({
+	Name = 'Token',
+	Default = ''
+})
+
+frame = Instance.new('Frame')
+frame.AutomaticSize = Enum.AutomaticSize.X
+frame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+frame.BackgroundTransparency = 0.55
+frame.Size = UDim2.fromOffset(400, 175)
+frame.SizeConstraint = Enum.SizeConstraint.RelativeXY
+frame.Parent = spotify.Children
+addCorner(frame, 32)
+local framelayout = Instance.new('UIListLayout')
+framelayout.Padding = UDim.new(0, 5)
+framelayout.FillDirection = Enum.FillDirection.Horizontal
+framelayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+framelayout.VerticalAlignment = Enum.VerticalAlignment.Center
+framelayout.Parent = frame
+local framepadding = Instance.new('UIPadding')
+framepadding.PaddingLeft = UDim.new(0, 8)
+framepadding.PaddingRight = UDim.new(0, 8)
+framepadding.Parent = frame
+local framestroke = Instance.new('UIStroke')
+framestroke.BorderOffset = UDim.new(0, -2)
+framestroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
+framestroke.Color = Color3.fromRGB(255, 255, 255)
+framestroke.Thickness = 2
+framestroke.Transparency = 0.55
+framestroke.Parent = frame
+local iconframe = Instance.new('Frame')
+iconframe.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+iconframe.BackgroundTransparency = 0.75
+iconframe.Size = UDim2.fromOffset(160, 160)
+iconframe.SizeConstraint = Enum.SizeConstraint.RelativeXY
+iconframe.Visible = true
+iconframe.Parent = frame
+addCorner(iconframe, 24)
+local iconframestroke = Instance.new('UIStroke')
+iconframestroke.BorderOffset = UDim.new(0, -2)
+iconframestroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
+iconframestroke.Color = Color3.fromRGB(255, 255, 255)
+iconframestroke.Thickness = 2
+iconframestroke.Transparency = 0.75
+iconframestroke.Parent = iconframe
+icon = Instance.new('ImageLabel')
+icon.AnchorPoint = Vector2.new(0.5, 0.5)
+icon.BackgroundTransparency = 1
+icon.Position = UDim2.fromScale(0.5, 0.5)
+icon.Size = UDim2.fromScale(0.9, 0.9)
+icon.SizeConstraint = Enum.SizeConstraint.RelativeXY
+icon.Parent = iconframe
+addCorner(icon, 16)
+local songcontainer = Instance.new('Frame')
+songcontainer.AutomaticSize = Enum.AutomaticSize.X
+songcontainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+songcontainer.BackgroundTransparency = 0.75
+songcontainer.Size = UDim2.fromOffset(220, 160)
+songcontainer.SizeConstraint = Enum.SizeConstraint.RelativeXY
+songcontainer.Parent = frame
+addCorner(songcontainer, 24)
+local songcontainerlayout = Instance.new('UIListLayout')
+songcontainerlayout.Padding = UDim.new(0, 5)
+songcontainerlayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+songcontainerlayout.VerticalAlignment = Enum.VerticalAlignment.Center
+songcontainerlayout.Parent = songcontainer
+local songcontainerpadding = Instance.new('UIPadding')
+songcontainerpadding.PaddingBottom = UDim.new(0, 6)
+songcontainerpadding.PaddingLeft = UDim.new(0, 4)
+songcontainerpadding.PaddingRight = UDim.new(0, 10)
+songcontainerpadding.Parent = songcontainer
+local songcontainerstroke = Instance.new('UIStroke')
+songcontainerstroke.BorderOffset = UDim.new(0, -2)
+songcontainerstroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
+songcontainerstroke.Color = Color3.fromRGB(255, 255, 255)
+songcontainerstroke.Thickness = 2
+songcontainerstroke.Transparency = 0.75
+songcontainerstroke.Parent = songcontainer
+artistnme = Instance.new('TextLabel')
+artistnme.AnchorPoint = Vector2.new(0, 0.5)
+artistnme.AutomaticSize = Enum.AutomaticSize.X
+artistnme.BackgroundTransparency = 1
+artistnme.BorderSizePixel = 0
+artistnme.Size = UDim2.fromOffset(40, 20)
+artistnme.TextColor3 = Color3.fromRGB(255, 255, 255)
+artistnme.FontFace = Font.new(Font.fromName('Montserrat').Family, Enum.FontWeight.SemiBold, Enum.FontStyle.Italic)
+artistnme.FontFace.Weight = Enum.FontWeight.Bold
+artistnme.FontFace.Style = Enum.FontStyle.Italic
+artistnme.TextSize = 14
+artistnme.TextXAlignment = Enum.TextXAlignment.Left
+artistnme.TextYAlignment = Enum.TextYAlignment.Center
+artistnme.Parent = songcontainer
+local artistnmepadding = Instance.new('UIPadding')
+artistnmepadding.PaddingLeft = UDim.new(0, 8)
+artistnmepadding.PaddingTop = UDim.new(0, 10)
+artistnmepadding.Parent = artistnme
+songnme = Instance.new('TextLabel')
+songnme.AnchorPoint = Vector2.new(0, 0.5)
+songnme.AutomaticSize = Enum.AutomaticSize.X
+songnme.BackgroundTransparency = 1
+songnme.BorderSizePixel = 0
+songnme.Size = UDim2.fromOffset(40, 20)
+songnme.TextColor3 = Color3.fromRGB(255, 255, 255)
+songnme.FontFace = Font.new(Font.fromName('Montserrat').Family, Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+songnme.FontFace.Weight = Enum.FontWeight.SemiBold
+songnme.TextSize = 20
+songnme.TextXAlignment = Enum.TextXAlignment.Left
+songnme.TextYAlignment = Enum.TextYAlignment.Center
+songnme.Parent = songcontainer
+local songnmepadding = Instance.new('UIPadding')
+songnmepadding.PaddingLeft = UDim.new(0, 8)
+songnmepadding.PaddingBottom = UDim.new(0, 10)
+songnmepadding.Parent = songnme
+
 function mainapi:UpdateTextGUI(afterload)
 	if not afterload and not mainapi.Loaded then return end
 	if textgui.Button.Enabled then
