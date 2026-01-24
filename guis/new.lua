@@ -6736,13 +6736,13 @@ spotify = mainapi:CreateOverlay({
 							return
 						end
 						
-						if not isfile('newvape/cache/'..res.title..'_'..res.artists..'_cover') then
-							writefile('newvape/cache/'..res.title..'_'..res.artists..'_cover', game:HttpGet(res.cover))
+						if not isfile('newvape/cache/'..res.title..'_'..res.artists..'_cover.png') then
+							writefile('newvape/cache/'..res.title..'_'..res.artists..'_cover.png', game:HttpGet(res.cover))
 						end
 
 						artistnme.Text = res.artists
 						songnme.Text = res.title
-						icon.Image = assetfunction and assetfunction('newvape/cache/'..res.title..'_'..res.artists..'_cover') or ''
+						icon.Image = assetfunction and assetfunction('newvape/cache/'..res.title..'_'..res.artists..'_cover.png') or ''
 					end
 				end
 
