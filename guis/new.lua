@@ -6710,7 +6710,7 @@ mainapi.Libraries.targetinfo = targetinfo
 	Spotify HUD
 ]]
 
-local spotifylib, spotify, token = loadstring(downloadFile('newvape/libraries/spotify.lua', 'spotify'))(), nil, nil
+local spotifylib, spotify, token = {}, nil, nil
 local frame, icon, artistnme, songnme
 spotify = mainapi:CreateOverlay({
 	Name = 'Spotify',
@@ -6720,16 +6720,16 @@ spotify = mainapi:CreateOverlay({
 	CategorySize = 240,
 	Function = function(callback)
 		if callback then
-			repeat task.wait() until token and token.Value ~= ''
+			repeat task.wait() until spotifylib and spotifylib.setToken and spotifylib.getTrackInfo and token and token.Value ~= ''
 
-			local tokenres = spotifylib.setToken(token.Value)
+			local tokenres = spotifylib:setToken(token.Value)
 			if not tokenres then
 				return
 			end
 
 			repeat
 				if frame and icon and artistnme and songnme then
-					local res = spotifylib.getTrackInfo()
+					local res = spotifylib:getTrackInfo()
 
 					if res then
 						if res.expired then
@@ -6763,7 +6763,7 @@ frame.BackgroundTransparency = 0.55
 frame.Size = UDim2.fromOffset(400, 175)
 frame.SizeConstraint = Enum.SizeConstraint.RelativeXY
 frame.Parent = spotify.Children
-addCorner(frame, 32)
+addCorner(frame, UDim.new(0, 32))
 local framelayout = Instance.new('UIListLayout')
 framelayout.Padding = UDim.new(0, 5)
 framelayout.FillDirection = Enum.FillDirection.Horizontal
@@ -6788,7 +6788,7 @@ iconframe.Size = UDim2.fromOffset(160, 160)
 iconframe.SizeConstraint = Enum.SizeConstraint.RelativeXY
 iconframe.Visible = true
 iconframe.Parent = frame
-addCorner(iconframe, 24)
+addCorner(iconframe, UDim.new(0, 24))
 local iconframestroke = Instance.new('UIStroke')
 iconframestroke.BorderOffset = UDim.new(0, -2)
 iconframestroke.BorderStrokePosition = Enum.BorderStrokePosition.Inner
@@ -6803,7 +6803,7 @@ icon.Position = UDim2.fromScale(0.5, 0.5)
 icon.Size = UDim2.fromScale(0.9, 0.9)
 icon.SizeConstraint = Enum.SizeConstraint.RelativeXY
 icon.Parent = iconframe
-addCorner(icon, 16)
+addCorner(icon, UDim.new(0, 16))
 local songcontainer = Instance.new('Frame')
 songcontainer.AutomaticSize = Enum.AutomaticSize.X
 songcontainer.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -6811,7 +6811,7 @@ songcontainer.BackgroundTransparency = 0.75
 songcontainer.Size = UDim2.fromOffset(220, 160)
 songcontainer.SizeConstraint = Enum.SizeConstraint.RelativeXY
 songcontainer.Parent = frame
-addCorner(songcontainer, 24)
+addCorner(songcontainer, UDim.new(0, 24))
 local songcontainerlayout = Instance.new('UIListLayout')
 songcontainerlayout.Padding = UDim.new(0, 5)
 songcontainerlayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -6864,6 +6864,84 @@ local songnmepadding = Instance.new('UIPadding')
 songnmepadding.PaddingLeft = UDim.new(0, 8)
 songnmepadding.PaddingBottom = UDim.new(0, 10)
 songnmepadding.Parent = songnme
+
+spotifylib = {
+    HTTP = {
+        request = function(options)
+            local requestf = (request or http and http.request)
+
+            return requestf(options)
+        end
+    },
+    TOKEN = '',
+	setToken = function(self, token)
+		if not token then
+			if setclipboard then
+				setclipboard('https://youtu.be/XoKfh4DBM9I')
+			end
+			
+			return false, 'Read the documentation on how to setup'
+		end
+
+		local suc, res = pcall(function()
+			return self.HTTP.request({
+				Url = 'https://api.spotify.com/v1/me/player/currently-playing',
+				Method = 'GET',
+				Headers = {
+					Accept = 'application/json',
+					Authorization = 'Bearer '..token
+				}
+			})
+		end)
+
+		if suc and res.StatusCode == 200 then
+			self.TOKEN = token
+			return true, 'Success'
+		end
+
+		return false, 'Failed to set token (token invalid?)'
+	end,
+	getTrackInfo = function(self)
+		local suc, res = pcall(function()
+			return self.HTTP.request({
+				Url = 'https://api.spotify.com/v1/me/player/currently-playing',
+				Method = 'GET',
+				Headers = {
+					Accept = 'application/json',
+					Authorization = 'Bearer '..self.TOKEN
+				}
+			})
+		end)
+
+		if suc and res.StatusCode == 200 then
+			local data, artist = httpService:JSONDecode(res.Body), ''
+
+			if data and data.item then
+				for i, v in data.item.artists do
+					artist = artist .. v.name
+
+					if i < #data.item.artists then
+						artist = artist .. ', '
+					end
+				end
+
+				return {
+					title = data.item.name,
+					artists = artist,
+					cover = data.item.album.images[1].url,
+					isPlaying = data.is_playing,
+					expired = false
+				}
+			end
+
+			self.TOKEN = ''
+			return {expired = true}
+		end
+
+		self.TOKEN = ''
+		return false, 'Failed to get playing track'
+	end
+}
 
 function mainapi:UpdateTextGUI(afterload)
 	if not afterload and not mainapi.Loaded then return end
