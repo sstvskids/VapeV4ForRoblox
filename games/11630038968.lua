@@ -444,7 +444,7 @@ run(function()
 				
 										if delta.Magnitude > AttackRange.Value then continue end
 										if AttackDelay < tick() then
-											AttackDelay = tick() + 0.4
+											AttackDelay = tick() + 0.1
 											local bdent = bd.Entity.FindByCharacter(v.Character)
 											task.spawn(function()
 												if bdent then

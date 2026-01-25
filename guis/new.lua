@@ -6746,7 +6746,7 @@ spotify = mainapi:CreateOverlay({
 					end
 				end
 
-				task.wait(4)
+				task.wait(5)
 			until not spotify.Button or not spotify.Button.Enabled
 		end
 	end
