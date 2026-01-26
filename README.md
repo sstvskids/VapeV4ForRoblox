@@ -45,4 +45,4 @@ If its not the supposed utility at fault, please try some troubleshooting steps.
 <br/>
 [Vernumerator](https://devforum.roblox.com/t/predict-projectile-ballistics-including-gravity-and-motion/1842434) - Projectile prediction for Roblox
 <br/>
-[the_vrillionaire](https://github.com/larp-llc/execRequire) - Require for bad-executors (e.g Solara)
+[breter98](https://github.com/coolpeter98) - Helping out with Spotify UI
