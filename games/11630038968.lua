@@ -1342,7 +1342,7 @@ run(function()
 
 						if dist and bed then
 							if Tween == nil then
-								Tween = tweenService:Create(root, TweenInfo.new(dist / 20, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {Position = bed.Position})
+								Tween = tweenService:Create(root, TweenInfo.new(dist / 20, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Position = bed.Position})
 								Tween:Play()
 								Tween.Completed:Wait()
 
