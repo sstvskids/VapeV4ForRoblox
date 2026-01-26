@@ -10,6 +10,7 @@ local cloneref = cloneref or function(obj) return obj end
 
 local playersService = cloneref(game:GetService('Players'))
 local inputService = cloneref(game:GetService('UserInputService'))
+local tweenService = cloneref(game:GetService('TweenService'))
 local replicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local collectionService = cloneref(game:GetService('CollectionService'))
 local runService = cloneref(game:GetService('RunService'))
@@ -1289,44 +1290,98 @@ run(function()
 	})
 end)
 
---[[run(function()
-	local ProjectileAura
-	local Targets
-	local Range
-	ProjectileAura = vape.Categories.Blatant:CreateModule({
-		Name = 'ProjectileAura',
+run(function()
+	local AutoWin
+	local Tween
+	local Mode
+	local dist, bed = 1/0, nil
+
+	local function getTeam()
+		return (lplr.Team and lplr.Team.Name == 'Red' and 'Blue' or 'Red') or 'Unknown'
+	end
+
+	AutoWin = vape.Categories.Blatant:CreateModule({
+		Name = 'AutoFarm',
 		Function = function(callback)
-			local tool = getTool()
-			local attacked = {}
-			if tool and tool:HasTag('Sword') then
+			if callback then
 				repeat
-					local plrs = entitylib.AllPosition({
-						Range = Range.Value,
-						Wallcheck = Targets.Walls.Enabled or nil,
-						Part = 'RootPart',
-						Players = Targets.Players.Enabled,
-						NPCs = Targets.NPCs.Enabled,
-						Limit = 1
-					})
-					if #plrs > 1 then
-						print(callback, plrs)
+					if not entitylib.isAlive then continue end
+
+					if Mode.Value == 'Bridge' then
+						local team = getTeam()
+
+						if team ~= 'Unknown' then
+							local root, goal = entitylib.character.RootPart, workspace.Map:FindFirstChild(team..'Base').Goal
+							local dist = (goal.Position - root.Position).Magnitude / 20
+
+							root.AssemblyLinearVelocity = Vector3.zero
+							root.AssemblyAngularVelocity = Vector3.zero
+
+							if Tween == nil then
+								Tween = tweenService:Create(root, TweenInfo.new(dist, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {Position = goal.Position})
+								Tween:Play()
+								Tween.Completed:Wait()
+
+								task.wait(7)
+								Tween = nil
+							end
+						end
+					else
+						local root = entitylib.character.RootPart
+						for _, v in workspace.Map:GetChildren() do
+							if v.Name == 'Bed' and v:GetAttribute('Team') ~= lplr.Team.Name then
+							    if not v.PrimaryPart then continue end
+
+								local pos = (v.PrimaryPart and v.PrimaryPart.Position - root.Position).Magnitude
+								if (v.PrimaryPart.Position - root.Position).Magnitude < dist then
+									dist = pos
+									bed = v.PrimaryPart
+								end
+							end
+						end
+
+						if dist and bed then
+							if Tween == nil then
+								Tween = tweenService:Create(root, TweenInfo.new(dist / 20, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {Position = bed.Position})
+								Tween:Play()
+								Tween.Completed:Wait()
+
+								local plrs = entitylib.AllPosition({
+									Range = 16,
+									Wallcheck = false,
+									Part = 'RootPart',
+									Players = true,
+									NPCs = true,
+									Limit = 1
+								})
+
+								if #plrs > 0 then
+									for _, v in plrs do
+										tweenService:Create(root, TweenInfo.new(dist / 20, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {Position = v.Entity.RootPart.Position}):Play()
+									end
+								end
+
+								task.wait(7)
+								Tween = nil
+							end
+						end
 					end
-				until not ProjectileAura.Enabled
+
+					task.wait()
+				until not AutoWin.Enabled
+			else
+				if Tween then
+				Tween = nil
+				end
 			end
 		end,
-		Tooltip = 'Shoots people around you'
-	})
-	Targets = ProjectileAura:CreateTargets({
-		Players = true,
-		Walls = true
-	})
-	Range = ProjectileAura:CreateSlider({
-		Name = 'Range',
-		Min = 1,
-		Max = 50,
-		Default = 50,
-		Suffix = function(val)
-			return val == 1 and 'stud' or 'studs'
+		Tooltip = 'Automatically wins matches for you',
+		ExtraText = function()
+			return Mode.Value
 		end
 	})
-end)]]
+	Mode = AutoWin:CreateDropdown({
+		Name = 'Mode',
+		List = {'Bridge', 'Bedwars'}
+	})
+end)

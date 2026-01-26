@@ -6720,6 +6720,7 @@ spotify = mainapi:CreateOverlay({
 	CategorySize = 240,
 	Function = function(callback)
 		if callback then
+			mainapi:CreateNotification('breter98 sponsored this message', 'thanks breter98 for helping with ui 💖', 8.9)
 			repeat task.wait() until spotifylib and spotifylib.setToken and spotifylib.getTrackInfo and token and token.Value ~= ''
 
 			local tokenres = spotifylib:setToken(token.Value)
