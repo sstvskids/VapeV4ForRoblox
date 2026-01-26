@@ -1318,7 +1318,7 @@ run(function()
 							root.AssemblyAngularVelocity = Vector3.zero
 
 							if Tween == nil then
-								Tween = tweenService:Create(root, TweenInfo.new(dist, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0), {Position = goal.Position})
+								Tween = tweenService:Create(root, TweenInfo.new(dist, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Position = goal.Position})
 								Tween:Play()
 								Tween.Completed:Wait()
 
