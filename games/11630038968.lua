@@ -957,7 +957,7 @@ run(function()
 												block_type = btype,
 												extra = {
 													rizz = 'Bro.',
-													owo = 'What\'s this? OwO',
+													owo = 'What\'s this? OwO ',
 													those = workspace.Name == 'Ok'
 												}
 											})
