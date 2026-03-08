@@ -242,7 +242,7 @@ run(function()
 									AttackDelay = tick() + 0.35
 
 									if ItemAliveCheck.Enabled and getItem('Swords', 'tog') == false then continue end
-									replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(v.Character, i)
+									replicatedStorage.Remotes.ItemsRemotes.SwordHit:FireServer(i, v.Character)
 								end
 							end
                         end
