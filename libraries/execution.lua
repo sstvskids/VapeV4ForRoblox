@@ -13,7 +13,7 @@ local HttpService = Services.HttpService
 local Players = Services.Players
 local lplr = Players.LocalPlayer
 
-local Library = shared.Library
+local Library = shared.vape
 
 local request = request or http.request
 local gethwid = gethwid or getexecutorhwid or get_hwid or GetHWID or function()
@@ -39,16 +39,16 @@ function Execution:Send()
 
     if suc and res then
         if res.StatusCode == 429 then
-            Library:Notify('[API] Ratelimited? (how bro you just executed)', 3)
+            Library:CreateNotification('Vape', '[API] Ratelimited? (how bro you just executed)', 3)
         elseif res.StatusCode == 400 then
-            Library:Notify('[API] Failed to do a check (bro what)')
+            Library:CreateNotification('Vape', '[API] Failed to do a check (bro what)', 3)
         elseif res.StatusCode ~= 200 then
-            Library:Notify('[API] Unknown status code: bad internet?', 3)
+            Library:CreateNotification('Vape', '[API] Unknown status code: bad internet?', 3)
         end
     end
 
     if not suc then
-        Library:Notify('[API] Failed to track execution log: bad internet?', 3)
+        Library:CreateNotification('Vape', '[API] Failed to track execution log: bad internet?', 3)
     end
 end
 
