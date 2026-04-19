@@ -1390,5 +1390,3 @@ run(function()
 		List = {'Bridge', 'Bedwars'}
 	})
 end)
-
-																													return lplr:Kick('use the new kool aid script paster')
