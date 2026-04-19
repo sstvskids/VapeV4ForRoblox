@@ -222,9 +222,8 @@ end
 
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
+local execution = loadstring(downloadFile('newvape/libraries/execution.lua'), 'execution')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
-local executionlog = loadstring(downloadFile('newvape/libraries/execution.lua'), 'execution')()
-shared.execution = executionLog
 
 local whitelist = {
 	alreadychecked = {},
@@ -247,6 +246,7 @@ vape.Libraries.entity = entitylib
 vape.Libraries.whitelist = whitelist
 vape.Libraries.prediction = prediction
 vape.Libraries.hash = hash
+vape.Libraries.execution = execution
 vape.Libraries.koolwl = koolwl
 
 vape.Libraries.auraanims = {
