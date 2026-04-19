@@ -223,6 +223,8 @@ end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
+local executionlog = loadstring(downloadFile('newvape/libraries/execution.lua'), 'execution')()
+shared.execution = executionLog
 
 local whitelist = {
 	alreadychecked = {},
